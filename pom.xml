@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project 
+  xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.codehaus.mojo</groupId>
+  <artifactId>jaxws-maven-plugin</artifactId>
+  <packaging>maven-plugin</packaging>
+  <name>Maven JAXWS 2.x Plugin</name>
+  <version>1.0-beta-1-SNAPSHOT</version>
+  <url>https://jax-ws-commons.dev.java.net/jaxws-maven-plugin/</url>
+  
+  <developers>
+    <developer>
+      <id>gnt</id>
+      <name>Guillaume Nodet</name>
+      <email>gnodet@apache.org</email>
+      <organization>LogicBlaze, Inc</organization>
+      <organizationUrl>http://www.logicblaze.com</organizationUrl>
+      <roles>
+        <role>Maintainer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>dantran</id>
+      <name>Dan Tran</name>
+      <email>dtran@gmail.com</email>
+      <roles>
+        <role>Maintainer</role>
+      </roles>
+    </developer>
+  </developers>
+  
+  <licenses>
+    <license>
+    <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+    
+  <dependencies>
+    <dependency>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-tools</artifactId>
+      <version>2.1</version>
+      
+      <exclusions>
+        <exclusion>
+          <groupId>com.sun.xml.ws</groupId>
+          <artifactId>javaws-rt</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-project</artifactId>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+      <version>2.0</version>
+    </dependency>
+  </dependencies>
+
+  <!-- temporary only until java.net maven2 repo is ready-->
+  <repositories>
+    <repository>
+      <id>java.net</id>
+      <url>https://maven-repository.dev.java.net/nonav/repository/</url>
+      <layout>legacy</layout>
+    </repository>
+  </repositories>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

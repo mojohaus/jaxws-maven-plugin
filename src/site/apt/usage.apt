@@ -1,0 +1,50 @@
+Usage
+
+  This plugin runs the JAXWS WsImport compiler from Maven2. 
+  Please be aware this plugin requires a Java 5.0 compiler.
+  
++------------------------------------------+
+<project>
+    ...
+    <dependencies>
+        ...
+      <dependency>
+        <groupId>com.sun.xml.ws</groupId>
+        <artifactId>jaxws-rt</artifactId>
+        <version>2.1</version>
+      </dependency>
+      ...
+    </dependencies>
+    ...
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>jaxws-maven-plugin</artifactId>
+          <executions>
+            <execution>
+              <goals>
+                <goal>wsimport</goal>
+              </goals>
+            </execution>
+               </executions>
+               <configuration>
+                    <packageName>com.example.myschema</packageName> <!-- The name of your generated source package -->
+               </configuration>
+           </plugin>
+           
+           <!-- Don't forget Java 5!! -->
+           <plugin>
+             <groupId>org.apache.maven.plugins</groupId>
+             <artifactId>maven-compiler-plugin</artifactId>
+             <configuration>
+               <source>1.5</source>
+               <target>1.5</target>
+             </configuration>
+           </plugin>
+           ...
+       </plugins>
+   <build>
+...
+</project>
++------------------------------------------+
