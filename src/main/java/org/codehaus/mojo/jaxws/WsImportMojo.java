@@ -27,10 +27,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import com.sun.tools.ws.wscompile.WsimportTool;
 
 /**
- * <p>
  * A Maven 2 plugin which parses wsdl and binding files and produces a corresponding object model based on the JAXWS
  * WsImport parsing engine.
- * </p>
  * 
  * @goal wsimport
  * @phase generate-sources
@@ -82,7 +80,7 @@ public class WsImportMojo
     protected List wsdlFiles;
 
     /**
-     * List of external wsdl urls.
+     * List of external wsdl urls to be compiled.
      * 
      * @parameter
      */
@@ -112,8 +110,10 @@ public class WsImportMojo
     private String wsdlLocation;
 
     /**
-     * Generate code as per the given JAXWS specification version. 
-     * Version 2.0 will generate compliant code for JAXWS 2.0 spec
+     * Generate code as per the given JAXWS specification version.
+     * Setting "2.0" will cause JAX-WS to generate artifacts
+     * that run with JAX-WS 2.0 runtime.
+     * 
      * @parameter
      */
     private String target;
