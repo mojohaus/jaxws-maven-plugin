@@ -31,6 +31,13 @@ Usage
         <configuration>
           <packageName>com.example.myschema</packageName> <!-- The name of your generated source package -->
         </configuration>
+
+        <!-- if you want to use a specific version of JAX-WS, you can do so like this -->
+        <dependencies>
+          <groupId>com.sun.xml.ws</groupId>
+          <artifactId>jaxws-tools</artifactId>
+          <version>2.1.1</version>
+        </dependencies>
       </plugin>
 
       <!-- Don't forget Java 5!! -->
