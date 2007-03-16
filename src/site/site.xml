@@ -1,4 +1,3 @@
-
 <!--
 /*
  * Copyright 2006 The Codehaus.
@@ -16,29 +15,29 @@
  * limitations under the License.
  */
 -->
+<project name="JAX-WS Maven plugin">
+  <bannerLeft>
+    <name>JAX-WS</name>
+    <src>https://jaxb.dev.java.net/javaxml-duke.gif</src>
+    <href>https://jax-ws.dev.java.net/</href>
+  </bannerLeft>
+  <skin>
+    <groupId>org.jvnet.maven-javanet-skin</groupId>
+    <artifactId>maven-javanet-skin</artifactId>
+    <version>1.0</version>
+  </skin>
 
-<project name="Mojo">
-   <bannerLeft>
-      <name>Mojo</name>
-      <src>http://mojo.codehaus.org/images/mojo_logo.png</src>
-      <href>http://mojo.codehaus.org</href>
-   </bannerLeft>
-   <bannerRight>
-      <name>Codehaus</name>
-      <src>http://mojo.codehaus.org/images/codehaus-small.png</src>
-      <href>http://www.codehaus.org</href>
-   </bannerRight>
-   <body>
-      <links>
-         <item name="Mojo" href="http://mojo.codehaus.org"/>
-         <item name="Maven" href="http://maven.apache.org/"/>
-      </links>
-      <menu name="Overview">
-         <item name="Introduction" href="index.html"/>
-         <item name="Goals" href="plugin-info.html"/>
-         <item name="Usage" href="usage.html"/>
-         <item name="FAQ" href="faq.html"/>
-      </menu>
-      ${reports}
-   </body>
+  <body>
+    <links>
+      <item name="JAX-WS" href="http://jax-ws.dev.java.net/" />
+      <item name="Glassfish" href="http://glassfishi.dev.java.net/"/>
+    </links>
+    <menu name="Overview">
+      <item name="Introduction" href="index.html"/>
+      <item name="Goals" href="plugin-info.html"/>
+      <item name="Usage" href="usage.html"/>
+      <!--item name="FAQ" href="faq.html"/-->
+    </menu>
+    ${reports}
+  </body>
 </project>
