@@ -29,7 +29,7 @@ JAX-WS Maven Plugin
 * Examples
 
   There are a number of buildable examples in 
-  {{{http://svn.codehaus.org/mojo/trunk/mojo/mojo-sandbox/jaxws-maven-plugin/src/it}
+  {{{https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/jaxws-maven-plugin/src/it/}
   SVN repository}}.
 
   
