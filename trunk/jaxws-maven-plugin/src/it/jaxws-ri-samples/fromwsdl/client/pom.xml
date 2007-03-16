@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<project 
+  xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>net.java.jaxws.samples.fromwsdl</groupId>
+    <artifactId>fromwsdl</artifactId>
+    <version>1.0-SNAPSHOT</version>    
+  </parent>
+  
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>client</artifactId>
+
+  <name>jaxws-ri samples: fromwsdl-client</name>
+  
+  <packaging>war</packaging>
+  
+  <build>
+    <sourceDirectory>../src</sourceDirectory>
+    <finalName>jaxws-fromwsdl-client</finalName>
+    
+    <plugins>
+    
+      <!-- generate web services classes from wsdl file --> 
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jaxws-maven-plugin</artifactId>
+        <version>1.0-beta-1-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>wsimport</goal>
+            </goals>
+            <configuration>
+              <verbose>true</verbose>
+              <wsdlUrls>
+                <wsdlUrl>http://localhost:8080/jaxws-fromwsdl/addnumbers?wsdl</wsdlUrl>
+              </wsdlUrls>
+              <packageName>fromwsdl.client</packageName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    
+      <!-- configure compiler plugin to pickup only server side java files -->
+      <!--   note that at compile phase, wsdl's classes are already generated -->
+      <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+          <includes>
+            <include>*/client/*.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+                
+    </plugins>
+  </build>
+  
+  <properties>
+    <webapp.dir>${project.build.directory}/webapp</webapp.dir>
+  </properties>
+  
+</project>
