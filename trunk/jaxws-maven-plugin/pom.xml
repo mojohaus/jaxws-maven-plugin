@@ -5,6 +5,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jvnet.jax-ws-commons</groupId>
+    <artifactId>pom</artifactId>
+    <version>1.0</version>
+    <relativePath>../pom/pom.xml</relativePath>
+  </parent>
+
   <groupId>org.codehaus.mojo</groupId>
   <artifactId>jaxws-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
@@ -67,7 +74,6 @@
     </dependency>
   </dependencies>
 
-  <!-- temporary only until java.net maven2 repo is ready-->
   <repositories>
     <repository>
       <id>java.net</id>
@@ -76,16 +82,15 @@
     </repository>
   </repositories>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <scm>
+    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/trunk/jaxws-maven-plugin</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/jaxws-maven-plugin</developerConnection>
+    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/jaxws-maven-plugin</url>
+  </scm>
 
+  <distributionManagement>
+    <site>
+      <url>file:../www/jaxws-maven-plugin/</url>
+    </site>
+  </distributionManagement>
 </project>
