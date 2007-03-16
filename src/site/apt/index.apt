@@ -9,7 +9,8 @@
 JAX-WS Maven Plugin
 
   This plugin contains Maven adapter for {{{https://jax-ws.dev.java.net/}JAX-WS}}'s
-  toolset.
+  toolset. The original version of this was developed in the codehaus mojo project,
+  but as of March 2007, the project is moved to jax-ws-commons.
 
 * Usage
   
