@@ -101,7 +101,7 @@ public class WsGenMojo
         } catch (MojoExecutionException e) {
             throw e;
         } catch (Throwable e) {
-            new MojoExecutionException("Failed to execute wsgen",e);
+            throw new MojoExecutionException("Failed to execute wsgen",e);
         } finally {
             // Set back the old classloader
             Thread.currentThread().setContextClassLoader(parent);
