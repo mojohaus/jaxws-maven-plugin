@@ -94,7 +94,6 @@ public class WsGenMojo
 
         try {
             ArrayList<String> args = getWsGenArgs();
-            args.add(this.sei);
 
             if (WsGen.doMain(args.toArray(new String[args.size()])) != 0)
                 throw new MojoExecutionException("Error executing: wsgen " + args);
@@ -124,51 +123,43 @@ public class WsGenMojo
      * @throws MojoExecutionException
      */
     private ArrayList<String> getWsGenArgs()
-        throws MojoExecutionException
-    {
+        throws MojoExecutionException {
         ArrayList<String> args = new ArrayList<String>();
 
-        if ( verbose )
-        {
-            args.add( "-verbose" );
+        if (verbose) {
+            args.add("-verbose");
         }
 
-        if ( keep )
-        {
-            args.add( "-keep" );
+        if (keep) {
+            args.add("-keep");
         }
 
-        if ( this.sourceDestDir != null )
-        {
-            args.add( "-s" );
-            args.add( this.sourceDestDir.getAbsolutePath() );
+        if (this.sourceDestDir != null) {
+            args.add("-s");
+            args.add(this.sourceDestDir.getAbsolutePath());
             this.sourceDestDir.mkdirs();
         }
 
-        args.add( "-d" );
-        args.add( this.destDir.getAbsolutePath() );
+        args.add("-d");
+        args.add(this.destDir.getAbsolutePath());
         this.destDir.mkdirs();
 
-        if ( this.genWsdl )
-        {
-            if ( this.protocol != null )
-            {
-                args.add( "-wsdl:" + this.protocol );
-            }
-            else
-            {
-                args.add( "-wsdl" );
+        if (this.genWsdl) {
+            if (this.protocol != null) {
+                args.add("-wsdl:" + this.protocol);
+            } else {
+                args.add("-wsdl");
             }
 
-            args.add( "-r" );
-            args.add( this.resourceDestDir.getAbsolutePath() );
+            args.add("-r");
+            args.add(this.resourceDestDir.getAbsolutePath());
             this.resourceDestDir.mkdirs();
 
         }
 
-        args.add( sei );
+        args.add(sei);
 
-        getLog().info( "jaxws:wsgen args: " + args );
+        getLog().info("jaxws:wsgen args: " + args);
 
         return args;
     }
