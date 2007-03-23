@@ -16,14 +16,12 @@
 
 package org.codehaus.mojo.jaxws;
 
-import java.io.File;
-import java.util.ArrayList;
-
-import org.apache.maven.model.Resource;
+import com.sun.tools.ws.WsGen;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
-import com.sun.tools.ws.wscompile.WsgenTool;
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  * <p>
@@ -85,33 +83,29 @@ public class WsGenMojo
      */
     private File sourceDestDir;
     //default-value="${project.build.directory}/jaxws/java"
-    
+
     public void execute()
-        throws MojoExecutionException, MojoFailureException
-    {
+        throws MojoExecutionException, MojoFailureException {
         init();
 
         // Need to build a URLClassloader since Maven removed it form the chain
         ClassLoader parent = this.getClass().getClassLoader();
-        String orginalSystemClasspath = this.initClassLoader( parent );
+        String orginalSystemClasspath = this.initClassLoader(parent);
 
-        try
-        {
+        try {
             ArrayList<String> args = getWsGenArgs();
-            args.add( this.sei );
+            args.add(this.sei);
 
-            WsgenTool compTool = new WsgenTool( System.out );
-            if ( !compTool.run( args.toArray( new String[args.size()] ) ) )
-            {
-                throw new MojoExecutionException( "Error executing: wsimport " + args );
-            }
-            
-        }
-        finally
-        {
+            if (WsGen.doMain(args.toArray(new String[args.size()])) != 0)
+                throw new MojoExecutionException("Error executing: wsgen " + args);
+        } catch (MojoExecutionException e) {
+            throw e;
+        } catch (Throwable e) {
+            new MojoExecutionException("Failed to execute wsgen",e);
+        } finally {
             // Set back the old classloader
-            Thread.currentThread().setContextClassLoader( parent );
-            System.setProperty( "java.class.path", orginalSystemClasspath );
+            Thread.currentThread().setContextClassLoader(parent);
+            System.setProperty("java.class.path", orginalSystemClasspath);
         }
     }
 
