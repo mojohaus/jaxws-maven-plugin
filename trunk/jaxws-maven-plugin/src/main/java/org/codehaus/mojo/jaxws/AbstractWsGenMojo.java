@@ -24,22 +24,13 @@ import java.io.File;
 import java.util.ArrayList;
 
 /**
- * <p>
- * A Maven 2 plugin which reads a service endpoint implementation class 
- *   and generates all of the portable artifacts for a JAX-WS web service.
- * </p>
  * 
- * @goal wsgen
- * @phase generate-sources
- * @requiresDependencyResolution
- * @description JAXWS 2.x Plugin.
+ *
  * @author gnodet <gnodet@apache.org>
  * @author dantran <dantran@apache.org>
  * @version $Id: WsGenMojo.java 3169 2007-01-22 02:51:29Z dantran $
  */
-public class WsGenMojo
-    extends AbstractJaxwsMojo
-{
+abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
 
     /**
      * Specify that a WSDL file should be generated in ${resourceDestDir}
@@ -108,13 +99,9 @@ public class WsGenMojo
         }
     }
 
-    private void init()
-        throws MojoExecutionException, MojoFailureException
-    {
-        if ( !destDir.exists() )
-        {
-            destDir.mkdirs();
-        }
+    private void init() throws MojoExecutionException, MojoFailureException {
+        if (!getDestDir().exists())
+            getDestDir().mkdirs();
     }
 
     /**
@@ -141,8 +128,7 @@ public class WsGenMojo
         }
 
         args.add("-d");
-        args.add(this.destDir.getAbsolutePath());
-        this.destDir.mkdirs();
+        args.add(getDestDir().getAbsolutePath());
 
         if (this.genWsdl) {
             if (this.protocol != null) {
