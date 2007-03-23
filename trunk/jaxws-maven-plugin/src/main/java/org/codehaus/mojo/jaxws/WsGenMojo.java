@@ -130,7 +130,7 @@ public class WsGenMojo
             args.add("-verbose");
         }
 
-        if (keep) {
+        if (keep || this.sourceDestDir!=null) {
             args.add("-keep");
         }
 
