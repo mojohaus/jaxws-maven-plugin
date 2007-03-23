@@ -27,19 +27,12 @@ import org.apache.maven.plugin.MojoExecutionException;
 import com.sun.tools.ws.wscompile.WsimportTool;
 
 /**
- * A Maven 2 plugin which parses wsdl and binding files and produces a corresponding object model based on the JAXWS
- * WsImport parsing engine.
  * 
- * @goal wsimport
- * @phase generate-sources
- * @requiresDependencyResolution
- * @description JAXWS 2.x Plugin.
  * @author gnodet <gnodet@apache.org>
  * @author dantran <dantran@apache.org>
  * @version $Id: WsImportMojo.java 3169 2007-01-22 02:51:29Z dantran $
  */
-public class WsImportMojo
-    extends AbstractJaxwsMojo
+abstract class WsImportMojo extends AbstractJaxwsMojo
 {
 
     /**
@@ -143,7 +136,7 @@ public class WsImportMojo
         {
 
             sourceDestDir.mkdirs();
-            destDir.mkdirs();
+            getDestDir().mkdirs();
 
             this.processWsdlViaUrls();
 
@@ -247,7 +240,7 @@ public class WsImportMojo
         args.add( sourceDestDir.getAbsolutePath() );
 
         args.add( "-d" );
-        args.add( destDir.getAbsolutePath() );
+        args.add( getDestDir().getAbsolutePath() );
 
         if ( verbose )
         {

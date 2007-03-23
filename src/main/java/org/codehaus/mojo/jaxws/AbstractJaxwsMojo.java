@@ -35,23 +35,13 @@ import org.apache.maven.project.MavenProject;
  * @author dantran <dantran@apache.org>
  * @version $Id: AbstractJaxwsMojo.java 3240 2007-02-04 07:13:21Z dantran $ *
  */
-
-public abstract class AbstractJaxwsMojo
-    extends AbstractMojo
-{
+abstract class AbstractJaxwsMojo extends AbstractMojo {
 
     /**
      * @parameter expression="${project}"
      * @readonly
      */
     protected MavenProject project;
-
-    /**
-     * Specify where to place output generated classes 
-     * Set to "" to turn it off
-     * @parameter default-value="${project.build.outputDirectory}"
-     */
-    protected File destDir;
 
     /**
      * Output messages about what the tool is doing
@@ -82,6 +72,11 @@ public abstract class AbstractJaxwsMojo
      * @readonly
      */
     private Map pluginArtifactMap;
+
+    /**
+     * Either ${build.outputDirectory} or ${build.testOutputDirectory}.
+     */
+    protected abstract File getDestDir();
 
     /**
      * Need to build a URLClassloader since Maven removed it form the chain
