@@ -7,8 +7,11 @@ import java.io.File;
  * and generates all of the portable artifacts for a JAX-WS web service
  * (into the generate test source directroy.)
  *
+ * <p>
+ * Due to <a href="http://jira.codehaus.org/browse/MNG-1508">MNG-1508</a>, this requires 2.0.5 or higher.
+ *
  * @goal wsgen-test
- * @phase generate-test-sources
+ * @phase process-test-classes
  * @requiresDependencyResolution
  * @description generate JAX-WS wrapper beans.
  */
