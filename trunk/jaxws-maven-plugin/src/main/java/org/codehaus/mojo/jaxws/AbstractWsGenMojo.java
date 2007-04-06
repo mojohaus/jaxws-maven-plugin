@@ -19,9 +19,11 @@ package org.codehaus.mojo.jaxws;
 import com.sun.tools.ws.WsGen;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.artifact.Artifact;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * 
@@ -130,6 +132,15 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
         args.add("-d");
         args.add(getDestDir().getAbsolutePath());
 
+        args.add("-cp");
+        StringBuilder buf = new StringBuilder();
+        buf.append(getDestDir().getAbsolutePath());
+        for (Artifact a : (Set<Artifact>)project.getArtifacts()) {
+            buf.append(File.pathSeparatorChar);
+            buf.append(a.getFile().getAbsolutePath());
+        }
+        args.add(buf.toString());
+
         if (this.genWsdl) {
             if (this.protocol != null) {
                 args.add("-wsdl:" + this.protocol);
@@ -145,7 +156,7 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
 
         args.add(sei);
 
-        getLog().info("jaxws:wsgen args: " + args);
+        getLog().debug("jaxws:wsgen args: " + args);
 
         return args;
     }

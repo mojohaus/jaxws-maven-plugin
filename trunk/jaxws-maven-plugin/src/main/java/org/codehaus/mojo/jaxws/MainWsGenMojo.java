@@ -7,7 +7,7 @@ import java.io.File;
  * and generates all of the portable artifacts for a JAX-WS web service.
  *
  * @goal wsgen
- * @phase generate-sources
+ * @phase process-classes
  * @requiresDependencyResolution
  * @description generate JAX-WS wrapper beans. 
  */
