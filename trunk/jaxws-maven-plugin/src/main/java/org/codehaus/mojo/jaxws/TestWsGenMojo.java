@@ -9,6 +9,7 @@ import java.io.File;
  *
  * <p>
  * Due to <a href="http://jira.codehaus.org/browse/MNG-1508">MNG-1508</a>, this requires 2.0.5 or higher.
+ * </p>
  *
  * @goal wsgen-test
  * @phase process-test-classes
