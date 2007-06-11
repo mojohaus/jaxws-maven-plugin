@@ -64,7 +64,7 @@
   </dependencies>
 
   <scm>
-    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-common/trunk/jaxws-maven-plugin</connection>
+    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/jaxws-maven-plugin</connection>
     <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/jaxws-maven-plugin</developerConnection>
     <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/jaxws-maven-plugin</url>
   </scm>
