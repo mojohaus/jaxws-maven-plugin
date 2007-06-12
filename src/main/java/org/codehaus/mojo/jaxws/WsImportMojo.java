@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -117,6 +118,14 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * @parameter default-value="${project.build.directory}/jaxws/wsimport/java"
      */
     protected File sourceDestDir;
+    
+    /**
+     * Specify optional XJC-specific parameters that should simply be passed to xjc
+     * using -B option of WsImport command.
+     * 
+     * @parameter
+     */
+    private List xjcArgs;
     
     /**
      * The location of the flag file used to determine if the output is stale.
@@ -282,6 +291,17 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             args.add( "-extension" );
         }
 
+        // xjcOIptions
+        if (xjcArgs != null) 
+        {
+            Iterator xjcArgsIter = xjcArgs.iterator();
+            while ( xjcArgsIter.hasNext() )
+            {
+                String xjcArg = (String)xjcArgsIter.next();
+                args.add( "-B" + xjcArg );
+            }
+        }
+        
         // Bindings
         File bindings[] = getBindingFiles();
         for ( int i = 0; i < bindings.length; i++ )
