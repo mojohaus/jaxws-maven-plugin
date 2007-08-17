@@ -71,7 +71,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * 
      * @parameter
      */
-    protected File[] wsdlFiles;
+    protected List wsdlFiles;
 
     /**
      * List of external wsdl urls to be compiled.
@@ -93,12 +93,12 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * 
      * @parameter
      */
-    protected File[] bindingFiles;
+    protected List bindingFiles;
 
     /**
      * @WebService.wsdlLocation and
      * @WebServiceClient.wsdlLocation value.
-     *
+     * 
      * @parameter
      */
     private String wsdlLocation;
@@ -107,26 +107,26 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * Generate code as per the given JAXWS specification version.
      * Setting "2.0" will cause JAX-WS to generate artifacts
      * that run with JAX-WS 2.0 runtime.
-     *
+     * 
      * @parameter
      */
     private String target;
-
+    
     /**
-     * Specify where to place generated source files, keep is turned on with this option.
-     *
+     * Specify where to place generated source files, keep is turned on with this option. 
+     * 
      * @parameter default-value="${project.build.directory}/jaxws/wsimport/java"
      */
     protected File sourceDestDir;
-
+    
     /**
      * Specify optional XJC-specific parameters that should simply be passed to xjc
      * using -B option of WsImport command.
-     *
+     * 
      * @parameter
      */
     private List xjcArgs;
-
+    
     /**
      * The location of the flag file used to determine if the output is stale.
      * @parameter default-value="${project.build.directory}/jaxws/stale/.staleFlag"
@@ -151,7 +151,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
 
             this.processLocalWsdlFiles();
 
-            // even thou the generated source already compiled, we still want to
+            // even thou the generated source already compiled, we still want to 
             //  add the source path so that IDE can pick it up
             project.addCompileSourceRoot( sourceDestDir.getAbsolutePath() );
 
@@ -174,7 +174,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     }
 
     /**
-     *
+     * 
      * @throws MojoExecutionException
      * @throws IOException
      */
@@ -190,9 +190,9 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                 getLog().info( "Processing: " + wsdls[i].getAbsolutePath() );
                 ArrayList<String> args = getWsImportArgs();
                 args.add( wsdls[i].getAbsolutePath() );
-                getLog().info( "jaxws:wsimport args: " + args );
+                getLog().info( "jaxws:wsimport args: " + args );                  
                 wsImport( args );
-
+            	              
             }
             touchStaleFile();
         }
@@ -207,7 +207,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         throws MojoExecutionException
     {
         //TODO can we do some stale check against a URL?
-
+        
         for ( int i = 0; wsdlUrls != null && i < wsdlUrls.size(); i++ )
         {
             String wsdlUrl = wsdlUrls.get( i ).toString();
@@ -215,7 +215,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             getLog().info( "Processing: " + wsdlUrl );
             ArrayList<String> args = getWsImportArgs();
             args.add( wsdlUrl );
-            getLog().info( "jaxws:wsimport args: " + args );
+            getLog().info( "jaxws:wsimport args: " + args );      
             wsImport( args );
         }
     }
@@ -236,7 +236,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     }
 
     /**
-     *
+     * 
      * @return wsimport's command arguments
      * @throws MojoExecutionException
      */
@@ -285,14 +285,14 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             args.add( "-target" );
             args.add( target );
         }
-
+        
         if ( extension )
         {
             args.add( "-extension" );
         }
 
         // xjcOIptions
-        if (xjcArgs != null)
+        if (xjcArgs != null) 
         {
             Iterator xjcArgsIter = xjcArgs.iterator();
             while ( xjcArgsIter.hasNext() )
@@ -301,7 +301,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                 args.add( "-B" + xjcArg );
             }
         }
-
+        
         // Bindings
         File bindings[] = getBindingFiles();
         for ( int i = 0; i < bindings.length; i++ )
@@ -317,16 +317,25 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
 
     /**
      * Returns a file array of xml files to translate to object models.
-     *
+     * 
      * @return An array of schema files to be parsed by the schema compiler.
      */
     public final File[] getBindingFiles()
     {
         File [] bindings;
-
+        
         if ( bindingFiles != null )
         {
-            bindings = bindingFiles;
+            bindings = new File[bindingFiles.size()];
+            for ( int i = 0 ; i < bindingFiles.size(); ++i ) 
+            {
+                String schemaName = (String) bindingFiles.get( i );
+                File file = new File( schemaName );
+                if (!file.isAbsolute()) {
+                    file = new File( bindingDirectory, schemaName );
+                }
+                bindings[i] = file;
+            }
         }
         else
         {
@@ -352,7 +361,12 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
 
         if ( wsdlFiles != null )
         {
-            files = wsdlFiles;
+            files = new File[ wsdlFiles.size() ];
+            for ( int i = 0 ; i < wsdlFiles.size(); ++i ) 
+            {
+                String schemaName = (String) wsdlFiles.get( i );
+                files[i] = new File( wsdlDirectory, schemaName ) ;
+            }
         }
         else
         {
