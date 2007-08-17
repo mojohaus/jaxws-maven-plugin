@@ -330,7 +330,11 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             for ( int i = 0 ; i < bindingFiles.size(); ++i ) 
             {
                 String schemaName = (String) bindingFiles.get( i );
-                bindings[i] = new File( bindingDirectory, schemaName );
+                File file = new File( schemaName );
+                if (!file.isAbsolute()) {
+                    file = new File( bindingDirectory, schemaName );
+                }
+                bindings[i] = file;
             }
         }
         else
