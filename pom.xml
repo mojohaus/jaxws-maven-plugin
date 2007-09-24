@@ -17,13 +17,21 @@
   
   <developers>
     <developer>
+      <id>kohsuke</id>
+      <name>Kohsuke Kawaguchi</name>
+      <email>kohsuke.kawaguchi@sun.com</email>
+      <roles>
+        <role>Maintainer</role>
+      </roles>
+    </developer>
+    <developer>
       <id>gnt</id>
       <name>Guillaume Nodet</name>
       <email>gnodet@apache.org</email>
       <organization>LogicBlaze, Inc</organization>
       <organizationUrl>http://www.logicblaze.com</organizationUrl>
       <roles>
-        <role>Maintainer</role>
+        <role>Previous maintainer</role>
       </roles>
       <timezone>+1</timezone>
     </developer>
@@ -32,7 +40,7 @@
       <name>Dan Tran</name>
       <email>dtran@gmail.com</email>
       <roles>
-        <role>Maintainer</role>
+        <role>Previous maintainer</role>
       </roles>
     </developer>
   </developers>
