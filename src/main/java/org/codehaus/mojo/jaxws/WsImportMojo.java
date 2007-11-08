@@ -16,16 +16,15 @@
 
 package org.codehaus.mojo.jaxws;
 
+import com.sun.tools.ws.wscompile.WsimportTool;
+import org.apache.maven.plugin.MojoExecutionException;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.maven.plugin.MojoExecutionException;
-
-import com.sun.tools.ws.wscompile.WsimportTool;
 
 /**
  * 
@@ -118,7 +117,36 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * @parameter default-value="${project.build.directory}/jaxws/wsimport/java"
      */
     protected File sourceDestDir;
-    
+
+    /**
+     * Maps headers not bound to the request or response messages to Java method params.
+     *
+     * @parameter default-value="false"
+     */
+    private Boolean xadditionalHeaders;
+
+    /**
+     * Turn on debug message
+     *
+     * @parameter default-value="false"
+     */
+    private boolean xdebug;
+
+    /**
+     * Binding W3C EndpointReferenceType to Java. By default Wsimport follows spec and does not bind
+     * EndpointReferenceType to Java and uses the spec provided {@link javax.xml.ws.wsaddressing.W3CEndpointReference}
+     *
+     * @parameter default-value="false"
+     */
+    private boolean xnoAddressingDataBinding;
+
+    /**
+     * Specify the location of authorization file.
+     *
+     * @parameter 
+     */
+    protected File xauthFile;
+
     /**
      * Specify optional XJC-specific parameters that should simply be passed to xjc
      * using -B option of WsImport command.
@@ -132,6 +160,8 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * @parameter default-value="${project.build.directory}/jaxws/stale/.staleFlag"
      */
     private File staleFile;
+
+
 
     public void execute()
         throws MojoExecutionException
@@ -185,6 +215,9 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         if ( isOutputStale() )
         {
             File[] wsdls = getWSDLFiles();
+            if(wsdls.length == 0){
+                getLog().info( "Nothing to do, no WSDL found!");
+            }
             for ( int i = 0; i < wsdls.length; i++ )
             {
                 getLog().info( "Processing: " + wsdls[i].getAbsolutePath() );
@@ -291,6 +324,26 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             args.add( "-extension" );
         }
 
+        if(xdebug){
+            args.add("-Xdebug");
+        }
+
+        /**
+         * -Xno-addressing-databinding enable binding of W3C EndpointReferenceType to Java
+         */
+        if(xnoAddressingDataBinding){
+            args.add("-Xno-addressing-databinding");
+        }
+
+        if(xadditionalHeaders){
+            args.add("-XadditionalHeaders");
+        }
+
+        if(xauthFile != null){
+            args.add("-Xauthfile");
+            args.add(xauthFile.getAbsolutePath());
+        }
+
         // xjcOIptions
         if (xjcArgs != null) 
         {
@@ -301,6 +354,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                 args.add( "-B" + xjcArg );
             }
         }
+        
         
         // Bindings
         File bindings[] = getBindingFiles();
@@ -361,10 +415,12 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
 
         if ( wsdlFiles != null )
         {
+
             files = new File[ wsdlFiles.size() ];
             for ( int i = 0 ; i < wsdlFiles.size(); ++i ) 
             {
                 String schemaName = (String) wsdlFiles.get( i );
+                getLog().debug( "The wsdl File is " +  schemaName);
                 files[i] = new File( wsdlDirectory, schemaName ) ;
             }
         }
