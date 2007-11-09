@@ -12,7 +12,7 @@
   <artifactId>jaxws-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
   <name>Maven JAXWS 2.x Plugin</name>
-  <version>1.8-SNAPSHOT</version>
+  <version>1.8</version>
   <url>https://jax-ws-commons.dev.java.net/jaxws-maven-plugin/</url>
   
   <developers>
@@ -72,9 +72,9 @@
   </dependencies>
 
   <scm>
-    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/jaxws-maven-plugin</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/trunk/jaxws-maven-plugin</developerConnection>
-    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/jaxws-maven-plugin</url>
+    <connection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/tags/jaxws-maven-plugin-1.8</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/jax-ws-commons/tags/jaxws-maven-plugin-1.8</developerConnection>
+    <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/tags/jaxws-maven-plugin-1.8</url>
   </scm>
 
   <reporting>
