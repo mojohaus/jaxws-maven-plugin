@@ -77,12 +77,6 @@
     <url>https://jax-ws-commons.dev.java.net/source/browse/jax-ws-commons/trunk/jaxws-maven-plugin</url>
   </scm>
 
-  <distributionManagement>
-    <site>
-      <url>file:../www/jaxws-maven-plugin/</url>
-    </site>
-  </distributionManagement>
-
   <reporting>
     <plugins>
       <plugin>
