@@ -27,14 +27,24 @@
         <url>https://maven-repository.dev.java.net/nonav/repository/</url>
         <layout>legacy</layout>
       </repository>
+      <repository>
+            <id>java.net2</id>
+            <url>https://maven2-repository.dev.java.net/nonav/repository</url>
+        </repository>
     </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>java.net2</id>
+            <url>https://maven2-repository.dev.java.net/nonav/repository</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <build>
       <plugins>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
             <artifactId>jaxws-maven-plugin</artifactId>
-            <version>1.0-beta-1-SNAPSHOT</version>
             <executions>
               <execution>
                 <goals>
