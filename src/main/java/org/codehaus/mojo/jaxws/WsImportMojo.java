@@ -152,7 +152,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * using -B option of WsImport command.
      * <p>
      * Multiple elements can be specified, and each token must be placed in its own list.
-     * 
+     * </p>
      * @parameter
      */
     private List<String> xjcArgs;
