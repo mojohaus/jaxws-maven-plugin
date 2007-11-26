@@ -150,10 +150,12 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     /**
      * Specify optional XJC-specific parameters that should simply be passed to xjc
      * using -B option of WsImport command.
+     * <p>
+     * Multiple elements can be specified, and each token must be placed in its own list.
      * 
      * @parameter
      */
-    private List xjcArgs;
+    private List<String> xjcArgs;
     
     /**
      * The location of the flag file used to determine if the output is stale.
@@ -347,21 +349,19 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         // xjcOIptions
         if (xjcArgs != null) 
         {
-            Iterator xjcArgsIter = xjcArgs.iterator();
-            while ( xjcArgsIter.hasNext() )
-            {
-                String xjcArg = (String)xjcArgsIter.next();
-                args.add( "-B" + xjcArg );
+            for (String xjcArg : xjcArgs) {
+                if (xjcArg.startsWith("-"))
+                    args.add("-B" + xjcArg);
+                else
+                    args.add(xjcArg);
             }
         }
         
         
         // Bindings
-        File bindings[] = getBindingFiles();
-        for ( int i = 0; i < bindings.length; i++ )
-        {
-            args.add( "-b" );
-            args.add( bindings[i].getAbsolutePath() );
+        for (File binding : getBindingFiles()) {
+            args.add("-b");
+            args.add(binding.getAbsolutePath());
         }
 
         getLog().debug( "jaxws:wsimport args: " + args );
