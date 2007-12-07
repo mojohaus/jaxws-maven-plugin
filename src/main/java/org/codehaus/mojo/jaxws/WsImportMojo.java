@@ -133,6 +133,13 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     private boolean xdebug;
 
     /**
+     * Turn of compilation after code generation
+     *
+     * @parameter default-value="false"
+     */
+    private boolean xnocompile;
+    
+    /**
      * Binding W3C EndpointReferenceType to Java. By default Wsimport follows spec and does not bind
      * EndpointReferenceType to Java and uses the spec provided {@link javax.xml.ws.wsaddressing.W3CEndpointReference}
      *
@@ -330,6 +337,10 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             args.add("-Xdebug");
         }
 
+        if(xnocompile){
+            args.add("-Xnocompile");
+        }
+        
         /**
          * -Xno-addressing-databinding enable binding of W3C EndpointReferenceType to Java
          */
