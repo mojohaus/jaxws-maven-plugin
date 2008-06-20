@@ -24,6 +24,7 @@ import org.apache.maven.artifact.Artifact;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.List;
 
 /**
  * 
@@ -68,7 +69,12 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      */
     private String protocol;
 
-    
+    /**
+     * @parameter expression="${plugin.artifacts}"
+     * @required
+     */
+    private List<Artifact> pluginArtifacts;
+
     /**
      * Specify where to place generated source files, keep is turned on with this option. 
      * 
@@ -136,6 +142,10 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
         StringBuilder buf = new StringBuilder();
         buf.append(getDestDir().getAbsolutePath());
         for (Artifact a : (Set<Artifact>)project.getArtifacts()) {
+            buf.append(File.pathSeparatorChar);
+            buf.append(a.getFile().getAbsolutePath());
+        }
+        for (Artifact a : pluginArtifacts) {
             buf.append(File.pathSeparatorChar);
             buf.append(a.getFile().getAbsolutePath());
         }
