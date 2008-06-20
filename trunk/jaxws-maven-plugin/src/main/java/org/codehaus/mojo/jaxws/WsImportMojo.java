@@ -16,14 +16,14 @@
 
 package org.codehaus.mojo.jaxws;
 
-import com.sun.tools.ws.wscompile.WsimportTool;
+import com.sun.tools.ws.Invoker;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -227,14 +227,13 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             if(wsdls.length == 0){
                 getLog().info( "Nothing to do, no WSDL found!");
             }
-            for ( int i = 0; i < wsdls.length; i++ )
-            {
-                getLog().info( "Processing: " + wsdls[i].getAbsolutePath() );
+            for (File wsdl : wsdls) {
+                getLog().info("Processing: " + wsdl.getAbsolutePath());
                 ArrayList<String> args = getWsImportArgs();
-                args.add( wsdls[i].getAbsolutePath() );
-                getLog().info( "jaxws:wsimport args: " + args );                  
-                wsImport( args );
-            	              
+                args.add(wsdl.getAbsolutePath());
+                getLog().info("jaxws:wsimport args: " + args);
+                wsImport(args);
+
             }
             touchStaleFile();
         }
@@ -270,11 +269,19 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     private void wsImport( ArrayList<String> args )
         throws MojoExecutionException
     {
-        WsimportTool compTool = new WsimportTool( System.out );
-        if ( !compTool.run( args.toArray( new String[args.size()] ) ) )
+      try {
+        final ClassLoader cl = Invoker.createClassLoader(Thread.currentThread().getContextClassLoader());
+        Class c = cl.loadClass("com.sun.tools.ws.wscompile.WsimportTool");
+        Object tool = c.getConstructor(OutputStream.class).newInstance(System.out);
+        String[] ar = args.toArray( new String[args.size()] );
+        Boolean result = (Boolean)c.getMethod("run", ar.getClass()).invoke(tool, new Object[]{ar});
+        if ( !result )
         {
             throw new MojoExecutionException( "Error executing: wsimport " + args );
         }
+      } catch (Exception e) {
+        throw new MojoExecutionException( "Error executing: wsimport " + args );
+      }
     }
 
     /**
@@ -503,20 +510,16 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             getLog().debug( "Stale flag file exists, comparing to wsdls and bindings." );
             long staleMod = staleFile.lastModified();
 
-            for ( int i = 0; i < sourceWsdls.length; i++ )
-            {
-                if ( sourceWsdls[i].lastModified() > staleMod )
-                {
-                    getLog().debug( sourceWsdls[i].getName() + " is newer than the stale flag file." );
+            for (File sourceWsdl : sourceWsdls) {
+                if (sourceWsdl.lastModified() > staleMod) {
+                    getLog().debug(sourceWsdl.getName() + " is newer than the stale flag file.");
                     stale = true;
                 }
             }
 
-            for ( int i = 0; i < sourceBindings.length; i++ )
-            {
-                if ( sourceBindings[i].lastModified() > staleMod )
-                {
-                    getLog().debug( sourceBindings[i].getName() + " is newer than the stale flag file." );
+            for (File sourceBinding : sourceBindings) {
+                if (sourceBinding.lastModified() > staleMod) {
+                    getLog().debug(sourceBinding.getName() + " is newer than the stale flag file.");
                     stale = true;
                 }
             }
