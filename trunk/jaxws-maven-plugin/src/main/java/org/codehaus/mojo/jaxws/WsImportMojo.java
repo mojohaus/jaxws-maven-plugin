@@ -135,9 +135,10 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     /**
      * Turn of compilation after code generation
      *
-     * @parameter default-value="false"
+     * Always true with maven plugin and the generated classes get compiled during maven compilation phase.
+     *
      */
-    private boolean xnocompile;
+    private  final boolean xnocompile = true;
     
     /**
      * Binding W3C EndpointReferenceType to Java. By default Wsimport follows spec and does not bind
