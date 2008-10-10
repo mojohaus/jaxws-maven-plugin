@@ -164,6 +164,15 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * @parameter
      */
     private List<String> xjcArgs;
+
+    /**
+     * Specify optional wsimport commnd-line options.
+     * <p>
+     * Multiple elements can be specified, and each token must be placed in its own list.
+     * </p>
+     * @parameter
+     */
+    private List<String> args;
     
     /**
      * The location of the flag file used to determine if the output is stale.
@@ -363,6 +372,14 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         if(xauthFile != null){
             args.add("-Xauthfile");
             args.add(xauthFile.getAbsolutePath());
+        }
+
+        // add wsimport commandline Options
+        if (this.args != null)
+        {
+            for (String arg : this.args) {
+                args.add(arg);
+            }
         }
 
         // xjcOIptions
