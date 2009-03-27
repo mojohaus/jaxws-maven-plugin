@@ -164,6 +164,10 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
 
         }
 
+        if ( this.extension ) {
+            args.add( "-extension" );
+        }
+
         args.add(sei);
 
         getLog().debug("jaxws:wsgen args: " + args);
