@@ -195,10 +195,15 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
 
             sourceDestDir.mkdirs();
             getDestDir().mkdirs();
+            File[] wsdls = getWSDLFiles();
+            if(wsdls.length == 0 && (wsdlUrls == null || wsdlUrls.size() ==0)){
+                getLog().info( "No WSDLs are found to process, Specify atleast one of the following parameters: wsdlFiles, wsdlDirectory or wsdlUrls.");
+                return;
+            }
 
             this.processWsdlViaUrls();
 
-            this.processLocalWsdlFiles();
+            this.processLocalWsdlFiles(wsdls);
 
             // even thou the generated source already compiled, we still want to 
             //  add the source path so that IDE can pick it up
@@ -227,16 +232,12 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * @throws MojoExecutionException
      * @throws IOException
      */
-    private void processLocalWsdlFiles()
+    private void processLocalWsdlFiles(File[] wsdls)
         throws MojoExecutionException,  IOException
     {
 
         if ( isOutputStale() )
         {
-            File[] wsdls = getWSDLFiles();
-            if(wsdls.length == 0){
-                getLog().info( "Nothing to do, no WSDL found!");
-            }
             for (File wsdl : wsdls) {
                 getLog().info("Processing: " + wsdl.getAbsolutePath());
                 ArrayList<String> args = getWsImportArgs();
