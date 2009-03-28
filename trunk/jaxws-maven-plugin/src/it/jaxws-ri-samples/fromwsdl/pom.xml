@@ -18,7 +18,7 @@
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-rt</artifactId>
-      <version>2.1</version>
+      <version>2.1.5</version>
     </dependency>
     
     <!--  you will need to install these on your internal repo -->
@@ -37,17 +37,26 @@
   </dependencies>
 
 
-    <!-- temporary only until java.net maven2 repo is ready-->
     <repositories>
-      <repository>
-        <id>java.net</id>
-        <url>https://maven-repository.dev.java.net/nonav/repository/</url>
-        <layout>legacy</layout>
-      </repository>
+        <repository>
+            <id>java.net</id>
+            <url>http://download.java.net/maven/1/</url>
+            <layout>legacy</layout>
+        </repository>
+        <repository>
+            <id>java.net2</id>
+            <url>http://download.java.net/maven/2/</url>
+        </repository>
     </repositories>
+    
+    <pluginRepositories>
+        <pluginRepository>
+            <id>java.net2</id>
+            <url>http://download.java.net/maven/2/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
-
-  <modules>
+    <modules>
     <module>server</module>
     <module>client</module>
   </modules>
