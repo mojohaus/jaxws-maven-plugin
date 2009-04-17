@@ -68,8 +68,16 @@
             </execution>
           </executions>
         </plugin>
-        
-        <plugin>
+
+          <plugin>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <configuration>
+                  <source>1.5</source>
+                  <target>1.5</target>
+              </configuration>
+          </plugin>
+
+          <plugin>
           <groupId>org.codehaus.mojo</groupId>
             <artifactId>jaxws-maven-plugin</artifactId>
             <executions>
