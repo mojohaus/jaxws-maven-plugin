@@ -18,8 +18,8 @@
 <project name="JAX-WS Maven plugin">
   <bannerLeft>
     <name>JAX-WS</name>
-    <src>https://jaxb.dev.java.net/javaxml-duke.gif</src>
-    <href>https://jax-ws.dev.java.net/</href>
+    <src>http://jaxb.java.net/javaxml-duke.gif</src>
+    <href>http://jax-ws.java.net/</href>
   </bannerLeft>
   <skin>
     <groupId>com.sun.enterprise.glassfish</groupId>
@@ -29,8 +29,8 @@
 
   <body>
     <links>
-      <item name="JAX-WS" href="http://jax-ws.dev.java.net/" />
-      <item name="Glassfish" href="http://glassfish.dev.java.net/"/>
+      <item name="JAX-WS" href="http://jax-ws.java.net/" />
+      <item name="Glassfish" href="http://glassfish.java.net/"/>
     </links>
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
