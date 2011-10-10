@@ -83,6 +83,22 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
     private File sourceDestDir;
     //default-value="${project.build.directory}/jaxws/java"
 
+    /**
+     * Specify the Service name to use in the generated WSDL.
+     * Used in conjunction with the -wsdl option.
+     *
+     * @parameter
+     */
+    private String servicename;
+
+    /**
+     * Specify the Port name to use in the generated WSDL.
+     * Used in conjunction with the -wsdl option.
+     *
+     * @parameter
+     */
+    private String portname;
+
     public void execute()
         throws MojoExecutionException, MojoFailureException {
         init();
@@ -158,6 +174,16 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
                 args.add("-wsdl");
             }
 
+            if (servicename != null) {
+                args.add("-servicename");
+                args.add(servicename);
+            }
+
+            if (portname != null) {
+                args.add("-portname");
+                args.add(portname);
+            }
+            
             args.add("-r");
             args.add(this.resourceDestDir.getAbsolutePath());
             this.resourceDestDir.mkdirs();
