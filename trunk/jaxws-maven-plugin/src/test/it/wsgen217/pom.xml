@@ -26,8 +26,8 @@
         <version>1.3-SNAPSHOT</version>
     </parent>
     
-    <groupId>org.codehaus.mojo.jaxws.test</groupId>
-    <artifactId>wsgentest</artifactId>
+    <groupId>org.jvnet.jax-ws-commons</groupId>
+    <artifactId>mojo.it.wsgentest</artifactId>
     <version>2.1.7</version>
     <packaging>jar</packaging>
 
@@ -57,7 +57,7 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.jvnet.jax-ws-commons</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
                 <version>1.13-SNAPSHOT</version>
                 <executions>
