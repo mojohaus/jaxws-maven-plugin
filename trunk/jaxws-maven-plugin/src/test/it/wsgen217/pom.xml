@@ -97,6 +97,8 @@
                         <configuration>
                             <sei>org.codehaus.mojo.jaxws.test.TService</sei>
                             <genWsdl>true</genWsdl>
+                            <portname>{http://example.org/TestService}ExPort</portname>
+                            <servicename>{http://example.org/TestService}ExService</servicename>
                         </configuration>
                     </execution>
                 </executions>
