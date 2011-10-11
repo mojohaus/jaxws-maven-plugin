@@ -7,8 +7,8 @@
 
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.codehaus.mojo.jaxws.it</groupId>
-    <artifactId>helloworldws</artifactId>
+    <groupId>org.jvnet.jax-ws-commons</groupId>
+    <artifactId>mojo.it.helloworldws</artifactId>
     <version>1.0-SNAPSHOT</version>
     
     <packaging>war</packaging>
@@ -48,7 +48,7 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
+                <groupId>org.jvnet.jax-ws-commons</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
                 <version>1.13-SNAPSHOT</version>
                 <executions>
