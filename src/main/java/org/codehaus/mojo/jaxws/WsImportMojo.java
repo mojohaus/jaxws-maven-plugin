@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.maven.settings.Proxy;
+import org.apache.maven.settings.Settings;
 
 /**
  * 
@@ -180,6 +182,11 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      */
     private File staleFile;
 
+    /**
+     * @parameter default-value="${settings}"
+     * @readonly
+     */
+    private Settings settings;
 
 
     public void execute()
@@ -318,8 +325,15 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
 
         if ( httpproxy != null )
         {
-            args.add( "-httpproxy" );
-            args.add( httpproxy );
+            args.add( "-httpproxy:" + httpproxy);
+        }
+        else if (settings != null)
+        {
+            String proxyString = getActiveHttpProxy(settings);
+            if (proxyString != null)
+            {
+                args.add( "-httpproxy:" + proxyString);
+            }
         }
 
         if ( packageName != null )
@@ -561,4 +575,32 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         }
     }
 
+    /**
+     * 
+     * @return proxy string as [user[:password]@]proxyHost[:proxyPort] or null
+     */
+    static String getActiveHttpProxy(Settings s) {
+        String retVal = null;
+        for (Proxy p : (List<Proxy>) s.getProxies()) {
+            if (p.isActive() && "http".equals(p.getProtocol())) {
+                StringBuilder sb = new StringBuilder();
+                String user = p.getUsername();
+                String pwd = p.getPassword();
+                if (user != null) {
+                    sb.append(user);
+                    if (pwd != null) {
+                        sb.append(":");
+                        sb.append(pwd);
+                    }
+                    sb.append("@");
+                }
+                sb.append(p.getHost());
+                sb.append(":");
+                sb.append(p.getPort());
+                retVal = sb.toString().trim();
+                break;
+            }
+        }
+        return retVal;
+    }
 }
