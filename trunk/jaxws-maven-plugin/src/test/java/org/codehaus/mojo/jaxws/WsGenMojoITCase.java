@@ -53,7 +53,7 @@ public class WsGenMojoITCase {
         assertFileNotPresent("target/jaxws/wsgen/wsdl/AddService.wsdl");
 
         //check TService
-        assertFilePresent("target/jaxws/wsgen/wsdl/TServiceService.wsdl");
+        assertFilePresent("target/jaxws/wsgen/wsdl/TService.wsdl");
         assertFilePresent("target/jaxws/wsgen/wsdl/ExService.wsdl");
         assertFilePresent("target/test-classes/org/codehaus/mojo/jaxws/test/TService.class");
         assertFilePresent("target/test-classes/org/codehaus/mojo/jaxws/test/jaxws/HelloResponse.class");
