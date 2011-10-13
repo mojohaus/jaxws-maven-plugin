@@ -1,5 +1,6 @@
 /*
  * Copyright 2006 Guillaume Nodet.
+ * Copyright 2007-2011 JAX-WS RI team.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.codehaus.mojo.jaxws;
 
 import com.sun.tools.ws.Invoker;
@@ -61,7 +61,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
 
     /**
      * Directory containing wsdl files.
-     * 
+     *
      * @parameter default-value="${basedir}/src/wsdl"
      */
     private File wsdlDirectory;
@@ -114,13 +114,6 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     private String target;
     
     /**
-     * Specify where to place generated source files, keep is turned on with this option. 
-     * 
-     * @parameter default-value="${project.build.directory}/jaxws/wsimport/java"
-     */
-    protected File sourceDestDir;
-
-    /**
      * Maps headers not bound to the request or response messages to Java method params.
      *
      * @parameter default-value="false"
@@ -135,12 +128,12 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     private boolean xdebug;
 
     /**
-     * Turn of compilation after code generation
+     * Turn off compilation after code generation and let generated sources be
+     * compiled by maven during compilation phase; keep is turned on with this option.
      *
-     * Always true with maven plugin and the generated classes get compiled during maven compilation phase.
-     *
+     * @parameter default-value="true"
      */
-    private  final boolean xnocompile = true;
+    private boolean xnocompile;
     
     /**
      * Binding W3C EndpointReferenceType to Java. By default Wsimport follows spec and does not bind
@@ -188,6 +181,9 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      */
     private Settings settings;
 
+    protected abstract File getSourceDestDir();
+
+    protected abstract void addSourceRoot(String sourceDir);
 
     public void execute()
         throws MojoExecutionException
@@ -200,21 +196,24 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         try
         {
 
-            sourceDestDir.mkdirs();
-            getDestDir().mkdirs();
             File[] wsdls = getWSDLFiles();
             if(wsdls.length == 0 && (wsdlUrls == null || wsdlUrls.size() ==0)){
                 getLog().info( "No WSDLs are found to process, Specify atleast one of the following parameters: wsdlFiles, wsdlDirectory or wsdlUrls.");
                 return;
             }
 
+            getSourceDestDir().mkdirs();
+            getDestDir().mkdirs();
+            
             this.processWsdlViaUrls();
 
             this.processLocalWsdlFiles(wsdls);
 
             // even thou the generated source already compiled, we still want to 
             //  add the source path so that IDE can pick it up
-            project.addCompileSourceRoot( sourceDestDir.getAbsolutePath() );
+            if (xnocompile) {
+                addSourceRoot(getSourceDestDir().getAbsolutePath());
+            }
 
         }
         catch ( MojoExecutionException e )
@@ -298,7 +297,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             throw new MojoExecutionException( "Error executing: wsimport " + args );
         }
       } catch (Exception e) {
-        throw new MojoExecutionException( "Error executing: wsimport " + args );
+        throw new MojoExecutionException( "Error executing: wsimport " + args, e);
       }
     }
 
@@ -313,7 +312,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         ArrayList<String> args = new ArrayList<String>();
 
         args.add( "-s" );
-        args.add( sourceDestDir.getAbsolutePath() );
+        args.add( getSourceDestDir().getAbsolutePath() );
 
         args.add( "-d" );
         args.add( getDestDir().getAbsolutePath() );
