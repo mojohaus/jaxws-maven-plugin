@@ -56,6 +56,16 @@ public class WsImportMojoITCase {
         assertFileNotPresent("target/classes/wsimport/test/AddService.class");
     }
 
+    @Test
+    public void jaxwscommons49() throws IOException {
+        project = new File(PROJECTS_DIR, "jaxwscommons-49");
+
+        assertFilePresent("target/jaxws/stale/.staleFlag");
+        assertFilePresent("foo/AddService.wsdl");
+        assertFilePresent("src/main/java/org/jvnet/jax_ws_commons/wsimport/test/AddService_Service.java");
+        assertFilePresent("target/classes/org/jvnet/jax_ws_commons/wsimport/test/AddService.class");
+    }
+
     private void assertFilePresent(String path) {
         File f = new File(project, path);
         Assert.assertTrue(f.exists(), "Not found " + f.getAbsolutePath());
