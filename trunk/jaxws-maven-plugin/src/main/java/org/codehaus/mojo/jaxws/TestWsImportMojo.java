@@ -40,7 +40,7 @@ public class TestWsImportMojo extends WsImportMojo {
     /**
      * Specify where to place generated source files, keep is turned on with this option.
      *
-     * @parameter default-value="${project.build.directory}/jaxws/wsimport/test"
+     * @parameter default-value="${project.build.directory}/generated-sources/test-wsimport"
      */
     private File sourceDestDir;
 
