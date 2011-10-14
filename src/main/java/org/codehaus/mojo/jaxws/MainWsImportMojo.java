@@ -39,7 +39,7 @@ public class MainWsImportMojo extends WsImportMojo {
     /**
      * Specify where to place generated source files, keep is turned on with this option.
      *
-     * @parameter default-value="${project.build.directory}/jaxws/wsimport/java"
+     * @parameter default-value="${project.build.directory}/generated-sources/wsimport
      */
     private File sourceDestDir;
 

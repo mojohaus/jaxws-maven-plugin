@@ -40,6 +40,7 @@ public class WsImportMojoITCase {
         assertFilePresent("target/jaxws/stale/.staleFlag");
         assertFilePresent("target/classes/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.class");
         assertFileNotPresent("target/test-classes/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.class");
+        assertFilePresent("target/generated-sources/wsimport/org/jvnet/jax_ws_commons/wsimport/test/HelloWs_Service.java");
         //this needs to be fixed as there should be a way to not generate sources
         //assertFileNotPresent("target/jaxws/wsimport/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.java");
 
@@ -52,7 +53,7 @@ public class WsImportMojoITCase {
         assertFilePresent("target/jaxws/stale/.staleFlag-test");
         assertFilePresent("target/test-classes/wsimport/test/AddService.class");
         assertFilePresent("target/test-classes/wsimport/test/schema/SumType.class");
-        assertFilePresent("target/jaxws/wsimport/test/wsimport/test/SumUtil.java");
+        assertFilePresent("target/generated-sources/test-wsimport/wsimport/test/SumUtil.java");
         assertFileNotPresent("target/classes/wsimport/test/AddService.class");
     }
 
