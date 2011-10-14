@@ -469,9 +469,13 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             files = new File[ wsdlFiles.size() ];
             for ( int i = 0 ; i < wsdlFiles.size(); ++i ) 
             {
-                String schemaName = (String) wsdlFiles.get( i );
-                getLog().debug( "The wsdl File is " +  schemaName);
-                files[i] = new File( wsdlDirectory, schemaName ) ;
+                String wsdlFileName = (String) wsdlFiles.get( i );
+                File wsdl = new File(wsdlFileName);
+                if (!wsdl.isAbsolute()) {
+                    wsdl = new File(wsdlDirectory, wsdlFileName);
+                }
+                getLog().debug( "The wsdl File is " +  wsdlFileName);
+                files[i] = wsdl;
             }
         }
         else
