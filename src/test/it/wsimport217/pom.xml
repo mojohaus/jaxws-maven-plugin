@@ -32,7 +32,7 @@
     <name>Test project for wsimport</name>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.sourceEncoding>UTF-16</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
@@ -86,7 +86,6 @@
                             <wsdlUrls>
                                 <wsdlUrl>http://java.net/projects/jax-ws/sources/sources/content/trunk/jaxws-unit/testcases/fromwsdl/additional_header/doclit/server/sample.wsdl</wsdlUrl>
                             </wsdlUrls>
-                            <staleFile>${project.build.directory}/jaxws/stale/.staleFlag2</staleFile>
                             <packageName>org.jvnet.jaxwsri.sample</packageName>
                             <wsdlLocation>http://example.com:43210/my?wsdl</wsdlLocation>
                             <xadditionalHeaders>true</xadditionalHeaders>
@@ -144,7 +143,6 @@
                             <wsdlDirectory>${basedir}/src/test-wsdl</wsdlDirectory>
                             <extension>true</extension>
                             <verbose>true</verbose>
-                            <staleFile>${project.build.directory}/jaxws/stale/.staleFlag-test</staleFile>
                             <bindingDirectory>${basedir}/src/test-wsdl/xjc</bindingDirectory>
                         </configuration>
                     </execution>

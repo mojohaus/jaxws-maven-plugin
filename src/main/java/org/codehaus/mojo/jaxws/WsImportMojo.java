@@ -16,15 +16,17 @@
  */
 package org.codehaus.mojo.jaxws;
 
-import com.sun.tools.ws.Invoker;
-import org.apache.maven.plugin.MojoExecutionException;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.io.OutputStream;
+import com.sun.tools.ws.Invoker;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.List;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Settings;
 
@@ -37,6 +39,7 @@ import org.apache.maven.settings.Settings;
 abstract class WsImportMojo extends AbstractJaxwsMojo
 {
 
+    private static final String STALE_FILE_PREFIX = ".";
     /**
      * The package in which the source files will be generated.
      * 
@@ -170,8 +173,9 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     private List<String> args;
     
     /**
-     * The location of the flag file used to determine if the output is stale.
-     * @parameter default-value="${project.build.directory}/jaxws/stale/.staleFlag"
+     * The folder containing flag files used to determine if the output is stale.
+     *
+     * @parameter default-value="${project.build.directory}/jaxws/stale"
      */
     private File staleFile;
 
@@ -241,20 +245,17 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     private void processLocalWsdlFiles(File[] wsdls)
         throws MojoExecutionException,  IOException
     {
-
-        if ( isOutputStale() )
-        {
-            for (File wsdl : wsdls) {
+        for (File wsdl : wsdls) {
+            //XXX wouldn't wsdl.getPath() be enough here?
+            if (isOutputStale(wsdl.getAbsolutePath())) {
                 getLog().info("Processing: " + wsdl.getAbsolutePath());
                 ArrayList<String> args = getWsImportArgs();
                 args.add(wsdl.getAbsolutePath());
                 getLog().info("jaxws:wsimport args: " + args);
                 wsImport(args);
-
+                touchStaleFile(wsdl.getAbsolutePath());
             }
-            touchStaleFile();
         }
-
     }
 
     /**
@@ -262,19 +263,18 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * @throws MojoExecutionException
      */
     private void processWsdlViaUrls()
-        throws MojoExecutionException
+        throws MojoExecutionException, IOException
     {
-        //TODO can we do some stale check against a URL?
-        
-        for ( int i = 0; wsdlUrls != null && i < wsdlUrls.size(); i++ )
-        {
-            String wsdlUrl = wsdlUrls.get( i ).toString();
-
-            getLog().info( "Processing: " + wsdlUrl );
-            ArrayList<String> args = getWsImportArgs();
-            args.add( wsdlUrl );
-            getLog().info( "jaxws:wsimport args: " + args );      
-            wsImport( args );
+        for (int i = 0; wsdlUrls != null && i < wsdlUrls.size(); i++) {
+            String wsdlUrl = wsdlUrls.get(i).toString();
+            if (isOutputStale(wsdlUrl)) {
+                getLog().info("Processing: " + wsdlUrl);
+                ArrayList<String> args = getWsImportArgs();
+                args.add(wsdlUrl);
+                getLog().info("jaxws:wsimport args: " + args);
+                wsImport(args);
+                touchStaleFile(wsdlUrl);
+            }
         }
     }
 
@@ -532,25 +532,38 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     }
 
     /**
-     * Returns true of any one of the files in the WSDL/XJB array are more new than the <code>staleFlag</code> file.
+     * Returns true if given WSDL resource or any binding file is newer
+     * than the <code>staleFlag</code> file.
      * 
      * @return True if wsdl files have been modified since the last build.
      */
-    private boolean isOutputStale()
+    private boolean isOutputStale(String resource)
     {
-        File[] sourceWsdls = getWSDLFiles();
         File[] sourceBindings = getBindingFiles();
-        boolean stale = !staleFile.exists();
+        File stFile = new File(staleFile, STALE_FILE_PREFIX + getHash(resource));
+        boolean stale = !stFile.exists();
         if ( !stale )
         {
-            getLog().debug( "Stale flag file exists, comparing to wsdls and bindings." );
-            long staleMod = staleFile.lastModified();
+            getLog().debug("Stale flag file exists, comparing to wsdls and bindings.");
+            long staleMod = stFile.lastModified();
 
-            for (File sourceWsdl : sourceWsdls) {
-                if (sourceWsdl.lastModified() > staleMod) {
-                    getLog().debug(sourceWsdl.getName() + " is newer than the stale flag file.");
+            try {
+                //resource can be URL
+                URL sourceWsdl = new URL(resource);
+                if (sourceWsdl.openConnection().getLastModified() > staleMod) {
+                    getLog().debug(resource + " is newer than the stale flag file.");
                     stale = true;
                 }
+            } catch (MalformedURLException mue) {
+                //or a file
+                File sourceWsdl = new File(resource);
+                if (sourceWsdl.lastModified() > staleMod) {
+                    getLog().debug(resource + " is newer than the stale flag file.");
+                    stale = true;
+                }
+            } catch (IOException ioe) {
+                //possible error while openning connection
+                getLog().error(ioe);
             }
 
             for (File sourceBinding : sourceBindings) {
@@ -563,19 +576,38 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         return stale;
     }
 
-    private void touchStaleFile()
+    private void touchStaleFile(String resource)
         throws IOException
     {
-        if ( !staleFile.exists() )
+        File stFile = new File(staleFile, STALE_FILE_PREFIX + getHash(resource));
+        if ( !stFile.exists() )
         {
-            staleFile.getParentFile().mkdirs();
-            staleFile.createNewFile();
-            getLog().debug( "Stale flag file created." );
+            stFile.getParentFile().mkdirs();
+            stFile.createNewFile();
+            getLog().debug( "Stale flag file created.[" + stFile.getAbsolutePath() + "]");
         }
         else
         {
-            staleFile.setLastModified( System.currentTimeMillis() );
+            stFile.setLastModified( System.currentTimeMillis() );
         }
+    }
+
+    private String getHash(String s) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA");
+            Formatter formatter = new Formatter();
+            for (byte b : md.digest(s.getBytes("UTF-8"))) {
+                formatter.format("%02x", b);
+            }
+            return formatter.toString();
+        } catch (UnsupportedEncodingException ex) {
+            getLog().debug(ex.getMessage(), ex);
+        } catch (NoSuchAlgorithmException ex) {
+            getLog().debug(ex.getMessage(), ex);
+        }
+        //fallback to some default
+        getLog().warn("Could not compute hash for " + s + ". Using fallback method.");
+        return s.substring(s.lastIndexOf('/')).replaceAll(".", "-");
     }
 
     /**
