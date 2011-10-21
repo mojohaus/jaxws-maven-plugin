@@ -37,7 +37,6 @@ public class WsImportMojoITCase {
         project = new File(PROJECTS_DIR, "wsimport217");
 
         //check HelloWs
-        assertFilePresent("target/jaxws/stale/.staleFlag");
         assertFilePresent("target/classes/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.class");
         assertFileNotPresent("target/test-classes/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.class");
         assertFilePresent("target/generated-sources/wsimport/org/jvnet/jax_ws_commons/wsimport/test/HelloWs_Service.java");
@@ -45,12 +44,10 @@ public class WsImportMojoITCase {
         //assertFileNotPresent("target/jaxws/wsimport/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.java");
 
         //check sample.wsdl (url)
-        assertFilePresent("target/jaxws/stale/.staleFlag2");
         assertFilePresent("target/custom/classes/org/jvnet/jaxwsri/sample/GreetersPortT.class");
         assertFilePresent("target/custom/sources/org/jvnet/jaxwsri/sample/MyGreeter.java");
 
         //check AddService
-        assertFilePresent("target/jaxws/stale/.staleFlag-test");
         assertFilePresent("target/test-classes/wsimport/test/AddService.class");
         assertFilePresent("target/test-classes/wsimport/test/schema/SumType.class");
         assertFilePresent("target/generated-sources/test-wsimport/wsimport/test/SumUtil.java");
@@ -61,7 +58,6 @@ public class WsImportMojoITCase {
     public void jaxwscommons49() throws IOException {
         project = new File(PROJECTS_DIR, "jaxwscommons-49");
 
-        assertFilePresent("target/jaxws/stale/.staleFlag");
         assertFilePresent("foo/AddService.wsdl");
         assertFilePresent("src/main/java/org/jvnet/jax_ws_commons/wsimport/test/AddService_Service.java");
         assertFilePresent("target/classes/org/jvnet/jax_ws_commons/wsimport/test/AddService.class");
