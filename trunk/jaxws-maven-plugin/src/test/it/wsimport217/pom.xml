@@ -32,7 +32,7 @@
     <name>Test project for wsimport</name>
 
     <properties>
-        <project.build.sourceEncoding>UTF-16</project.build.sourceEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
@@ -52,6 +52,12 @@
             <artifactId>stax-ex</artifactId>
             <type>jar</type>
             <version>1.2</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>stax-api</artifactId>
+                    <groupId>javax.xml.stream</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -70,14 +76,27 @@
                 <groupId>org.jvnet.jax-ws-commons</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
                 <version>1.13-SNAPSHOT</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jvnet.jaxb2_commons</groupId>
+                        <artifactId>jaxb2-basics</artifactId>
+                        <version>0.6.3</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <id>id1</id>
                         <goals>
                             <goal>wsimport</goal>
                         </goals>
+                        <configuration>
+                            <xjcArgs>
+                                <xjcArg>-Xequals</xjcArg>
+                                <xjcArg>-XtoString</xjcArg>
+                            </xjcArgs>
+                        </configuration>
                     </execution>
-                    <execution>
+ <!--                    <execution>
                         <id>id2</id>
                         <goals>
                             <goal>wsimport</goal>
@@ -90,7 +109,7 @@
                             <wsdlLocation>http://example.com:43210/my?wsdl</wsdlLocation>
                             <xadditionalHeaders>true</xadditionalHeaders>
                             <destDir>${project.build.directory}/custom/classes</destDir>
-                            <sourceDestDir>${project.build.directory}/custom/sources</sourceDestDir>
+                            <sourceDestDir>src/generated-sources/xxx</sourceDestDir>
                             <target>2.1</target>
                             <xnocompile>false</xnocompile>
                             <xdebug>true</xdebug>
@@ -101,7 +120,7 @@
                             <wsdlDirectory>${project.build.directory}</wsdlDirectory>
                         </configuration>
                     </execution>
-<!--                    <execution>
+                   <execution>
                         <id>id2</id>
                         <goals>
                             <goal>wsimport</goal>
@@ -133,7 +152,7 @@
                             <xjcArgs></xjcArgs>
                             <xnoAddressingDataBinding></xnoAddressingDataBinding>
                         </configuration>
-                    </execution>-->
+                    </execution>
                     <execution>
                         <id>id3-test</id>
                         <goals>
@@ -145,7 +164,7 @@
                             <verbose>true</verbose>
                             <bindingDirectory>${basedir}/src/test-wsdl/xjc</bindingDirectory>
                         </configuration>
-                    </execution>
+                    </execution>-->
                 </executions>
             </plugin>
         </plugins>
