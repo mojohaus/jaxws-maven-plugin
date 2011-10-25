@@ -15,7 +15,9 @@
  */
 package org.codehaus.mojo.jaxws;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -63,6 +65,15 @@ public class WsImportMojoITCase {
         assertFilePresent("target/classes/org/jvnet/jax_ws_commons/wsimport/test/AddService.class");
     }
 
+    @Test
+    public void jaxwscommons62() throws IOException {
+        project = new File(PROJECTS_DIR, "jaxwscommons-62");
+
+        assertFileContains("target/generated-sources/wsimport/test/jaxwscommons_62/A.java", "http://example.com/mywebservices/a.wsdl");
+        assertFileContains("target/generated-sources/wsimport/test/jaxwscommons_62/B.java", "http://example.com/mywebservices/b/b.wsdl");
+        assertFileContains("target/generated-sources/wsimport/test/jaxwscommons_62/C.java", "jaxwscommons-62/src/mywsdls/c.wsdl");
+    }
+
     private void assertFilePresent(String path) {
         File f = new File(project, path);
         Assert.assertTrue(f.exists(), "Not found " + f.getAbsolutePath());
@@ -71,5 +82,17 @@ public class WsImportMojoITCase {
     private void assertFileNotPresent(String path) {
         File f = new File(project, path);
         Assert.assertFalse(f.exists(), "Found " + f.getAbsolutePath());
+    }
+
+    private void assertFileContains(String path, String s) throws IOException {
+        File f = new File(project, path);
+        BufferedReader r = new BufferedReader(new FileReader(f));
+        String line;
+        while ((line = r.readLine()) != null) {
+            if (line.contains(s)) {
+                return;
+            }
+        }
+        Assert.fail("'" + s + "' is missing in:" + f.getAbsolutePath());
     }
 }

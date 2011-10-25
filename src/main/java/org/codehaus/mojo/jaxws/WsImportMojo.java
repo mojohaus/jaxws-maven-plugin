@@ -100,8 +100,35 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     protected List bindingFiles;
 
     /**
-     * @WebService.wsdlLocation and
-     * @WebServiceClient.wsdlLocation value.
+     * &#64;WebService.wsdlLocation and &#64;WebServiceClient.wsdlLocation value.
+     * 
+     * <p>
+     * Can end with asterisk in which case relative path of the wsdl will
+     * be appended to the given <code>wsdlLocation</code>.
+     * </p>
+     *
+     * <p>Example:
+     * <pre>
+     *  ...
+     *  &lt;configuration>
+     *      &lt;wsdlDirectory>src/mywsdls&lt;/wsdlDirectory>
+     *      &lt;wsdlFiles>
+     *          &lt;wsdlFile>a.wsdl&lt;/wsdlFile>
+     *          &lt;wsdlFile>b/b.wsdl&lt;/wsdlFile>
+     *          &lt;wsdlFile>${basedir}/src/mywsdls/c.wsdl&lt;/wsdlFile>
+     *      &lt;/wsdlFiles>
+     *      &lt;wsdlLocation>http://example.com/mywebservices/*&lt;/wsdlLocation>
+     *  &lt;/configuration>
+     *  ...
+     * </pre>
+     * wsdlLocation for <code>a.wsdl</code> will be http://example.com/mywebservices/a.wsdl</br>
+     * wsdlLocation for <code>b/b.wsdl</code> will be http://example.com/mywebservices/b/b.wsdl
+     * wsdlLocation for <code>${basedir}/src/mywsdls/c.wsdl</code> will be file://absolute/path/to/c.wsdl
+     * </p>
+     *
+     * <p>
+     * Note: External binding files cannot be used if asterisk notation is in place.
+     * </p>
      * 
      * @parameter
      */
@@ -246,10 +273,15 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         throws MojoExecutionException,  IOException
     {
         for (File wsdl : wsdls) {
+            String relativePath = null;
+            if (!wsdl.isAbsolute()) {
+                relativePath = wsdl.getPath().replace(File.separatorChar, '/');
+                wsdl = new File(wsdlDirectory, wsdl.getPath());
+            }
             //XXX wouldn't wsdl.getPath() be enough here?
             if (isOutputStale(wsdl.getAbsolutePath())) {
                 getLog().info("Processing: " + wsdl.getAbsolutePath());
-                ArrayList<String> args = getWsImportArgs();
+                ArrayList<String> args = getWsImportArgs(relativePath);
                 args.add(wsdl.getAbsolutePath());
                 getLog().info("jaxws:wsimport args: " + args);
                 wsImport(args);
@@ -269,7 +301,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             String wsdlUrl = wsdlUrls.get(i).toString();
             if (isOutputStale(wsdlUrl)) {
                 getLog().info("Processing: " + wsdlUrl);
-                ArrayList<String> args = getWsImportArgs();
+                ArrayList<String> args = getWsImportArgs(null);
                 args.add(wsdlUrl);
                 getLog().info("jaxws:wsimport args: " + args);
                 wsImport(args);
@@ -306,7 +338,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * @return wsimport's command arguments
      * @throws MojoExecutionException
      */
-    private ArrayList<String> getWsImportArgs()
+    private ArrayList<String> getWsImportArgs(String relativePath)
         throws MojoExecutionException
     {
         ArrayList<String> args = new ArrayList<String>();
@@ -349,8 +381,13 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
 
         if ( wsdlLocation != null )
         {
-            args.add( "-wsdllocation" );
-            args.add( wsdlLocation );
+            if (relativePath != null) {
+                args.add("-wsdllocation");
+                args.add(wsdlLocation.replaceAll("\\*", relativePath));
+            } else if (!wsdlLocation.contains("*")) {
+                args.add( "-wsdllocation" );
+                args.add(wsdlLocation);
+            }
         }
 
         if ( target != null )
@@ -409,7 +446,14 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         
         
         // Bindings
-        for (File binding : getBindingFiles()) {
+        File[] bindings = getBindingFiles();
+
+        if (bindings.length > 0 && wsdlLocation != null && wsdlLocation.contains("*")) {
+            throw new MojoExecutionException("External binding file(s) can not be bound to more WSDL files (" + wsdlLocation + ")\n"
+                    + "Please use either inline binding(s) or multiple execution tags.");
+        }
+
+        for (File binding : bindings) {
             args.add("-b");
             args.add(binding.getAbsolutePath());
         }
@@ -471,9 +515,6 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             {
                 String wsdlFileName = (String) wsdlFiles.get( i );
                 File wsdl = new File(wsdlFileName);
-                if (!wsdl.isAbsolute()) {
-                    wsdl = new File(wsdlDirectory, wsdlFileName);
-                }
                 getLog().debug( "The wsdl File is " +  wsdlFileName);
                 files[i] = wsdl;
             }
