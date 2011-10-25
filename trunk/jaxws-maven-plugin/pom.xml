@@ -161,6 +161,16 @@
         </plugins>
     </build>
 
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>2.9</version>
+            </plugin>
+        </plugins>
+    </reporting>
+
     <profiles>
         <profile>
         <!-- This is only for non MAC OS X builds, hence the property below -->
@@ -372,6 +382,7 @@
                                     <systemPropertyVariables>
                                         <it.projects.dir>${project.build.directory}/it</it.projects.dir>
                                     </systemPropertyVariables>
+                                    <encoding>${project.build.sourceEncoding}</encoding>
                                 </configuration>
                             </execution>
                         </executions>
