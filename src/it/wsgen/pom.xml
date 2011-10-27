@@ -14,6 +14,11 @@
     <packaging>war</packaging>
     <name>helloworld</name>
        
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jaxws.plugin.version>2.1</jaxws.plugin.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.sun.xml.ws</groupId>
@@ -29,15 +34,16 @@
         <dependency>
             <groupId>org.jvnet.staxex</groupId>
             <artifactId>stax-ex</artifactId>
-            <type>jar</type>
             <version>1.2</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>stax-api</artifactId>
+                    <groupId>javax.xml.stream</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-  
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
@@ -62,7 +68,7 @@
             <plugin>
                 <groupId>org.jvnet.jax-ws-commons</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
-                <version>1.13-SNAPSHOT</version>
+                <version>${jaxws.plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
