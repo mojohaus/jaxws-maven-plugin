@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.jvnet.jax-ws-commons</groupId>
         <artifactId>pom</artifactId>
-        <version>1.3-SNAPSHOT</version>
+        <version>1.3</version>
     </parent>
 
     <groupId>org.jvnet.jax-ws-commons</groupId>
@@ -33,6 +33,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jaxws.plugin.version>2.1</jaxws.plugin.version>
     </properties>
 
     <dependencies>
@@ -74,7 +75,7 @@
             <plugin>
                 <groupId>org.jvnet.jax-ws-commons</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
-                <version>1.13-SNAPSHOT</version>
+                <version>${jaxws.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>generate-clients</id>
