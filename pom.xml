@@ -32,7 +32,7 @@
     <packaging>maven-plugin</packaging>
     <name>Maven JAXWS 2.x Plugin</name>
     <description>Maven plugin for JAX-WS RI</description>
-    <version>2.1</version>
+    <version>2.2-SNAPSHOT</version>
     <url>http://jax-ws-commons.java.net/jaxws-maven-plugin/</url>
 
     <developers>
@@ -146,9 +146,9 @@
     </dependencies>
 
     <scm>
-        <connection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/tags/jaxws-maven-plugin-2.1</connection>
-        <developerConnection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/tags/jaxws-maven-plugin-2.1</developerConnection>
-        <url>http://java.net/projects/jax-ws-commons/sources/svn/show/tags/jaxws-maven-plugin-2.1</url>
+        <connection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk/jaxws-maven-plugin</connection>
+        <developerConnection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk/jaxws-maven-plugin</developerConnection>
+        <url>http://java.net/projects/jax-ws-commons/sources/svn/show/trunk/jaxws-maven-plugin</url>
     </scm>
 
     <distributionManagement>
