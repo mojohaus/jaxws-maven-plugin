@@ -1,6 +1,5 @@
 /*
  * Copyright 2006 Guillaume Nodet.
- * Copyright 2007-2011 JAX-WS RI team.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +14,6 @@
  * limitations under the License.
  */
 package org.jvnet.jax_ws_commons.jaxws;
-
 
 import com.sun.tools.ws.Invoker;
 import java.io.*;

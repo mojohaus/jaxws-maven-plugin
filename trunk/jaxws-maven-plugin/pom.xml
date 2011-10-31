@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--
 /*
- * Copyright 2011 Lukas Jungmann.
+ * Copyright 2006 Guillaume Nodet.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,6 +72,7 @@
             <organizationUrl>http://www.logicblaze.com</organizationUrl>
             <roles>
                 <role>Previous maintainer</role>
+                <role>Original author</role>
             </roles>
             <timezone>+1</timezone>
         </developer>
@@ -81,6 +82,7 @@
             <email>dtran@gmail.com</email>
             <roles>
                 <role>Previous maintainer</role>
+                <role>Original author</role>
             </roles>
         </developer>
     </developers>
