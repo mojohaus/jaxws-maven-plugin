@@ -32,7 +32,7 @@
     <packaging>maven-plugin</packaging>
     <name>Maven JAXWS 2.x Plugin</name>
     <description>Maven plugin for JAX-WS RI</description>
-    <version>2.1-SNAPSHOT</version>
+    <version>2.1</version>
     <url>http://jax-ws-commons.java.net/jaxws-maven-plugin/</url>
 
     <developers>
@@ -146,9 +146,9 @@
     </dependencies>
 
     <scm>
-        <connection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk/jaxws-maven-plugin</connection>
-        <developerConnection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk/jaxws-maven-plugin</developerConnection>
-        <url>http://java.net/projects/jax-ws-commons/sources/svn/show/trunk/jaxws-maven-plugin</url>
+        <connection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/tags/jaxws-maven-plugin-2.1</connection>
+        <developerConnection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/tags/jaxws-maven-plugin-2.1</developerConnection>
+        <url>http://java.net/projects/jax-ws-commons/sources/svn/show/tags/jaxws-maven-plugin-2.1</url>
     </scm>
 
     <distributionManagement>
@@ -306,8 +306,8 @@
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" toFile="${project.build.directory}/${project.build.finalName}.jar.bkp" verbose="true"/>
-                                        <copy file="${project.build.directory}/emma/${project.build.finalName}.jar" toDir="${project.build.directory}" overwrite="true" verbose="true"/>
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" toFile="${project.build.directory}/${project.build.finalName}.jar.bkp" verbose="true" />
+                                        <copy file="${project.build.directory}/emma/${project.build.finalName}.jar" toDir="${project.build.directory}" overwrite="true" verbose="true" />
                                     </target>
                                 </configuration>
                             </execution>
@@ -319,8 +319,8 @@
                                 </goals>
                                 <configuration>
                                     <target>
-                                        <copy file="${project.build.directory}/${project.build.finalName}.jar.bkp" toFile="${project.build.directory}/${project.build.finalName}.jar" overwrite="true" verbose="true"/>
-                                        <delete file="${project.build.directory}/${project.build.finalName}.jar.bkp" verbose="true"/>
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar.bkp" toFile="${project.build.directory}/${project.build.finalName}.jar" overwrite="true" verbose="true" />
+                                        <delete file="${project.build.directory}/${project.build.finalName}.jar.bkp" verbose="true" />
                                     </target>
                                 </configuration>
                             </execution>
