@@ -96,16 +96,16 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
             for ( int i = 0; i < classpathFiles.size(); ++i )
             {
                 getLog().debug( (String) classpathFiles.get( i ) );
-                urls[i] = new File( (String) classpathFiles.get( i ) ).toURL();
+                urls[i] = new File( (String) classpathFiles.get( i ) ).toURI().toURL();
                 classPath.append( (String) classpathFiles.get( i ) );
                 classPath.append( File.pathSeparatorChar );
             }
 
             
-            urls[classpathFiles.size()] = new File( project.getBuild().getOutputDirectory() ).toURL();
+            urls[classpathFiles.size()] = new File( project.getBuild().getOutputDirectory() ).toURI().toURL();
 
             Artifact jaxwsToolsArtifact = (Artifact) pluginArtifactMap.get( "com.sun.xml.ws:jaxws-tools" );
-            urls[classpathFiles.size() + 1] = jaxwsToolsArtifact.getFile().toURL();
+            urls[classpathFiles.size() + 1] = jaxwsToolsArtifact.getFile().toURI().toURL();
             
             File toolsJar = new File( System.getProperty( "java.home"), "../lib/tools.jar" );
             if ( ! toolsJar.exists() ) 
@@ -113,7 +113,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
             	//
             	toolsJar = new File( System.getProperty( "java.home"), "lib/tools.jar" );
             }
-            urls[classpathFiles.size() + 2] = toolsJar.toURL();
+            urls[classpathFiles.size() + 2] = toolsJar.toURI().toURL();
             
             URLClassLoader cl = new URLClassLoader( urls, parent );
 
