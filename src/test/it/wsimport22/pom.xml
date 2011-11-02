@@ -25,15 +25,16 @@
     </parent>
 
     <groupId>org.jvnet.jax-ws-commons</groupId>
-    <artifactId>mojo.it.wsimporttest217</artifactId>
+    <artifactId>mojo.it.wsimporttest22</artifactId>
     <version>2.2.5</version>
     <packaging>jar</packaging>
 
-    <name>Test project for wsimport</name>
+    <name>Test project for wsimport (2.2.x)</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jaxws.plugin.version>2.2</jaxws.plugin.version>
+        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
     </properties>
 
     <dependencies>
@@ -48,24 +49,51 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${endorsed.dir}</outputDirectory>
+                            <silent>true</silent>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>javax.xml.bind</groupId>
+                                    <artifactId>jaxb-api</artifactId>
+                                    <version>2.2.3</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>javax.xml.ws</groupId>
+                                    <artifactId>jaxws-api</artifactId>
+                                    <version>2.2.5</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <compilerArguments>
+                        <endorseddirs>${endorsed.dir}</endorseddirs>
+                    </compilerArguments>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jvnet.jax-ws-commons</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
                 <version>${jaxws.plugin.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.sun.xml.ws</groupId>
-                        <artifactId>jaxws-tools</artifactId>
-                        <version>2.1.7</version>
-                    </dependency>
-                </dependencies>
                 <executions>
                     <execution>
                         <id>id1</id>
@@ -97,6 +125,39 @@
                             <wsdlDirectory>${project.build.directory}</wsdlDirectory>
                         </configuration>
                     </execution>
+<!--                    <execution>
+                        <id>id2</id>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <sei>org.jvnet.jax_ws_commons.jaxws.test.AddService</sei>
+
+                            <args>
+                                <arg></arg>
+                            </args>
+                            <bindingDirectory></bindingDirectory>
+                            <bindingFiles></bindingFiles>
+                            <catalog></catalog>
+                            <destDir>${project.build.directory}/custom/classes</destDir>
+                            <extension>true</extension>
+                            <httpproxy></httpproxy>
+                            <keep>true</keep>
+                            <packageName></packageName>
+                            <sourceDestDir>${project.build.directory}/custom/sources</sourceDestDir>
+                            <target></target>
+                            <verbose>true</verbose>
+                            <wsdlDirectory></wsdlDirectory>
+                            <wsdlFiles></wsdlFiles>
+                            <wsdlLocation></wsdlLocation>
+                            <wsdlUrls></wsdlUrls>
+                            <xadditionalHeaders></xadditionalHeaders>
+                            <xauthFile></xauthFile>
+                            <xdebug></xdebug>
+                            <xjcArgs></xjcArgs>
+                            <xnoAddressingDataBinding></xnoAddressingDataBinding>
+                        </configuration>
+                    </execution>-->
                     <execution>
                         <id>id3-test</id>
                         <goals>

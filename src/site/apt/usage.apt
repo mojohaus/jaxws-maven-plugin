@@ -16,7 +16,7 @@
 Usage
 
   This plugin runs the JAXWS WsImport compiler from Maven2. 
-  Please be aware this plugin requires a Java 5.0 compiler.
+  Please be aware this plugin requires a Java 5.0+ compiler.
   
 +------------------------------------------+
 <project>
@@ -26,24 +26,7 @@ Usage
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-rt</artifactId>
-      <version>2.1.7</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jvnet.staxex</groupId>
-          <artifactId>stax-ex</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.jvnet.staxex</groupId>
-      <artifactId>stax-ex</artifactId>
-      <version>1.2</version>
-      <exclusions>
-        <exclusion>
-          <artifactId>stax-api</artifactId>
-          <groupId>javax.xml.stream</groupId>
-        </exclusion>
-      </exclusions>
+      <version>2.2.5</version>
     </dependency>
     ...
   </dependencies>
@@ -53,7 +36,7 @@ Usage
       <plugin>
         <groupId>org.jvnet.jax-ws-commons</groupId>
         <artifactId>jaxws-maven-plugin</artifactId>
-        <version>2.1</version>
+        <version>2.2</version>
         <executions>
           <execution>
             <goals>
@@ -62,24 +45,61 @@ Usage
           </execution>
         </executions>
         <configuration>
-          <packageName>com.example.myschema</packageName> <!-- The name of your generated source package -->
+          <!-- The name of your generated source package -->
+          <packageName>com.example.myschema</packageName>
         </configuration>
 
         <!-- if you want to use a specific version of JAX-WS, you can do so like this -->
         <dependencies>
-          <groupId>com.sun.xml.ws</groupId>
-          <artifactId>jaxws-tools</artifactId>
-          <version>2.1.5</version>
+          <dependency>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-tools</artifactId>
+            <version>2.1.7</version>
+          <dependency>
         </dependencies>
       </plugin>
 
-      <!-- Don't forget Java 5!! -->
+      <!-- Don't forget to use endorsed with JAX-WS 2.2 on Java 6 !! -->
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
+          <source>1.6</source>
+          <target>1.6</target>
+          <compilerArguments>
+            <endorseddirs>${project.build.directory}/endorsed</endorseddirs>
+          </compilerArguments>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.3</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/endorsed</outputDirectory>
+              <silent>true</silent>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>javax.xml.bind</groupId>
+                  <artifactId>jaxb-api</artifactId>
+                  <version>2.2.3</version>
+                  <type>jar</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>javax.xml.ws</groupId>
+                  <artifactId>jaxws-api</artifactId>
+                  <version>2.2.5</version>
+                  <type>jar</type>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       ...
     </plugins>
