@@ -84,7 +84,9 @@ public class WsGenMojoITCase {
         assertFilePresent("target/classes/org/jvnet/jax_ws_commons/jaxws/test/EchoService.class");
         //-wsdl[...]
         assertFilePresent("target/wsdl/EchoService.wsdl");
-        assertFilePresent("target/wsdl/EchoService_schema1.xsd");
+        //-inlineSchemas
+        assertFileContains("target/wsdl/EchoService.wsdl", "xs:complexType");
+        assertFileNotPresent("target/wsdl/EchoService_schema1.xsd");
         assertFileNotPresent("target/jaxws/wsgen/wsdl/EchoService.wsdl");
         //-wsdl:Xsoap12 + -extension
         assertFileContains("target/wsdl/EchoService.wsdl", "http://schemas.xmlsoap.org/wsdl/soap12/");
