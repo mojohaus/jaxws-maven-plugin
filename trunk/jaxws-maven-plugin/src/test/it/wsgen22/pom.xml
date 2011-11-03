@@ -36,7 +36,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jaxws.plugin.version>2.2</jaxws.plugin.version>
-        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
     </properties>
 
     <dependencies>
@@ -51,45 +50,11 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.3</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${endorsed.dir}</outputDirectory>
-                            <silent>true</silent>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>javax.xml.bind</groupId>
-                                    <artifactId>jaxb-api</artifactId>
-                                    <version>2.2.3</version>
-                                    <type>jar</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>javax.xml.ws</groupId>
-                                    <artifactId>jaxws-api</artifactId>
-                                    <version>2.2.5</version>
-                                    <type>jar</type>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
-                    <compilerArguments>
-                        <endorseddirs>${endorsed.dir}</endorseddirs>
-                    </compilerArguments>
                 </configuration>
             </plugin>
             <plugin>
@@ -141,4 +106,63 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>jdk6</id>
+            <activation>
+                <jdk>1.6</jdk>
+            </activation>
+            <properties>
+                <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.3</version>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${endorsed.dir}</outputDirectory>
+                                    <silent>true</silent>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>javax.xml.bind</groupId>
+                                            <artifactId>jaxb-api</artifactId>
+                                            <version>2.2.3</version>
+                                            <type>jar</type>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>javax.xml.ws</groupId>
+                                            <artifactId>jaxws-api</artifactId>
+                                            <version>2.2.5</version>
+                                            <type>jar</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>2.3.2</version>
+                        <configuration>
+                            <source>1.6</source>
+                            <target>1.6</target>
+                            <compilerArguments>
+                                <endorseddirs>${endorsed.dir}</endorseddirs>
+                            </compilerArguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

@@ -15,7 +15,7 @@
  */
 package org.jvnet.jax_ws_commons.jaxws;
 
-import com.sun.tools.ws.Invoker;
+import com.sun.tools.ws.WsImport;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -317,17 +317,10 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         throws MojoExecutionException
     {
       try {
-        final ClassLoader cl = Invoker.createClassLoader(Thread.currentThread().getContextClassLoader());
-        Class c = cl.loadClass("com.sun.tools.ws.wscompile.WsimportTool");
-        Object tool = c.getConstructor(OutputStream.class).newInstance(System.out);
-        String[] ar = args.toArray( new String[args.size()] );
-        Boolean result = (Boolean)c.getMethod("run", ar.getClass()).invoke(tool, new Object[]{ar});
-        if ( !result )
-        {
-            throw new MojoExecutionException( "Error executing: wsimport " + args );
-        }
-      } catch (Exception e) {
-        throw new MojoExecutionException( "Error executing: wsimport " + args, e);
+        if (WsImport.doMain(args.toArray(new String[args.size()])) != 0)
+            throw new MojoExecutionException("Error executing: wsimport " + args);
+      } catch (Throwable t) {
+          throw new MojoExecutionException( "Error executing: wsimport " + args, t);
       }
     }
 

@@ -89,6 +89,8 @@ public class WsImportMojoITCase {
         assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "Generated source version: 2.0");
         //-XadditionalHeaders
         assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "Holder<String> additionalHeader2");
+        //xjc plugins (-Xequals etc)
+        assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/EchoType.java", "import org.jvnet.jaxb2_commons.lang.Equals;");
 
         //check AddService
         assertFilePresent("target/test-classes/wsimport/test/AddService.class");

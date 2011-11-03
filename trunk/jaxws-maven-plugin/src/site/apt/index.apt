@@ -47,8 +47,16 @@ JAX-WS Maven Plugin
   
 * Examples
 
-  There are a number of buildable examples in 
+  * {{{examples/using-jaxb-plugins.html}Using JAXB xjc plugins}}
+
+  * {{{examples/using-jaxws22-on-jdk6.html}Using JAX-WS 2.2.x on JDK 6}}
+
+  * {{{examples/using-wsdlLocation.html}Using wsdlLocation as a path prefix for multiple WSDL URLs}}
+
+  * There are also some buildable examples in
   {{{http://java.net/projects/jax-ws-commons/sources/svn/show/trunk/jaxws-maven-plugin/src/it}SVN repository}}.
+
+ []
 
   
 
