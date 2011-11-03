@@ -76,6 +76,7 @@
                             <keep>true</keep>
                             -->
                             <protocol>Xsoap1.2</protocol>
+                            <inlineSchemas>true</inlineSchemas>
                             <resourceDestDir>${project.build.directory}/wsdl</resourceDestDir>
                             <sourceDestDir>${project.build.directory}/custom/sources</sourceDestDir>
                             <verbose>true</verbose>

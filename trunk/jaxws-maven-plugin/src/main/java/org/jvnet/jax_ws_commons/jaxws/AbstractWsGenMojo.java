@@ -100,6 +100,14 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      */
     private String portname;
 
+    /**
+     * Inline schemas in the generated wsdl.
+     * Used in conjunction with the -wsdl option.
+     *
+     * @parameter default-value="false"
+     */
+    private boolean inlineSchemas;
+
     public void execute()
         throws MojoExecutionException, MojoFailureException {
         init();
@@ -173,6 +181,10 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
                 args.add("-wsdl:" + this.protocol);
             } else {
                 args.add("-wsdl");
+            }
+
+            if (inlineSchemas) {
+                args.add("-inlineSchemas");
             }
 
             if (servicename != null) {
