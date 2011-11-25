@@ -207,6 +207,15 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
             args.add( "-extension" );
         }
 
+        if (isArgSupported("-encoding")) {
+            if (encoding != null) {
+                args.add("-encoding");
+                args.add(encoding);
+            } else {
+                getLog().warn("Using platform encoding (" + System.getProperty("file.encoding") + "), build is platform dependent!");
+            }
+        }
+
         args.add(sei);
 
         getLog().debug("jaxws:wsgen args: " + args);

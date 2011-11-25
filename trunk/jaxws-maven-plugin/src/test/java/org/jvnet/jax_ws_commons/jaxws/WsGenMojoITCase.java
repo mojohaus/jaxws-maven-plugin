@@ -72,6 +72,9 @@ public class WsGenMojoITCase {
         assertFileContains("target/jaxws/wsgen/wsdl/ExService.wsdl", "port name=\"ExPort\"");
         //-servicename
         assertFileContains("target/jaxws/wsgen/wsdl/ExService.wsdl", "service name=\"ExService\"");
+
+        //-encoding is not supported, warning should be present
+        assertFileContains("build.log", "'-encoding' is not supported by jaxws-tools:2.1.7");
     }
 
     @Test
@@ -91,7 +94,7 @@ public class WsGenMojoITCase {
         //-wsdl:Xsoap12 + -extension
         assertFileContains("target/wsdl/EchoService.wsdl", "http://schemas.xmlsoap.org/wsdl/soap12/");
         //default dependency on 2.2.x
-        assertFileContains("target/wsdl/EchoService.wsdl", "JAX-WS RI 2.2.5");
+        assertFileContains("target/wsdl/EchoService.wsdl", "JAX-WS RI 2.2.6");
 
         //check AddService
         assertFilePresent("target/classes/org/jvnet/jax_ws_commons/jaxws/test/jaxws/Add.class");
@@ -109,7 +112,7 @@ public class WsGenMojoITCase {
         assertFileNotPresent("target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/TService.java");
         assertFileNotPresent("target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/jaxws/HelloResponse.java");
         //default dependency on 2.2.x
-        assertFileContains("target/jaxws/wsgen/wsdl/ExService.wsdl", "JAX-WS RI 2.2.5");
+        assertFileContains("target/jaxws/wsgen/wsdl/ExService.wsdl", "JAX-WS RI 2.2.6");
         //-portname
         assertFileContains("target/jaxws/wsgen/wsdl/ExService.wsdl", "port name=\"ExPort\"");
         //-servicename
