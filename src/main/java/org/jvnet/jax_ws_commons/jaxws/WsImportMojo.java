@@ -386,6 +386,15 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             args.add( "-target" );
             args.add( target );
         }
+
+        if (isArgSupported("-encoding")) {
+            if (encoding != null) {
+                args.add("-encoding");
+                args.add(encoding);
+            } else {
+                getLog().warn("Using platform encoding (" + System.getProperty("file.encoding") + "), build is platform dependent!");
+            }
+        }
         
         if ( extension )
         {

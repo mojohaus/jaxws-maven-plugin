@@ -24,6 +24,8 @@ import java.util.Map;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
@@ -62,6 +64,12 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
      */
     protected boolean extension;
 
+    /**
+     *
+     *
+     * @parameter default-value="${project.build.sourceEncoding}"
+     */
+    protected String encoding;
 
     /**
      * Map of of plugin artifacts.
@@ -135,5 +143,25 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
             throw new MojoExecutionException( e.getMessage(), e );
         }
 
+    }
+
+    protected boolean isArgSupported(String arg) throws MojoExecutionException {
+        boolean isSupported = true;
+        Artifact a = (Artifact) pluginArtifactMap.get("com.sun.xml.ws:jaxws-tools");
+        String v = null;
+        try {
+            ArtifactVersion av = a.getSelectedVersion();
+            v = av.toString();
+            //2.2.6+
+            if ("-encoding".equals(arg)) {
+                isSupported = av.getMajorVersion() >= 2 && av.getMinorVersion() >= 2 && av.getIncrementalVersion() >= 6;
+            }
+        } catch (OverConstrainedVersionException ex) {
+            throw new MojoExecutionException(ex.getMessage(), ex);
+        }
+        if (!isSupported) {
+            getLog().warn("'" + arg + "' is not supported by jaxws-tools:" + v);
+        }
+        return isSupported;
     }
 }
