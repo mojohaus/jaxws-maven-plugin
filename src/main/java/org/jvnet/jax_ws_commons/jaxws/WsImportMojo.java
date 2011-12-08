@@ -16,7 +16,10 @@
 package org.jvnet.jax_ws_commons.jaxws;
 
 import com.sun.tools.ws.WsImport;
-import java.io.*;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.MessageDigest;
@@ -210,8 +213,6 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      */
     private Settings settings;
 
-    protected abstract File getSourceDestDir();
-
     protected abstract void addSourceRoot(String sourceDir);
 
     public void execute()
@@ -333,17 +334,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         throws MojoExecutionException
     {
         ArrayList<String> args = new ArrayList<String>();
-
-        args.add( "-s" );
-        args.add( getSourceDestDir().getAbsolutePath() );
-
-        args.add( "-d" );
-        args.add( getDestDir().getAbsolutePath() );
-
-        if ( verbose )
-        {
-            args.add( "-verbose" );
-        }
+        args.addAll(getCommonArgs());
 
         if ( httpproxy != null )
         {
@@ -385,20 +376,6 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         {
             args.add( "-target" );
             args.add( target );
-        }
-
-        if (isArgSupported("-encoding")) {
-            if (encoding != null) {
-                args.add("-encoding");
-                args.add(encoding);
-            } else {
-                getLog().warn("Using platform encoding (" + System.getProperty("file.encoding") + "), build is platform dependent!");
-            }
-        }
-        
-        if ( extension )
-        {
-            args.add( "-extension" );
         }
 
         if(xdebug){
