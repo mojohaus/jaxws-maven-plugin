@@ -19,9 +19,9 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
@@ -84,6 +84,8 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
      */
     protected abstract File getDestDir();
 
+    protected abstract File getSourceDestDir();
+
     /**
      * Need to build a URLClassloader since Maven removed it form the chain
      * @param parent
@@ -145,6 +147,38 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
 
     }
 
+    protected List<String> getCommonArgs() throws MojoExecutionException {
+        List<String> args = new ArrayList<String>();
+
+        if (getSourceDestDir() != null) {
+            args.add("-s");
+            args.add(getSourceDestDir().getAbsolutePath());
+            getSourceDestDir().mkdirs();
+        }
+
+        args.add("-d");
+        args.add(getDestDir().getAbsolutePath());
+
+        if (verbose) {
+            args.add("-verbose");
+        }
+
+        if (isArgSupported("-encoding")) {
+            if (encoding != null) {
+                args.add("-encoding");
+                args.add(encoding);
+            } else {
+                getLog().warn("Using platform encoding (" + System.getProperty("file.encoding") + "), build is platform dependent!");
+            }
+        }
+
+        if (extension) {
+            args.add("-extension");
+        }
+
+        return args;
+    }
+    
     protected boolean isArgSupported(String arg) throws MojoExecutionException {
         boolean isSupported = true;
         Artifact a = (Artifact) pluginArtifactMap.get("com.sun.xml.ws:jaxws-tools");

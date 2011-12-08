@@ -16,14 +16,13 @@
 package org.jvnet.jax_ws_commons.jaxws;
 
 import com.sun.tools.ws.WsGen;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.artifact.Artifact;
-
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 
 /**
  * 
@@ -100,6 +99,10 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      */
     private String portname;
 
+    protected File getSourceDestDir() {
+        return sourceDestDir;
+    }
+    
     /**
      * Inline schemas in the generated wsdl.
      * Used in conjunction with the -wsdl option.
@@ -145,23 +148,11 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
     private ArrayList<String> getWsGenArgs()
         throws MojoExecutionException {
         ArrayList<String> args = new ArrayList<String>();
-
-        if (verbose) {
-            args.add("-verbose");
-        }
+        args.addAll(getCommonArgs());
 
         if (keep || this.sourceDestDir!=null) {
             args.add("-keep");
         }
-
-        if (this.sourceDestDir != null) {
-            args.add("-s");
-            args.add(this.sourceDestDir.getAbsolutePath());
-            this.sourceDestDir.mkdirs();
-        }
-
-        args.add("-d");
-        args.add(getDestDir().getAbsolutePath());
 
         args.add("-cp");
         StringBuilder buf = new StringBuilder();
@@ -201,19 +192,6 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
             args.add(this.resourceDestDir.getAbsolutePath());
             this.resourceDestDir.mkdirs();
 
-        }
-
-        if ( this.extension ) {
-            args.add( "-extension" );
-        }
-
-        if (isArgSupported("-encoding")) {
-            if (encoding != null) {
-                args.add("-encoding");
-                args.add(encoding);
-            } else {
-                getLog().warn("Using platform encoding (" + System.getProperty("file.encoding") + "), build is platform dependent!");
-            }
         }
 
         args.add(sei);
