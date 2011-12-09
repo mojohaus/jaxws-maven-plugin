@@ -159,6 +159,10 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         args.add("-d");
         args.add(getDestDir().getAbsolutePath());
 
+        if (keep || getSourceDestDir() != null) {
+            args.add("-keep");
+        }
+
         if (verbose) {
             args.add("-verbose");
         }
