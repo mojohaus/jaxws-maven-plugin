@@ -150,10 +150,6 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
         ArrayList<String> args = new ArrayList<String>();
         args.addAll(getCommonArgs());
 
-        if (keep || this.sourceDestDir!=null) {
-            args.add("-keep");
-        }
-
         args.add("-cp");
         StringBuilder buf = new StringBuilder();
         buf.append(getDestDir().getAbsolutePath());
