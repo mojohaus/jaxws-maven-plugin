@@ -355,6 +355,9 @@
                             <properties>
                                 <jaxws.plugin.version>${project.version}</jaxws.plugin.version>
                             </properties>
+                            <setupIncludes>
+                                <setupInclude>parent/pom.xml</setupInclude>
+                            </setupIncludes>
                         </configuration>
                         <executions>
                             <execution>
