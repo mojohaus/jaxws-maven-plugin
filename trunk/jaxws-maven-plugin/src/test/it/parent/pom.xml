@@ -39,7 +39,7 @@
     </modules>-->
 
     <properties>
-        <jaxws.version>2.2.6-promoted-b17</jaxws.version>
+        <jaxws.version>2.2.6-promoted-b20</jaxws.version>
         <jaxws.plugin.version>2.2</jaxws.plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
