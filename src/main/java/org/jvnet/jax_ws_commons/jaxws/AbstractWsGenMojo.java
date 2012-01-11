@@ -111,6 +111,12 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      */
     private boolean inlineSchemas;
 
+    /**
+     *
+     * @parameter default-value="false"
+     */
+    private boolean xdonotoverwrite;
+
     public void execute()
         throws MojoExecutionException, MojoFailureException {
         init();
@@ -188,6 +194,10 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
             args.add(this.resourceDestDir.getAbsolutePath());
             this.resourceDestDir.mkdirs();
 
+        }
+
+        if (xdonotoverwrite) {
+            args.add("-Xdonotoverwrite");
         }
 
         args.add(sei);

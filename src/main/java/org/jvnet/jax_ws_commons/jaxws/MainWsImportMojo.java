@@ -34,7 +34,7 @@ public class MainWsImportMojo extends WsImportMojo {
      * Set to "" to turn it off
      * @parameter default-value="${project.build.outputDirectory}"
      */
-    protected File destDir;
+    private File destDir;
 
     /**
      * Specify where to place generated source files, keep is turned on with this option.
@@ -42,6 +42,13 @@ public class MainWsImportMojo extends WsImportMojo {
      * @parameter default-value="${project.build.directory}/generated-sources/wsimport
      */
     private File sourceDestDir;
+
+    /**
+     * Specify where to generate JWS implementation file.
+     *
+     * @parameter default-value="${project.build.sourceDirectory}"
+     */
+    private File implDestDir;
 
     /**
      * Either ${build.outputDirectory} or ${build.testOutputDirectory}.
@@ -57,5 +64,10 @@ public class MainWsImportMojo extends WsImportMojo {
     @Override
     protected void addSourceRoot(String sourceDir) {
         project.addCompileSourceRoot(sourceDir);
+    }
+
+    @Override
+    protected File getImplDestDir() {
+        return implDestDir;
     }
 }

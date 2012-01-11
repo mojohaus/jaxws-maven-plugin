@@ -143,7 +143,41 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * @parameter
      */
     private String target;
-    
+
+    /**
+     * Suppress wsimport output.
+     *
+     * @parameter default-value="false"
+     */
+    private boolean quiet;
+
+    /**
+     * Local portion of service name for generated JWS implementation.
+     * Implies <code>genJWS=true</code>.
+     *
+     * Note: It is a QName string, formatted as: "{" + Namespace URI + "}" + local part
+     *
+     * @parameter
+     */
+    private String implServiceName = null;
+
+    /**
+     * Local portion of port name for generated JWS implementation.
+     * Implies <code>genJWS=true</code>.
+     *
+     * Note: It is a QName string, formatted as: "{" + Namespace URI + "}" + local part
+     *
+     * @parameter
+     */
+    private String implPortName = null;
+
+    /**
+     * Generate stubbed JWS implementation file.
+     *
+     * @parameter default-value="false"
+     */
+    private boolean genJWS;
+
     /**
      * Maps headers not bound to the request or response messages to Java method params.
      *
@@ -182,6 +216,25 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     protected File xauthFile;
 
     /**
+     * Disable the SSL Hostname verification while fetching WSDL(s).
+     *
+     * @parameter default-value="false"
+     */
+    private boolean xdisableSSLHostnameVerification;
+
+    /**
+     * @parameter default-value="false"
+     */
+    private boolean xuseBaseResourceAndURLToLoadWSDL;
+
+    /**
+     * Disable Authenticator used by JAX-WS RI, <code>xauthfile</code> will be ignored if set.
+     *
+     * @parameter default-value="false"
+     */
+    private boolean xdisableAuthenticator;
+
+    /**
      * Specify optional XJC-specific parameters that should simply be passed to xjc
      * using -B option of WsImport command.
      * <p>
@@ -191,15 +244,6 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      */
     private List<String> xjcArgs;
 
-    /**
-     * Specify optional wsimport commnd-line options.
-     * <p>
-     * Multiple elements can be specified, and each token must be placed in its own list.
-     * </p>
-     * @parameter
-     */
-    private List<String> args;
-    
     /**
      * The folder containing flag files used to determine if the output is stale.
      *
@@ -214,6 +258,8 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     private Settings settings;
 
     protected abstract void addSourceRoot(String sourceDir);
+
+    protected abstract File getImplDestDir();
 
     public void execute()
         throws MojoExecutionException
@@ -378,6 +424,25 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             args.add( target );
         }
 
+        if (quiet) {
+            args.add("-quiet");
+        }
+
+        if (genJWS || implServiceName != null || implPortName != null) {
+            args.add("-generateJWS");
+            if (implServiceName != null) {
+                args.add("-implServiceName");
+                args.add(implServiceName);
+            }
+            if (implPortName != null) {
+                args.add("-implPortName");
+                args.add(implPortName);
+            }
+            getImplDestDir().mkdirs();
+            args.add("-implDestDir");
+            args.add(getImplDestDir().getAbsolutePath());
+        }
+
         if(xdebug){
             args.add("-Xdebug");
         }
@@ -402,12 +467,14 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             args.add(xauthFile.getAbsolutePath());
         }
 
-        // add wsimport commandline Options
-        if (this.args != null)
-        {
-            for (String arg : this.args) {
-                args.add(arg);
-            }
+        if (xdisableSSLHostnameVerification) {
+            args.add("-XdisableSSLHostnameVerification");
+        }
+        if (xuseBaseResourceAndURLToLoadWSDL) {
+            args.add("-XuseBaseResourceAndURLToLoadWSDL");
+        }
+        if (xdisableAuthenticator) {
+            args.add("-XdisableAuthenticator");
         }
 
         // xjcOIptions

@@ -65,11 +65,20 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     protected boolean extension;
 
     /**
-     *
+     * Specify character encoding used by source files.
      *
      * @parameter default-value="${project.build.sourceEncoding}"
      */
-    protected String encoding;
+    private String encoding;
+
+    /**
+     * Specify optional command-line options.
+     * <p>
+     * Multiple elements can be specified, and each token must be placed in its own list.
+     * </p>
+     * @parameter
+     */
+    private List<String> args;
 
     /**
      * Map of of plugin artifacts.
@@ -148,39 +157,46 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     }
 
     protected List<String> getCommonArgs() throws MojoExecutionException {
-        List<String> args = new ArrayList<String>();
+        List<String> commonArgs = new ArrayList<String>();
 
         if (getSourceDestDir() != null) {
-            args.add("-s");
-            args.add(getSourceDestDir().getAbsolutePath());
+            commonArgs.add("-s");
+            commonArgs.add(getSourceDestDir().getAbsolutePath());
             getSourceDestDir().mkdirs();
         }
 
-        args.add("-d");
-        args.add(getDestDir().getAbsolutePath());
+        commonArgs.add("-d");
+        commonArgs.add(getDestDir().getAbsolutePath());
 
         if (keep || getSourceDestDir() != null) {
-            args.add("-keep");
+            commonArgs.add("-keep");
         }
 
         if (verbose) {
-            args.add("-verbose");
+            commonArgs.add("-verbose");
         }
 
         if (isArgSupported("-encoding")) {
             if (encoding != null) {
-                args.add("-encoding");
-                args.add(encoding);
+                commonArgs.add("-encoding");
+                commonArgs.add(encoding);
             } else {
                 getLog().warn("Using platform encoding (" + System.getProperty("file.encoding") + "), build is platform dependent!");
             }
         }
 
         if (extension) {
-            args.add("-extension");
+            commonArgs.add("-extension");
         }
 
-        return args;
+        // add additional command line options
+        if (args != null) {
+            for (String arg : args) {
+                commonArgs.add(arg);
+            }
+        }
+
+        return commonArgs;
     }
     
     protected boolean isArgSupported(String arg) throws MojoExecutionException {
