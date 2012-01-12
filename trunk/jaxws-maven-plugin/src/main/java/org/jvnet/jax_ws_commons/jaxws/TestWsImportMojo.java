@@ -54,6 +54,7 @@ public class TestWsImportMojo extends WsImportMojo {
     /**
      * Either ${build.outputDirectory} or ${build.testOutputDirectory}.
      */
+    @Override
     protected File getDestDir() {
         return destDir;
     }
@@ -61,6 +62,7 @@ public class TestWsImportMojo extends WsImportMojo {
     /**
      * ${project.build.directory}/jaxws/wsimport/test.
      */
+    @Override
     protected File getSourceDestDir() {
         return sourceDestDir;
     }

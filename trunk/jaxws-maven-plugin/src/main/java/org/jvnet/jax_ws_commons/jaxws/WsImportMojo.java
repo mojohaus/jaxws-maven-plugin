@@ -261,6 +261,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
 
     protected abstract File getImplDestDir();
 
+    @Override
     public void execute()
         throws MojoExecutionException
     {
@@ -273,7 +274,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         {
 
             File[] wsdls = getWSDLFiles();
-            if(wsdls.length == 0 && (wsdlUrls == null || wsdlUrls.size() ==0)){
+            if (wsdls.length == 0 && (wsdlUrls == null || wsdlUrls.isEmpty())) {
                 getLog().info( "No WSDLs are found to process, Specify atleast one of the following parameters: wsdlFiles, wsdlDirectory or wsdlUrls.");
                 return;
             }
@@ -306,7 +307,6 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             Thread.currentThread().setContextClassLoader( parent );
             System.setProperty( "java.class.path", originalSystemClasspath );
         }
-
     }
 
     /**
@@ -487,8 +487,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                     args.add(xjcArg);
             }
         }
-        
-        
+
         // Bindings
         File[] bindings = getBindingFiles();
 
@@ -538,7 +537,6 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                 bindings = new File[0];
             }
         }
-
         return bindings;
     }
 
@@ -572,19 +570,18 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                 files = new File[0];
             }
         }
-
         return files;
     }
 
     /**
      * A class used to look up .xml documents from a given directory.
      */
-    private final class XMLFile
+    private static final class XMLFile
         implements FileFilter
     {
         /**
          * Returns true if the file ends with an xml extension.
-         * 
+         *
          * @param file
          *            The filed being reviewed by the filter.
          * @return true if an xml file.
@@ -598,13 +595,13 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     /**
      * A class used to look up .wsdl documents from a given directory.
      */
-    private final class WSDLFile
+    private static final class WSDLFile
         implements FileFilter
     {
 
         /**
          * Returns true if the file ends with a wsdl extension.
-         * 
+         *
          * @param file
          *            The filed being reviewed by the filter.
          * @return true if an wsdl file.
@@ -692,7 +689,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         }
         //fallback to some default
         getLog().warn("Could not compute hash for " + s + ". Using fallback method.");
-        return s.substring(s.lastIndexOf('/')).replaceAll(".", "-");
+        return s.substring(s.lastIndexOf('/')).replaceAll("\\.", "-");
     }
 
     /**
