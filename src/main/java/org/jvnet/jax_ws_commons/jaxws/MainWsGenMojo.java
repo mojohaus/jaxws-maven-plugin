@@ -27,6 +27,7 @@ import java.io.File;
  * @description generate JAX-WS wrapper beans. 
  */
 public class MainWsGenMojo extends AbstractWsGenMojo {
+
     /**
      * Specify where to place output generated classes
      * Set to "" to turn it off
@@ -37,6 +38,7 @@ public class MainWsGenMojo extends AbstractWsGenMojo {
     /**
      * Either ${build.outputDirectory} or ${build.testOutputDirectory}.
      */
+    @Override
     protected File getDestDir() {
         return destDir;
     }

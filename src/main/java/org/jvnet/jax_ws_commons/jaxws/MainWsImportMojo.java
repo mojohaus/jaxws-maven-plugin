@@ -53,10 +53,12 @@ public class MainWsImportMojo extends WsImportMojo {
     /**
      * Either ${build.outputDirectory} or ${build.testOutputDirectory}.
      */
+    @Override
     protected File getDestDir() {
         return destDir;
     }
 
+    @Override
     protected File getSourceDestDir() {
         return sourceDestDir;
     }

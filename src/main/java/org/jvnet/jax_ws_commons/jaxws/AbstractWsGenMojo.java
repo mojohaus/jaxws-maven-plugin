@@ -47,13 +47,11 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      */
     private boolean genWsdl;
 
-    
     /**
      * Directory containing the generated wsdl files.
      * 
      * @parameter default-value="${project.build.directory}/jaxws/wsgen/wsdl"
      */
-    
     private File resourceDestDir;
 
     /**
@@ -105,10 +103,6 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      */
     private String portname;
 
-    protected File getSourceDestDir() {
-        return sourceDestDir;
-    }
-    
     /**
      * Inline schemas in the generated wsdl.
      * Used in conjunction with the -wsdl option.
@@ -122,6 +116,11 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      * @parameter default-value="false"
      */
     private boolean xdonotoverwrite;
+
+    @Override
+    protected File getSourceDestDir() {
+        return sourceDestDir;
+    }
 
     protected abstract File getClassesDir();
     
