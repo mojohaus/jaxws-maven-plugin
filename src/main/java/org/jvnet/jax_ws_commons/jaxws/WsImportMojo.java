@@ -586,6 +586,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
          *            The filed being reviewed by the filter.
          * @return true if an xml file.
          */
+        @Override
         public boolean accept( final java.io.File file )
         {
             return file.getName().endsWith( ".xml" );
@@ -606,6 +607,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
          *            The filed being reviewed by the filter.
          * @return true if an wsdl file.
          */
+        @Override
         public boolean accept( final java.io.File file )
         {
             return file.getName().endsWith( ".wsdl" );
