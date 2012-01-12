@@ -16,13 +16,20 @@
 package org.jvnet.jax_ws_commons.jaxws;
 
 import com.sun.tools.ws.WsGen;
+import java.io.Closeable;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.jws.WebService;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.codehaus.plexus.util.FileUtils;
 
 /**
  * 
@@ -53,7 +60,6 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      * service endpoint implementation class name.
      * 
      * @parameter 
-     * @required
      */
     private String sei;
 
@@ -117,6 +123,9 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      */
     private boolean xdonotoverwrite;
 
+    protected abstract File getClassesDir();
+    
+    @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException {
         init();
@@ -125,11 +134,25 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
         ClassLoader parent = this.getClass().getClassLoader();
         String orginalSystemClasspath = this.initClassLoader(parent);
 
-        try {
-            ArrayList<String> args = getWsGenArgs();
+        Set<String> seis = new HashSet<String>();
+        if (sei != null) {
+            seis.add(sei);
+        } else {
+            //find all SEIs within current classes
+            seis.addAll(getSEIs(getClassesDir()));
+        }
 
-            if (WsGen.doMain(args.toArray(new String[args.size()])) != 0)
-                throw new MojoExecutionException("Error executing: wsgen " + args);
+        if (seis.isEmpty()) {
+            throw new MojoFailureException("No @javax.jws.WebService found.");
+        }
+
+        try {
+            for (String aSei : seis) {
+                ArrayList<String> args = getWsGenArgs(aSei);
+
+                if (WsGen.doMain(args.toArray(new String[args.size()])) != 0)
+                    throw new MojoExecutionException("Error executing: wsgen " + args);
+            }
         } catch (MojoExecutionException e) {
             throw e;
         } catch (Throwable e) {
@@ -151,7 +174,7 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      * @return a list of arguments
      * @throws MojoExecutionException
      */
-    private ArrayList<String> getWsGenArgs()
+    private ArrayList<String> getWsGenArgs(String aSei)
         throws MojoExecutionException {
         ArrayList<String> args = new ArrayList<String>();
         args.addAll(getCommonArgs());
@@ -200,11 +223,45 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
             args.add("-Xdonotoverwrite");
         }
 
-        args.add(sei);
+        args.add(aSei);
 
         getLog().debug("jaxws:wsgen args: " + args);
 
         return args;
     }
 
+    private Set<String> getSEIs(File directory) throws MojoExecutionException {
+        Set<String> seis = new HashSet<String>();
+        if (!directory.exists() || directory.isFile()) {
+            return seis;
+        }
+        ClassLoader cl = null;
+        try {
+            cl = new URLClassLoader(new URL[]{directory.toURI().toURL()});
+            for (String s : (List<String>) FileUtils.getFileAndDirectoryNames(directory, "**/*.class", null, false, true, true, false)) {
+                try {
+                    String clsName = s.replace(File.separator, ".");
+                    Class<?> c = cl.loadClass(clsName.substring(0, clsName.length() - 6));
+                    WebService ann = c.getAnnotation(WebService.class);
+                    if (!c.isInterface() && ann != null) {
+                        //more sophisticated checks are done by wsgen itself
+                        seis.add(c.getName());
+                    }
+                } catch (ClassNotFoundException ex) {
+                    throw new MojoExecutionException(ex.getMessage(), ex);
+                }
+            }
+        } catch (IOException ex) {
+            throw new MojoExecutionException(ex.getMessage(), ex);
+        } finally {
+            if (cl != null && cl instanceof Closeable) {
+                try {
+                    ((Closeable) cl).close();
+                } catch (IOException ex) {
+                    //ignore
+                }
+            }
+        }
+        return seis;
+    }
 }
