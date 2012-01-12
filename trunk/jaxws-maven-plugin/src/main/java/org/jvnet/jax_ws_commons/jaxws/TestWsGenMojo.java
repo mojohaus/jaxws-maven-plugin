@@ -16,6 +16,8 @@
 package org.jvnet.jax_ws_commons.jaxws;
 
 import java.io.File;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 
 /**
  * Reads a JAX-WS service endpoint implementation class
@@ -44,5 +46,22 @@ public class TestWsGenMojo extends AbstractWsGenMojo {
      */
     protected File getDestDir() {
         return destDir;
+    }
+
+    @Override
+    protected File getClassesDir() {
+        return new File(project.getBuild().getTestOutputDirectory());
+    }
+
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        //no need to invoke wsgen-test if tests themselves are skipped/ignorred
+        boolean skipTests = Boolean.valueOf(System.getProperty("skipTests", "false"));
+        boolean mavenTestSkip = Boolean.valueOf(System.getProperty("maven.test.skip", "false"));
+        if (skipTests || mavenTestSkip) {
+            getLog().info("Skipping tests, nothing to do.");
+        } else {
+            super.execute();
+        }
     }
 }

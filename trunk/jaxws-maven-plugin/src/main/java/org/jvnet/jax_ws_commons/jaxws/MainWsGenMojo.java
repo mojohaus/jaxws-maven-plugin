@@ -40,4 +40,9 @@ public class MainWsGenMojo extends AbstractWsGenMojo {
     protected File getDestDir() {
         return destDir;
     }
+
+    @Override
+    protected File getClassesDir() {
+        return new File(project.getBuild().getOutputDirectory());
+    }
 }

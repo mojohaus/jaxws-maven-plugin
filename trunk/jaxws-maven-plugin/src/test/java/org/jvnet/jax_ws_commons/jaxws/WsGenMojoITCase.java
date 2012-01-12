@@ -118,7 +118,18 @@ public class WsGenMojoITCase {
         //-servicename
         assertFileContains("target/jaxws/wsgen/wsdl/ExService.wsdl", "service name=\"ExService\"");
     }
-    
+
+    @Test
+    public void jaxwscommons43() throws IOException {
+        project = new File(PROJECTS_DIR, "jaxwscommons-43");
+
+        assertFilePresent("target/classes/tests/jaxwscommons43/jaxws/Bye.class");
+        assertFilePresent("target/jaxws/wsgen/wsdl/WsImplAService.wsdl");
+        assertFilePresent("target/jaxws/wsgen/wsdl/WsImplBService.wsdl");
+        assertFileContains("build.log", "No @javax.jws.WebService found.");
+        assertFileContains("build.log", "Skipping tests, nothing to do.");
+    }
+
     private void assertFilePresent(String path) {
         File f = new File(project, path);
         Assert.assertTrue(f.exists(), "Not found " + f.getAbsolutePath());
