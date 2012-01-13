@@ -16,10 +16,11 @@
 package org.jvnet.jax_ws_commons.jaxws;
 
 import java.io.File;
+import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * Parses wsdl and binding files and generates Java code needed to access it
- * (for tests.)
+ * (for tests).
  *
  * @goal wsimport-test
  * @phase generate-test-sources
@@ -52,6 +53,13 @@ public class TestWsImportMojo extends WsImportMojo {
     private File implDestDir;
 
     /**
+     * Set this to "true" to bypass code generation.
+     *
+     * @parameter expression="${maven.test.skip}"
+     */
+    private boolean skip;
+
+    /**
      * Either ${build.outputDirectory} or ${build.testOutputDirectory}.
      */
     @Override
@@ -75,5 +83,16 @@ public class TestWsImportMojo extends WsImportMojo {
     @Override
     protected File getImplDestDir() {
         return implDestDir;
+    }
+
+    @Override
+    public void execute() throws MojoExecutionException {
+        //if maven.test.skip is set test compilation is not called, so
+        //no need to generate sources/classes
+        if (skip) {
+            getLog().info("Skipping tests, nothing to do.");
+        } else {
+            super.execute();
+        }
     }
 }

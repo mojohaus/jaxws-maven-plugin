@@ -22,7 +22,7 @@ import org.apache.maven.plugin.MojoFailureException;
 /**
  * Reads a JAX-WS service endpoint implementation class
  * and generates all of the portable artifacts for a JAX-WS web service
- * (into the generate test source directroy.)
+ * (into the generate test source directory).
  *
  * <p>
  * Due to <a href="http://jira.codehaus.org/browse/MNG-1508">MNG-1508</a>, this requires 2.0.5 or higher.
@@ -43,6 +43,13 @@ public class TestWsGenMojo extends AbstractWsGenMojo {
     protected File destDir;
 
     /**
+     * Set this to "true" to bypass code generation.
+     *
+     * @parameter expression="${maven.test.skip}"
+     */
+    private boolean skip;
+
+    /**
      * Either ${build.outputDirectory} or ${build.testOutputDirectory}.
      */
     @Override
@@ -57,10 +64,9 @@ public class TestWsGenMojo extends AbstractWsGenMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        //no need to invoke wsgen-test if tests themselves are skipped/ignorred
-        boolean skipTests = Boolean.valueOf(System.getProperty("skipTests", "false"));
-        boolean mavenTestSkip = Boolean.valueOf(System.getProperty("maven.test.skip", "false"));
-        if (skipTests || mavenTestSkip) {
+        //if maven.test.skip is set test compilation is not called, so
+        //no need to generate sources/classes
+        if (skip) {
             getLog().info("Skipping tests, nothing to do.");
         } else {
             super.execute();
