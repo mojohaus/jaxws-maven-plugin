@@ -362,6 +362,7 @@
                             </properties>
                             <setupIncludes>
                                 <setupInclude>parent/pom.xml</setupInclude>
+                                <setupInclude>wsdl-lib/pom.xml</setupInclude>
                             </setupIncludes>
                         </configuration>
                         <executions>
