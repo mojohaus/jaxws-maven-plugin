@@ -677,7 +677,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     private String getRelativePath(File f) {
         if (wsdlFiles != null) {
             for (String s : wsdlFiles) {
-                String path = f.getPath();
+                String path = f.getPath().replace(File.separatorChar, '/');
                 if (path.endsWith(s) && path.length() != s.length()) {
                     return s;
                 }
