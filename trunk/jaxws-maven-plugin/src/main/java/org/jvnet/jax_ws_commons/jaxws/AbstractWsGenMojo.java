@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 import javax.jws.WebService;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.util.FileUtils;
@@ -45,14 +46,7 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      * 
      * @parameter default-value="false"
      */
-    private boolean genWsdl;
-
-    /**
-     * Directory containing the generated wsdl files.
-     * 
-     * @parameter default-value="${project.build.directory}/jaxws/wsgen/wsdl"
-     */
-    private File resourceDestDir;
+    protected boolean genWsdl;
 
     /**
      * service endpoint implementation class name.
@@ -78,14 +72,6 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      * @readonly
      */
     private List<Artifact> pluginArtifacts;
-
-    /**
-     * Specify where to place generated source files, keep is turned on with this option. 
-     * 
-     * @parameter 
-     */
-    private File sourceDestDir;
-    //default-value="${project.build.directory}/jaxws/java"
 
     /**
      * Specify the Service name to use in the generated WSDL.
@@ -115,19 +101,21 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      *
      * @parameter default-value="false"
      */
-    private boolean xdonotoverwrite;
+    private boolean xnocompile;
 
-    @Override
-    protected File getSourceDestDir() {
-        return sourceDestDir;
-    }
+    /**
+     *
+     * @parameter default-value="false"
+     */
+    private boolean xdonotoverwrite;
+    
+    protected abstract File getResourceDestDir();
 
     protected abstract File getClassesDir();
-    
+
     @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException {
-        init();
 
         // Need to build a URLClassloader since Maven removed it form the chain
         ClassLoader parent = this.getClass().getClassLoader();
@@ -161,11 +149,6 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
             Thread.currentThread().setContextClassLoader(parent);
             System.setProperty("java.class.path", orginalSystemClasspath);
         }
-    }
-
-    private void init() throws MojoExecutionException, MojoFailureException {
-        if (!getDestDir().exists())
-            getDestDir().mkdirs();
     }
 
     /**
@@ -211,10 +194,14 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
                 args.add("-portname");
                 args.add(portname);
             }
-            
+
+            File resourceDir = getResourceDestDir();
+            resourceDir.mkdirs();
             args.add("-r");
-            args.add(this.resourceDestDir.getAbsolutePath());
-            this.resourceDestDir.mkdirs();
+            args.add(resourceDir.getAbsolutePath());
+            Resource r = new Resource();
+            r.setDirectory(getRelativePath(project.getBasedir(), getResourceDestDir()));
+            project.addResource(r);
 
         }
 
@@ -227,6 +214,10 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
         getLog().debug("jaxws:wsgen args: " + args);
 
         return args;
+    }
+
+    private String getRelativePath(File root, File f) {
+        return root.toURI().relativize(f.toURI()).getPath();
     }
 
     private Set<String> getSEIs(File directory) throws MojoExecutionException {

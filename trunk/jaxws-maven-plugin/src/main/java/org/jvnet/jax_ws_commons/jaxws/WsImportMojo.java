@@ -204,14 +204,6 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     private boolean xdebug;
 
     /**
-     * Turn off compilation after code generation and let generated sources be
-     * compiled by maven during compilation phase; keep is turned on with this option.
-     *
-     * @parameter default-value="true"
-     */
-    private boolean xnocompile;
-    
-    /**
      * Binding W3C EndpointReferenceType to Java. By default Wsimport follows spec and does not bind
      * EndpointReferenceType to Java and uses the spec provided {@link javax.xml.ws.wsaddressing.W3CEndpointReference}
      *
@@ -268,8 +260,6 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      */
     private Settings settings;
 
-    protected abstract void addSourceRoot(String sourceDir);
-
     protected abstract File getImplDestDir();
 
     @Override
@@ -290,19 +280,9 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                 return;
             }
 
-            getSourceDestDir().mkdirs();
-            getDestDir().mkdirs();
-            
             this.processWsdlViaUrls();
 
             this.processLocalWsdlFiles(wsdls);
-
-            // even thou the generated source already compiled, we still want to 
-            //  add the source path so that IDE can pick it up
-            if (xnocompile) {
-                addSourceRoot(getSourceDestDir().getAbsolutePath());
-            }
-
         }
         catch ( MojoExecutionException e )
         {
@@ -457,10 +437,6 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             args.add("-Xdebug");
         }
 
-        if(xnocompile){
-            args.add("-Xnocompile");
-        }
-        
         /**
          * -Xno-addressing-databinding enable binding of W3C EndpointReferenceType to Java
          */

@@ -19,6 +19,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -46,6 +48,8 @@ public class WsGenMojoITCase {
         assertFilePresent("target/wsdl/EchoService.wsdl");
         assertFilePresent("target/wsdl/EchoService_schema1.xsd");
         assertFileNotPresent("target/jaxws/wsgen/wsdl/EchoService.wsdl");
+        assertFileNotPresent("target/generated-sources/wsdl/EchoService.wsdl");
+        assertFileNotPresent("target/generated-sources/test-wsdl/EchoService.wsdl");
         //-wsdl:Xsoap12 + -extension
         assertFileContains("target/wsdl/EchoService.wsdl", "http://schemas.xmlsoap.org/wsdl/soap12/");
         //dependency on 2.1.7
@@ -60,21 +64,29 @@ public class WsGenMojoITCase {
         assertFileNotPresent("target/jaxws/wsgen/wsdl/AddService.wsdl");
 
         //check TService
-        assertFilePresent("target/jaxws/wsgen/wsdl/TService.wsdl");
-        assertFilePresent("target/jaxws/wsgen/wsdl/ExService.wsdl");
+        assertFilePresent("target/generated-sources/test-wsdl/TService.wsdl");
+        assertFilePresent("target/generated-sources/test-wsdl/ExService.wsdl");
         assertFilePresent("target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/TService.class");
         assertFilePresent("target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/jaxws/HelloResponse.class");
-        assertFileNotPresent("target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/TService.java");
+        assertFilePresent("target/generated-sources/test-wsgen/org/jvnet/jax_ws_commons/jaxws/test/jaxws/HelloResponse.java");
         assertFileNotPresent("target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/jaxws/HelloResponse.java");
         //dependency on 2.1.7
-        assertFileContains("target/jaxws/wsgen/wsdl/ExService.wsdl", "JAX-WS RI 2.1.7");
+        assertFileContains("target/generated-sources/test-wsdl/ExService.wsdl", "JAX-WS RI 2.1.7");
         //-portname
-        assertFileContains("target/jaxws/wsgen/wsdl/ExService.wsdl", "port name=\"ExPort\"");
+        assertFileContains("target/generated-sources/test-wsdl/ExService.wsdl", "port name=\"ExPort\"");
         //-servicename
-        assertFileContains("target/jaxws/wsgen/wsdl/ExService.wsdl", "service name=\"ExService\"");
+        assertFileContains("target/generated-sources/test-wsdl/ExService.wsdl", "service name=\"ExService\"");
 
         //-encoding is not supported, warning should be present
         assertFileContains("build.log", "'-encoding' is not supported by jaxws-tools:2.1.7");
+
+        //package wsdl
+        assertJarContains("mojo.it.wsgentest217-2.2.6.jar", "META-INF/wsdl/EchoService.wsdl");
+        assertJarContains("mojo.it.wsgentest217-2.2.6.jar", "META-INF/wsdl/EchoService_schema1.xsd");
+        assertJarNotContains("mojo.it.wsgentest217-2.2.6.jar", "META-INF/EchoService_schema.xsd");
+        assertJarNotContains("mojo.it.wsgentest217-2.2.6.jar", "EchoService_schema.xsd");
+        assertJarNotContains("mojo.it.wsgentest217-2.2.6.jar", "META-INF/wsdl/ExService.wsdl");
+        assertJarNotContains("mojo.it.wsgentest217-2.2.6.jar", "ExService.wsdl");
     }
 
     @Test
@@ -91,6 +103,8 @@ public class WsGenMojoITCase {
         assertFileContains("target/wsdl/EchoService.wsdl", "xs:complexType");
         assertFileNotPresent("target/wsdl/EchoService_schema1.xsd");
         assertFileNotPresent("target/jaxws/wsgen/wsdl/EchoService.wsdl");
+        assertFileNotPresent("target/generated-sources/wsdl/EchoService.wsdl");
+        assertFileNotPresent("target/generated-sources/test-wsdl/EchoService.wsdl");
         //-wsdl:Xsoap12 + -extension
         assertFileContains("target/wsdl/EchoService.wsdl", "http://schemas.xmlsoap.org/wsdl/soap12/");
         //default dependency on 2.2.x
@@ -105,18 +119,27 @@ public class WsGenMojoITCase {
         assertFileNotPresent("target/jaxws/wsgen/wsdl/AddService.wsdl");
 
         //check TService
-        assertFilePresent("target/jaxws/wsgen/wsdl/TService.wsdl");
-        assertFilePresent("target/jaxws/wsgen/wsdl/ExService.wsdl");
+        assertFilePresent("target/generated-sources/test-wsdl/TService.wsdl");
+        assertFilePresent("target/generated-sources/test-wsdl/ExService.wsdl");
         assertFilePresent("target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/TService.class");
         assertFilePresent("target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/jaxws/HelloResponse.class");
+        assertFilePresent("target/generated-sources/test-wsgen/org/jvnet/jax_ws_commons/jaxws/test/jaxws/HelloResponse.java");
         assertFileNotPresent("target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/TService.java");
         assertFileNotPresent("target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/jaxws/HelloResponse.java");
         //default dependency on 2.2.x
-        assertFileContains("target/jaxws/wsgen/wsdl/ExService.wsdl", "JAX-WS RI 2.2.6");
+        assertFileContains("target/generated-sources/test-wsdl/ExService.wsdl", "JAX-WS RI 2.2.6");
         //-portname
-        assertFileContains("target/jaxws/wsgen/wsdl/ExService.wsdl", "port name=\"ExPort\"");
+        assertFileContains("target/generated-sources/test-wsdl/ExService.wsdl", "port name=\"ExPort\"");
         //-servicename
-        assertFileContains("target/jaxws/wsgen/wsdl/ExService.wsdl", "service name=\"ExService\"");
+        assertFileContains("target/generated-sources/test-wsdl/ExService.wsdl", "service name=\"ExService\"");
+
+        //package wsdl
+        assertJarContains("mojo.it.wsgentest22-2.2.6.jar", "META-INF/wsdl/EchoService.wsdl");
+        assertJarNotContains("mojo.it.wsgentest22-2.2.6.jar", "META-INF/wsdl/EchoService_schema1.xsd");
+        assertJarNotContains("mojo.it.wsgentest22-2.2.6.jar", "META-INF/EchoService_schema.xsd");
+        assertJarNotContains("mojo.it.wsgentest22-2.2.6.jar", "EchoService_schema.xsd");
+        assertJarNotContains("mojo.it.wsgentest22-2.2.6.jar", "META-INF/wsdl/ExService.wsdl");
+        assertJarNotContains("mojo.it.wsgentest22-2.2.6.jar", "ExService.wsdl");
     }
 
     @Test
@@ -124,10 +147,18 @@ public class WsGenMojoITCase {
         project = new File(PROJECTS_DIR, "jaxwscommons-43");
 
         assertFilePresent("target/classes/tests/jaxwscommons43/jaxws/Bye.class");
-        assertFilePresent("target/jaxws/wsgen/wsdl/WsImplAService.wsdl");
-        assertFilePresent("target/jaxws/wsgen/wsdl/WsImplBService.wsdl");
+        assertFilePresent("target/generated-sources/wsdl/WsImplAService.wsdl");
+        assertFilePresent("target/generated-sources/wsdl/WsImplBService.wsdl");
         assertFileContains("build.log", "No @javax.jws.WebService found.");
         assertFileContains("build.log", "Skipping tests, nothing to do.");
+    }
+
+    @Test
+    public void jaxwscommons3() throws IOException {
+        project = new File(PROJECTS_DIR, "jaxwscommons-3");
+
+        assertFilePresent("target/cst/WEB-INF/wsdl/NewWebService.wsdl");
+        assertJarContains("jaxwscommons-3-1.0.war", "WEB-INF/wsdl/NewWebService.wsdl");
     }
 
     private void assertFilePresent(String path) {
@@ -150,5 +181,17 @@ public class WsGenMojoITCase {
             }
         }
         Assert.fail("'" + s + "' is missing in:" + f.getAbsolutePath());
+    }
+
+    private void assertJarContains(String jarName, String path) throws ZipException, IOException {
+        File f = new File(project, "target/" + jarName);
+        ZipFile zf = new ZipFile(f);
+        Assert.assertNotNull(zf.getEntry(path), "'" + path + "' is missing in: " + jarName);
+    }
+
+    private void assertJarNotContains(String jarName, String path) throws ZipException, IOException {
+        File f = new File(project, "target/" + jarName);
+        ZipFile zf = new ZipFile(f);
+        Assert.assertNull(zf.getEntry(path), "'" + path + "' is in: " + jarName);
     }
 }

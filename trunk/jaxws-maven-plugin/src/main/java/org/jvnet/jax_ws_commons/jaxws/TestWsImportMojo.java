@@ -81,6 +81,11 @@ public class TestWsImportMojo extends WsImportMojo {
     }
 
     @Override
+    protected File getDefaultSrcOut() {
+        return new File(project.getBuild().getDirectory(), "generated-sources/test-wsimport");
+    }
+
+    @Override
     protected File getImplDestDir() {
         return implDestDir;
     }

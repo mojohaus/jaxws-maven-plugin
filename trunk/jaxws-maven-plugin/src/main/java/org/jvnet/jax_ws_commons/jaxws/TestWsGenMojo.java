@@ -43,6 +43,20 @@ public class TestWsGenMojo extends AbstractWsGenMojo {
     protected File destDir;
 
     /**
+     * Specify where to place generated source files, keep is turned on with this option.
+     *
+     * @parameter default-value="${project.build.directory}/generated-sources/test-wsgen"
+     */
+    private File sourceDestDir;
+
+    /**
+     * Directory containing the generated wsdl files.
+     *
+     * @parameter default-value="${project.build.directory}/generated-sources/test-wsdl
+     */
+    private File resourceDestDir;
+
+/**
      * Set this to "true" to bypass code generation.
      *
      * @parameter expression="${maven.test.skip}"
@@ -55,6 +69,29 @@ public class TestWsGenMojo extends AbstractWsGenMojo {
     @Override
     protected File getDestDir() {
         return destDir;
+    }
+
+    /**
+     * ${project.build.directory}/generated-sources/test-wsgen.
+     */
+    @Override
+    protected File getSourceDestDir() {
+        return sourceDestDir;
+    }
+
+    @Override
+    protected void addSourceRoot(String sourceDir) {
+        project.addTestCompileSourceRoot(sourceDir);
+    }
+
+    @Override
+    protected File getResourceDestDir() {
+        return resourceDestDir;
+    }
+
+    @Override
+    protected File getDefaultSrcOut() {
+        return new File(project.getBuild().getDirectory(), "generated-sources/test-wsgen");
     }
 
     @Override

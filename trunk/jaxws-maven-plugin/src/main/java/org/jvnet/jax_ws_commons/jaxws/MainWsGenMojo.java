@@ -16,6 +16,13 @@
 package org.jvnet.jax_ws_commons.jaxws;
 
 import java.io.File;
+import java.io.IOException;
+import org.apache.maven.model.Plugin;
+import org.apache.maven.model.PluginExecution;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**
  * Reads a JAX-WS service endpoint implementation class
@@ -24,7 +31,7 @@ import java.io.File;
  * @goal wsgen
  * @phase process-classes
  * @requiresDependencyResolution
- * @description generate JAX-WS wrapper beans. 
+ * @description generate JAX-WS wrapper beans.
  */
 public class MainWsGenMojo extends AbstractWsGenMojo {
 
@@ -36,6 +43,20 @@ public class MainWsGenMojo extends AbstractWsGenMojo {
     protected File destDir;
 
     /**
+     * Specify where to place generated source files, keep is turned on with this option.
+     *
+     * @parameter default-value="${project.build.directory}/generated-sources/wsgen
+     */
+    private File sourceDestDir;
+
+    /**
+     * Directory containing the generated wsdl files.
+     *
+     * @parameter default-value="${project.build.directory}/generated-sources/wsdl
+     */
+    private File resourceDestDir;
+
+    /**
      * Either ${build.outputDirectory} or ${build.testOutputDirectory}.
      */
     @Override
@@ -44,7 +65,78 @@ public class MainWsGenMojo extends AbstractWsGenMojo {
     }
 
     @Override
+    protected File getSourceDestDir() {
+        return sourceDestDir;
+    }
+
+    @Override
+    protected void addSourceRoot(String sourceDir) {
+        project.addCompileSourceRoot(sourceDir);
+    }
+
+    @Override
+    protected File getResourceDestDir() {
+        return resourceDestDir;
+    }
+
+    @Override
+    protected File getDefaultSrcOut() {
+        return new File(project.getBuild().getDirectory(), "generated-sources/wsgen");
+    }
+
+    @Override
     protected File getClassesDir() {
         return new File(project.getBuild().getOutputDirectory());
     }
+    
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        super.execute();
+        if (genWsdl) {
+            try {
+                attachWsdl();
+            } catch (IOException ex) {
+                throw new MojoExecutionException("Failed to execute wsgen", ex);
+            }
+        }
+
+    }
+
+    private void attachWsdl() throws IOException {
+        File target = new File(project.getBuild().getDirectory());
+        if (!"war".equalsIgnoreCase(project.getPackaging())) {
+            // META-INF/wsdl for jar etc packagings
+            target = new File(project.getBuild().getOutputDirectory(), "META-INF/wsdl");
+        } else {
+            // WEB-INF/wsdl for war
+            String targetPath = null;
+            Plugin war = (Plugin) project.getBuild().getPluginsAsMap().get("org.apache.maven.plugins:maven-war-plugin");
+            for (PluginExecution exec : war.getExecutions()) {
+                //check execution/configuration
+                String s = getWebappDirectory(exec.getConfiguration());
+                if (s != null) {
+                    targetPath = s;
+                    break;
+                }
+            }
+            if (targetPath == null) {
+                //check global plugin configuration
+                targetPath = getWebappDirectory(war.getConfiguration());
+            }
+            target = targetPath != null ? new File(targetPath) : new File(target, project.getBuild().getFinalName());
+            target = new File(target, "WEB-INF/wsdl");
+        }
+        target.mkdirs();
+        getLog().debug("Packaging WSDL(s) to: " + target);
+        FileUtils.copyDirectory(getResourceDestDir(), target);
+    }
+
+    private String getWebappDirectory(Object conf) {
+        if (conf == null) {
+            return null;
+        }
+        Xpp3Dom el = ((Xpp3Dom) conf).getChild("webappDirectory");
+        return el != null ? el.getValue() : null;
+    }
+
 }

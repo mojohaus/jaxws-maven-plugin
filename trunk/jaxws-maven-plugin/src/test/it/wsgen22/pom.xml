@@ -53,6 +53,7 @@
                             <destDir>${project.build.directory}/custom/classes</destDir>
                             <extension>true</extension>
                             <genWsdl>true</genWsdl>
+                            <xnocompile>false</xnocompile>
                             <!-- implied by <resourceDestDir>...
                             <keep>true</keep>
                             -->
