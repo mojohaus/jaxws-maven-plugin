@@ -26,6 +26,7 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
+import org.apache.maven.model.Build;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
@@ -53,7 +54,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     /**
      * Keep generated files.
      * 
-     * @parameter default-value="false"
+     * @parameter default-value="true"
      */
     protected boolean keep;
 
@@ -81,6 +82,14 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     private List<String> args;
 
     /**
+     * Turn off compilation after code generation and let generated sources be
+     * compiled by maven during compilation phase; keep is turned on with this option.
+     *
+     * @parameter default-value="true"
+     */
+    private boolean xnocompile;
+
+    /**
      * Map of of plugin artifacts.
      *
      * @parameter expression="${plugin.artifactMap}"
@@ -94,6 +103,10 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     protected abstract File getDestDir();
 
     protected abstract File getSourceDestDir();
+
+    protected abstract void addSourceRoot(String sourceDir);
+
+    protected abstract File getDefaultSrcOut();
 
     /**
      * Need to build a URLClassloader since Maven removed it form the chain
@@ -159,17 +172,22 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     protected List<String> getCommonArgs() throws MojoExecutionException {
         List<String> commonArgs = new ArrayList<String>();
 
-        if (getSourceDestDir() != null) {
+        if (!isDefaultSrc(getSourceDestDir()) || keep) {
+            commonArgs.add("-keep");
             commonArgs.add("-s");
             commonArgs.add(getSourceDestDir().getAbsolutePath());
             getSourceDestDir().mkdirs();
+            addSourceRoot(getSourceDestDir().getAbsolutePath());
         }
 
-        commonArgs.add("-d");
-        commonArgs.add(getDestDir().getAbsolutePath());
-
-        if (keep || getSourceDestDir() != null) {
-            commonArgs.add("-keep");
+        File destDir = getDestDir();
+        if (xnocompile && isDefaultOut(getDestDir())) {
+            destDir = null;//new File(project.getBuild().getDirectory(), "dummy-ws");
+        }
+        if (destDir != null) {
+            destDir.mkdirs();
+            commonArgs.add("-d");
+            commonArgs.add(destDir.getAbsolutePath());
         }
 
         if (verbose) {
@@ -189,13 +207,16 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
             commonArgs.add("-extension");
         }
 
+        if(xnocompile){
+            commonArgs.add("-Xnocompile");
+        }
+
         // add additional command line options
         if (args != null) {
             for (String arg : args) {
                 commonArgs.add(arg);
             }
         }
-
         return commonArgs;
     }
     
@@ -217,5 +238,16 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
             getLog().warn("'" + arg + "' is not supported by jaxws-tools:" + v);
         }
         return isSupported;
+    }
+
+    private boolean isDefaultOut(File wsout) {
+        Build b = project.getBuild();
+        String out = b.getOutputDirectory();
+        String testOut = b.getTestOutputDirectory();
+        return wsout.equals(new File(out)) || wsout.equals(new File(testOut));
+    }
+
+    private boolean isDefaultSrc(File srcout) {
+        return srcout.equals(getDefaultSrcOut());
     }
 }
