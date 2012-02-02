@@ -106,6 +106,14 @@ public class WsImportMojoITCase {
     }
 
     @Test
+    public void jaxwscommons4() throws IOException {
+        project = new File(PROJECTS_DIR, "jaxwscommons-4");
+
+        assertFilePresent("target/generated-sources/wsimport/sample/ProcessOrder_Service.java");
+        assertFilePresent("target/generated-sources/wsimport/tests/CustomOrder_Service.java");
+    }
+
+    @Test
     public void jaxwscommons49() throws IOException {
         project = new File(PROJECTS_DIR, "jaxwscommons-49");
 
