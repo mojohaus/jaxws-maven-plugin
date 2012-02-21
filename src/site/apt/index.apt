@@ -53,6 +53,8 @@ JAX-WS Maven Plugin
 
   * {{{examples/using-wsdlLocation.html}Using wsdlLocation as a path prefix for multiple WSDL URLs}}
 
+  * {{{examples/using-binding-files.html}Using binding files}}
+
   * There are also some buildable examples in
   {{{http://java.net/projects/jax-ws-commons/sources/svn/show/trunk/jaxws-maven-plugin/src/it}SVN repository}}.
 
