@@ -46,7 +46,7 @@ Usage
         </executions>
         <configuration>
           <!-- The name of your generated source package -->
-          <packageName>com.example.myschema</packageName>
+          <packageName>com.example.myservice</packageName>
         </configuration>
 
         <!-- if you want to use a specific version of JAX-WS, you can do so like this -->
