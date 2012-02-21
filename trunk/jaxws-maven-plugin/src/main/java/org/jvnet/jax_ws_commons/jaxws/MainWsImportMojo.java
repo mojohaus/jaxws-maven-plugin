@@ -30,8 +30,9 @@ import java.io.File;
 public class MainWsImportMojo extends WsImportMojo {
 
     /**
-     * Specify where to place output generated classes
-     * Set to "" to turn it off
+     * Specify where to place output generated classes. Use <code>xnocompile</code>
+     * to turn this off.
+     *
      * @parameter default-value="${project.build.outputDirectory}"
      */
     private File destDir;
