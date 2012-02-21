@@ -42,24 +42,24 @@ import org.codehaus.plexus.util.FileUtils;
 abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
 
     /**
-     * Specify that a WSDL file should be generated in ${resourceDestDir}
+     * Specify that a WSDL file should be generated in <code>${resourceDestDir}</code>.
      * 
      * @parameter default-value="false"
      */
     protected boolean genWsdl;
 
     /**
-     * service endpoint implementation class name.
+     * Service endpoint implementation class name.
      * 
      * @parameter 
      */
     private String sei;
 
     /**
-     * Used in conjunction with genWsdl to specify the protocol to use in the 
-     * wsdl:binding.  Value values are "soap1.1" or "Xsoap1.2", default is "soap1.1". 
-     * "Xsoap1.2" is not standard and can only be used in conjunction with the 
-     * -extensions option
+     * Used in conjunction with <code>genWsdl<code> to specify the protocol to use in the
+     * <code>wsdl:binding</code>. Valid values are "<code>soap1.1</code>" or "<code>Xsoap1.2</code>",
+     * default is "<code>soap1.1</code>". "<code>Xsoap1.2</code>" is not standard
+     * and can only be used in conjunction with the <code>extension</code> option.
      * 
      * @parameter 
      */
@@ -75,7 +75,7 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
 
     /**
      * Specify the Service name to use in the generated WSDL.
-     * Used in conjunction with the -wsdl option.
+     * Used in conjunction with the <code>genWsdl</code> option.
      *
      * @parameter
      */
@@ -83,21 +83,23 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
 
     /**
      * Specify the Port name to use in the generated WSDL.
-     * Used in conjunction with the -wsdl option.
+     * Used in conjunction with the <code>genWsdl</code> option.
      *
      * @parameter
      */
     private String portname;
 
     /**
-     * Inline schemas in the generated wsdl.
-     * Used in conjunction with the -wsdl option.
+     * Inline schemas in the generated WSDL.
+     * Used in conjunction with the <code>genWsdl</code> option.
      *
      * @parameter default-value="false"
      */
     private boolean inlineSchemas;
 
     /**
+     * Turn off compilation after code generation and let generated sources be
+     * compiled by maven during compilation phase; keep is turned on with this option.
      *
      * @parameter default-value="false"
      */

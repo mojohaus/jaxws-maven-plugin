@@ -25,7 +25,7 @@ import org.apache.maven.plugin.MojoFailureException;
  * (into the generate test source directory).
  *
  * <p>
- * Due to <a href="http://jira.codehaus.org/browse/MNG-1508">MNG-1508</a>, this requires 2.0.5 or higher.
+ * <code>${maven.test.skip}</code> property is honored. If it is set, code generation is skipped.
  * </p>
  *
  * @goal wsgen-test
@@ -36,11 +36,12 @@ import org.apache.maven.plugin.MojoFailureException;
 public class TestWsGenMojo extends AbstractWsGenMojo {
     
     /**
-     * Specify where to place output generated classes
-     * Set to "" to turn it off
+     * Specify where to place output generated classes. Use <code>xnocompile</code>
+     * to turn this off.
+     *
      * @parameter default-value="${project.build.testOutputDirectory}"
      */
-    protected File destDir;
+    private File destDir;
 
     /**
      * Specify where to place generated source files, keep is turned on with this option.
@@ -56,7 +57,7 @@ public class TestWsGenMojo extends AbstractWsGenMojo {
      */
     private File resourceDestDir;
 
-/**
+    /**
      * Set this to "true" to bypass code generation.
      *
      * @parameter expression="${maven.test.skip}"

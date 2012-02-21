@@ -22,6 +22,10 @@ import org.apache.maven.plugin.MojoExecutionException;
  * Parses wsdl and binding files and generates Java code needed to access it
  * (for tests).
  *
+ * <p>
+ * <code>${maven.test.skip}</code> property is honored. If it is set, code generation is skipped.
+ * </p>
+ *
  * @goal wsimport-test
  * @phase generate-test-sources
  * @requiresDependencyResolution
@@ -32,8 +36,9 @@ import org.apache.maven.plugin.MojoExecutionException;
 public class TestWsImportMojo extends WsImportMojo {
 
     /**
-     * Specify where to place output generated classes
-     * Set to "" to turn it off
+     * Specify where to place output generated classes. Use <code>xnocompile</code>
+     * to turn this off.
+     *
      * @parameter default-value="${project.build.testOutputDirectory}"
      */
     private File destDir;

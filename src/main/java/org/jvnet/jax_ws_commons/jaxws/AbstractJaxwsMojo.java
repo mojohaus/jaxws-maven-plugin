@@ -45,7 +45,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     protected MavenProject project;
 
     /**
-     * Output messages about what the tool is doing
+     * Output messages about what the tool is doing.
      * 
      * @parameter default-value="false"
      */

@@ -68,29 +68,29 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     private File catalog;
 
     /**
-     * Set HTTP/HTTPS proxy. Format is [user[:password]@]proxyHost[:proxyPort]
+     * Set HTTP/HTTPS proxy. Format is <code>[user[:password]@]proxyHost[:proxyPort]</code>.
      * 
      * @parameter
      */
     private String httpproxy;
 
     /**
-     * Directory containing wsdl files.
+     * Directory containing WSDL files.
      *
      * @parameter default-value="${basedir}/src/wsdl"
      */
     private File wsdlDirectory;
 
     /**
-     * List of files to use for wsdls. If not specified, all .wsdl files 
-     * in the wsdlDirectory will be used.
+     * List of files to use for WSDLs. If not specified, all <code>.wsdl</code>
+     * files in the <code>wsdlDirectory</code> will be used.
      * 
      * @parameter
      */
     protected List<String> wsdlFiles;
 
     /**
-     * List of external wsdl urls to be compiled.
+     * List of external WSDL URLs to be compiled.
      * 
      * @parameter
      */
@@ -104,8 +104,8 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     protected File bindingDirectory;
 
     /**
-     * List of files to use for bindings.If not specified, all .xml files 
-     * in the bindingDirectory will be used.
+     * List of files to use for bindings. If not specified, all <code>.xml</code>
+     * files in the <code>bindingDirectory</code> will be used.
      * 
      * @parameter
      */
@@ -115,7 +115,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * &#64;WebService.wsdlLocation and &#64;WebServiceClient.wsdlLocation value.
      * 
      * <p>
-     * Can end with asterisk in which case relative path of the wsdl will
+     * Can end with asterisk in which case relative path of the WSDL will
      * be appended to the given <code>wsdlLocation</code>.
      * </p>
      *
@@ -190,21 +190,21 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     private boolean genJWS;
 
     /**
-     * Maps headers not bound to the request or response messages to Java method params.
+     * Maps headers not bound to the request or response messages to Java method parameters.
      *
      * @parameter default-value="false"
      */
     private Boolean xadditionalHeaders;
 
     /**
-     * Turn on debug message
+     * Turn on debug message.
      *
      * @parameter default-value="false"
      */
     private boolean xdebug;
 
     /**
-     * Binding W3C EndpointReferenceType to Java. By default Wsimport follows spec and does not bind
+     * Binding W3C EndpointReferenceType to Java. By default WsImport follows spec and does not bind
      * EndpointReferenceType to Java and uses the spec provided {@link javax.xml.ws.wsaddressing.W3CEndpointReference}
      *
      * @parameter default-value="false"
@@ -238,8 +238,8 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     private boolean xdisableAuthenticator;
 
     /**
-     * Specify optional XJC-specific parameters that should simply be passed to xjc
-     * using -B option of WsImport command.
+     * Specify optional XJC-specific parameters that should simply be passed to <code>xjc</code>
+     * using <code>-B</code> option of WsImport command.
      * <p>
      * Multiple elements can be specified, and each token must be placed in its own list.
      * </p>
