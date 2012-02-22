@@ -87,7 +87,7 @@ public class WsImportMojoITCase {
         //-wsdlLocation
         assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/MyGreeter.java", "http://example.com:43210/my?wsdl");
         //default dependency on 2.2.x
-        assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "JAX-WS RI 2.2.6");
+        assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "JAX-WS RI 2.2.7");
         //-target 2.0
         assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "Generated source version: 2.0");
         //-XadditionalHeaders
@@ -100,7 +100,7 @@ public class WsImportMojoITCase {
         assertFilePresent("target/test-classes/wsimport/test/schema/SumType.class");
         assertFilePresent("target/generated-sources/test-wsimport/wsimport/test/SumUtil.java");
         assertFileNotPresent("target/classes/wsimport/test/AddService.class");
-        assertFileContains("target/generated-sources/test-wsimport/wsimport/test/SumUtil.java", "JAX-WS RI 2.2.6");
+        assertFileContains("target/generated-sources/test-wsimport/wsimport/test/SumUtil.java", "JAX-WS RI 2.2.7");
         //-target (default) - for 2.2.x it should be 2.2
         assertFileContains("target/generated-sources/test-wsimport/wsimport/test/SumUtil.java", "Generated source version: 2.2");
     }

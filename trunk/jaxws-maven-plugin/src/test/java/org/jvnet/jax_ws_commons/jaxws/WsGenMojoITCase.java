@@ -108,7 +108,7 @@ public class WsGenMojoITCase {
         //-wsdl:Xsoap12 + -extension
         assertFileContains("target/wsdl/EchoService.wsdl", "http://schemas.xmlsoap.org/wsdl/soap12/");
         //default dependency on 2.2.x
-        assertFileContains("target/wsdl/EchoService.wsdl", "JAX-WS RI 2.2.6");
+        assertFileContains("target/wsdl/EchoService.wsdl", "JAX-WS RI 2.2.7");
 
         //check AddService
         assertFilePresent("target/classes/org/jvnet/jax_ws_commons/jaxws/test/jaxws/Add.class");
@@ -127,7 +127,7 @@ public class WsGenMojoITCase {
         assertFileNotPresent("target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/TService.java");
         assertFileNotPresent("target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/jaxws/HelloResponse.java");
         //default dependency on 2.2.x
-        assertFileContains("target/generated-sources/test-wsdl/ExService.wsdl", "JAX-WS RI 2.2.6");
+        assertFileContains("target/generated-sources/test-wsdl/ExService.wsdl", "JAX-WS RI 2.2.7");
         //-portname
         assertFileContains("target/generated-sources/test-wsdl/ExService.wsdl", "port name=\"ExPort\"");
         //-servicename
