@@ -18,10 +18,7 @@ package org.jvnet.jax_ws_commons.jaxws;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -135,34 +132,6 @@ public class WsImportMojoITCase {
         assertFileContains("target/generated-sources/wsimport/test/jaxwscommons_62/A.java", "http://example.com/mywebservices/a.wsdl");
         assertFileContains("target/generated-sources/wsimport/test/jaxwscommons_62/B.java", "http://example.com/mywebservices/b/b.wsdl");
         assertFileContains("target/generated-sources/wsimport/test/jaxwscommons_62/C.java", "jaxwscommons-62/src/mywsdls/c.wsdl");
-    }
-
-    /**
-     * only two 'releases' of JAX-WS RI should be referenced/downloaded
-     * to local (test) repo: 2.1.7 and the latest integrated one
-     */
-    @Test
-    public void riVersions() {
-        File wsDir = new File(new File(PROJECTS_DIR.getParentFile(), "it-repo"), "com/sun/xml/ws");
-        FilenameFilter ff = new FilenameFilter() {
-
-            @Override
-            public boolean accept(File dir, String name) {
-                return new File(dir, name).isDirectory();
-            }
-        };
-        
-        File versions = new File(wsDir, "jaxws-rt");
-        List<String> list = Arrays.asList(versions.list(ff));
-        Assert.assertEquals(list.size(), 2);
-        Assert.assertTrue(list.contains("2.1.7"));
-        Assert.assertTrue(list.contains(System.getProperty("jaxws-ri.version")));
-        
-        versions = new File(wsDir, "jaxws-tools");
-        list = Arrays.asList(versions.list(ff));
-        Assert.assertEquals(list.size(), 2);
-        Assert.assertTrue(list.contains("2.1.7"));
-        Assert.assertTrue(list.contains(System.getProperty("jaxws-ri.version")));
     }
 
     private void assertFilePresent(String path) {
