@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Oracle.
+ * Copyright 2011-2012 Oracle.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,7 +18,10 @@ package org.jvnet.jax_ws_commons.jaxws;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -73,7 +76,10 @@ public class WsImportMojoITCase {
     @Test
     public void wsimport22() throws IOException {
         project = new File(PROJECTS_DIR, "wsimport22");
-
+        String v = System.getProperty("jaxws-ri.version");
+        //remove 'promoted-' from the version string
+        String version = v.substring(0, v.indexOf('-')) + v.substring(v.lastIndexOf('-'));
+        
         //check HelloWs
         assertFilePresent("target/classes/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.class");
         assertFileNotPresent("target/test-classes/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.class");
@@ -87,7 +93,7 @@ public class WsImportMojoITCase {
         //-wsdlLocation
         assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/MyGreeter.java", "http://example.com:43210/my?wsdl");
         //default dependency on 2.2.x
-        assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "JAX-WS RI 2.2.7");
+        assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "JAX-WS RI " + version);
         //-target 2.0
         assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "Generated source version: 2.0");
         //-XadditionalHeaders
@@ -100,7 +106,7 @@ public class WsImportMojoITCase {
         assertFilePresent("target/test-classes/wsimport/test/schema/SumType.class");
         assertFilePresent("target/generated-sources/test-wsimport/wsimport/test/SumUtil.java");
         assertFileNotPresent("target/classes/wsimport/test/AddService.class");
-        assertFileContains("target/generated-sources/test-wsimport/wsimport/test/SumUtil.java", "JAX-WS RI 2.2.7");
+        assertFileContains("target/generated-sources/test-wsimport/wsimport/test/SumUtil.java", "JAX-WS RI " + version);
         //-target (default) - for 2.2.x it should be 2.2
         assertFileContains("target/generated-sources/test-wsimport/wsimport/test/SumUtil.java", "Generated source version: 2.2");
     }
@@ -129,6 +135,34 @@ public class WsImportMojoITCase {
         assertFileContains("target/generated-sources/wsimport/test/jaxwscommons_62/A.java", "http://example.com/mywebservices/a.wsdl");
         assertFileContains("target/generated-sources/wsimport/test/jaxwscommons_62/B.java", "http://example.com/mywebservices/b/b.wsdl");
         assertFileContains("target/generated-sources/wsimport/test/jaxwscommons_62/C.java", "jaxwscommons-62/src/mywsdls/c.wsdl");
+    }
+
+    /**
+     * only two 'releases' of JAX-RI should be referenced/downloaded
+     * to local (test) repo: 2.1.7 and the latest integrated one
+     */
+    @Test
+    public void riVersions() {
+        File wsDir = new File(new File(PROJECTS_DIR.getParentFile(), "it-repo"), "com/sun/xml/ws");
+        FilenameFilter ff = new FilenameFilter() {
+
+            @Override
+            public boolean accept(File dir, String name) {
+                return new File(dir, name).isDirectory();
+            }
+        };
+        
+        File versions = new File(wsDir, "jaxws-rt");
+        List<String> list = Arrays.asList(versions.list(ff));
+        Assert.assertEquals(list.size(), 2);
+        Assert.assertTrue(list.contains("2.1.7"));
+        Assert.assertTrue(list.contains(System.getProperty("jaxws-ri.version")));
+        
+        versions = new File(wsDir, "jaxws-tools");
+        list = Arrays.asList(versions.list(ff));
+        Assert.assertEquals(list.size(), 2);
+        Assert.assertTrue(list.contains("2.1.7"));
+        Assert.assertTrue(list.contains(System.getProperty("jaxws-ri.version")));
     }
 
     private void assertFilePresent(String path) {

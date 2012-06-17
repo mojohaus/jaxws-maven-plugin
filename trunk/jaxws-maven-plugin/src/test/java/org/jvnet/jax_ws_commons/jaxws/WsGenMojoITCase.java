@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Oracle.
+ * Copyright 2011-2012 Oracle.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -92,6 +92,9 @@ public class WsGenMojoITCase {
     @Test
     public void wsgen22() throws IOException {
         project = new File(PROJECTS_DIR, "wsgen22");
+        String v = System.getProperty("jaxws-ri.version");
+        //remove 'promoted-' from the version string
+        String version = v.substring(0, v.indexOf('-')) + v.substring(v.lastIndexOf('-'));
 
         //check EchoService
         assertFilePresent("target/custom/sources/org/jvnet/jax_ws_commons/jaxws/test/jaxws/EchoResponse.java");
@@ -108,7 +111,7 @@ public class WsGenMojoITCase {
         //-wsdl:Xsoap12 + -extension
         assertFileContains("target/wsdl/EchoService.wsdl", "http://schemas.xmlsoap.org/wsdl/soap12/");
         //default dependency on 2.2.x
-        assertFileContains("target/wsdl/EchoService.wsdl", "JAX-WS RI 2.2.7");
+        assertFileContains("target/wsdl/EchoService.wsdl", "JAX-WS RI " + version);
 
         //check AddService
         assertFilePresent("target/classes/org/jvnet/jax_ws_commons/jaxws/test/jaxws/Add.class");
@@ -127,7 +130,7 @@ public class WsGenMojoITCase {
         assertFileNotPresent("target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/TService.java");
         assertFileNotPresent("target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/jaxws/HelloResponse.java");
         //default dependency on 2.2.x
-        assertFileContains("target/generated-sources/test-wsdl/ExService.wsdl", "JAX-WS RI 2.2.7");
+        assertFileContains("target/generated-sources/test-wsdl/ExService.wsdl", "JAX-WS RI " + version);
         //-portname
         assertFileContains("target/generated-sources/test-wsdl/ExService.wsdl", "port name=\"ExPort\"");
         //-servicename
