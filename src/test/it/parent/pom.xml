@@ -39,7 +39,7 @@
     </modules>-->
 
     <properties>
-        <jaxws.version>2.2.7-promoted-b17</jaxws.version>
+        <jaxws-ri.version>2.2.7-promoted-b73</jaxws-ri.version>
         <jaxws.plugin.version>2.3-SNAPSHOT</jaxws.plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -49,7 +49,7 @@
             <dependency>
                 <groupId>com.sun.xml.ws</groupId>
                 <artifactId>jaxws-rt</artifactId>
-                <version>${jaxws.version}</version>
+                <version>${jaxws-ri.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -104,7 +104,7 @@
         <dependency>
             <groupId>com.sun.xml.ws</groupId>
             <artifactId>jaxws-tools</artifactId>
-            <version>2.2.7-promoted-b17</version>
+            <version>${jaxws-tools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jvnet.jaxb2_commons</groupId>
@@ -150,6 +150,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jaxws-tools.version>2.2.7-promoted-b73</jaxws-tools.version>
     </properties>
 
     <build>
@@ -359,6 +360,7 @@
                             <mavenOpts>${ittest-proxy}</mavenOpts>
                             <properties>
                                 <jaxws.plugin.version>${project.version}</jaxws.plugin.version>
+                                <jaxws-ri.version>${jaxws-tools.version}</jaxws-ri.version>
                             </properties>
                             <setupIncludes>
                                 <setupInclude>parent/pom.xml</setupInclude>
@@ -416,6 +418,7 @@
                                 <configuration>
                                     <systemPropertyVariables>
                                         <it.projects.dir>${project.build.directory}/it</it.projects.dir>
+                                        <jaxws-ri.version>${jaxws-tools.version}</jaxws-ri.version>
                                     </systemPropertyVariables>
                                     <encoding>${project.build.sourceEncoding}</encoding>
                                 </configuration>
