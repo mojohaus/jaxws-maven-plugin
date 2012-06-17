@@ -138,7 +138,7 @@ public class WsImportMojoITCase {
     }
 
     /**
-     * only two 'releases' of JAX-RI should be referenced/downloaded
+     * only two 'releases' of JAX-WS RI should be referenced/downloaded
      * to local (test) repo: 2.1.7 and the latest integrated one
      */
     @Test
