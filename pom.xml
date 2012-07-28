@@ -150,7 +150,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jaxws-tools.version>2.2.7-promoted-b73</jaxws-tools.version>
+        <jaxws-tools.version>2.2.8-promoted-b131</jaxws-tools.version>
     </properties>
 
     <build>
