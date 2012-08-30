@@ -74,8 +74,10 @@ public class WsImportMojoITCase {
     public void wsimport22() throws IOException {
         project = new File(PROJECTS_DIR, "wsimport22");
         String v = System.getProperty("jaxws-ri.version");
-        //remove 'promoted-' from the version string
-        String version = v.substring(0, v.indexOf('-')) + v.substring(v.lastIndexOf('-'));
+        //remove 'promoted-' from the version string if needed
+        int i = v.indexOf('-');
+        int j = v.lastIndexOf('-');
+        String version = i != j ? v.substring(0, i) + v.substring(j) : v;
         
         //check HelloWs
         assertFilePresent("target/classes/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.class");
