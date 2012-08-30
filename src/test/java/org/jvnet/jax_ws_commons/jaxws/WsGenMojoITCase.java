@@ -93,8 +93,10 @@ public class WsGenMojoITCase {
     public void wsgen22() throws IOException {
         project = new File(PROJECTS_DIR, "wsgen22");
         String v = System.getProperty("jaxws-ri.version");
-        //remove 'promoted-' from the version string
-        String version = v.substring(0, v.indexOf('-')) + v.substring(v.lastIndexOf('-'));
+        //remove 'promoted-' from the version string if needed
+        int i = v.indexOf('-');
+        int j = v.lastIndexOf('-');
+        String version = i != j ? v.substring(0, i) + v.substring(j) : v;
 
         //check EchoService
         assertFilePresent("target/custom/sources/org/jvnet/jax_ws_commons/jaxws/test/jaxws/EchoResponse.java");
