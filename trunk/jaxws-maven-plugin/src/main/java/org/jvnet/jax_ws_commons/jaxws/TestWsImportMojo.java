@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
@@ -38,6 +38,10 @@ package org.jvnet.jax_ws_commons.jaxws;
 
 import java.io.File;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 
 /**
  * Parses wsdl and binding files and generates Java code needed to access it
@@ -47,42 +51,34 @@ import org.apache.maven.plugin.MojoExecutionException;
  * <code>${maven.test.skip}</code> property is honored. If it is set, code generation is skipped.
  * </p>
  *
- * @goal wsimport-test
- * @phase generate-test-sources
- * @requiresDependencyResolution
- * @description JAXWS 2.x Plugin.
- *
  * @author Kohsuke Kawaguchi
  */
+@Mojo(name = "wsimport-test", defaultPhase = LifecyclePhase.GENERATE_TEST_SOURCES, requiresDependencyResolution = ResolutionScope.TEST)
 public class TestWsImportMojo extends WsImportMojo {
 
     /**
      * Specify where to place output generated classes. Use <code>xnocompile</code>
      * to turn this off.
-     *
-     * @parameter default-value="${project.build.testOutputDirectory}"
      */
+    @Parameter(defaultValue = "${project.build.testOutputDirectory}")
     private File destDir;
 
     /**
      * Specify where to place generated source files, keep is turned on with this option.
-     *
-     * @parameter default-value="${project.build.directory}/generated-sources/test-wsimport"
      */
+    @Parameter(defaultValue = "${project.build.directory}/generated-sources/test-wsimport")
     private File sourceDestDir;
 
     /**
      * Specify where to generate JWS implementation file.
-     *
-     * @parameter default-value="${project.build.testSourceDirectory}"
      */
+    @Parameter(defaultValue = "${project.build.testSourceDirectory}")
     private File implDestDir;
 
     /**
      * Set this to "true" to bypass code generation.
-     *
-     * @parameter expression="${maven.test.skip}"
      */
+    @Parameter(property = "maven.test.skip")
     private boolean skip;
 
     /**

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
@@ -39,6 +39,10 @@ package org.jvnet.jax_ws_commons.jaxws;
 import java.io.File;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 
 /**
  * Reads a JAX-WS service endpoint implementation class
@@ -54,35 +58,32 @@ import org.apache.maven.plugin.MojoFailureException;
  * @requiresDependencyResolution
  * @description generate JAX-WS wrapper beans.
  */
+@Mojo(name = "wsgen-test", defaultPhase = LifecyclePhase.PROCESS_TEST_CLASSES, requiresDependencyResolution = ResolutionScope.TEST)
 public class TestWsGenMojo extends AbstractWsGenMojo {
     
     /**
      * Specify where to place output generated classes. Use <code>xnocompile</code>
      * to turn this off.
-     *
-     * @parameter default-value="${project.build.testOutputDirectory}"
      */
+    @Parameter(defaultValue = "${project.build.testOutputDirectory}")
     private File destDir;
 
     /**
      * Specify where to place generated source files, keep is turned on with this option.
-     *
-     * @parameter default-value="${project.build.directory}/generated-sources/test-wsgen"
      */
+    @Parameter(defaultValue = "${project.build.directory}/generated-sources/test-wsgen")
     private File sourceDestDir;
 
     /**
      * Directory containing the generated wsdl files.
-     *
-     * @parameter default-value="${project.build.directory}/generated-sources/test-wsdl
      */
+    @Parameter(defaultValue = "${project.build.directory}/generated-sources/test-wsdl")
     private File resourceDestDir;
 
     /**
      * Set this to "true" to bypass code generation.
-     *
-     * @parameter expression="${maven.test.skip}"
      */
+    @Parameter(property = "maven.test.skip")
     private boolean skip;
 
     /**
