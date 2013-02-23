@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
@@ -51,6 +51,7 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.plexus.util.FileUtils;
 
 /**
@@ -64,16 +65,14 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
 
     /**
      * Specify that a WSDL file should be generated in <code>${resourceDestDir}</code>.
-     * 
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     protected boolean genWsdl;
 
     /**
      * Service endpoint implementation class name.
-     * 
-     * @parameter 
      */
+    @Parameter
     private String sei;
 
     /**
@@ -81,55 +80,47 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      * <code>wsdl:binding</code>. Valid values are "<code>soap1.1</code>" or "<code>Xsoap1.2</code>",
      * default is "<code>soap1.1</code>". "<code>Xsoap1.2</code>" is not standard
      * and can only be used in conjunction with the <code>extension</code> option.
-     * 
-     * @parameter 
      */
+    @Parameter
     private String protocol;
 
     /**
      * List of plugin artifacts.
-     *
-     * @parameter expression="${plugin.artifacts}"
-     * @readonly
      */
+    @Parameter(property = "plugin.artifacts", readonly = true)
     private List<Artifact> pluginArtifacts;
 
     /**
      * Specify the Service name to use in the generated WSDL.
      * Used in conjunction with the <code>genWsdl</code> option.
-     *
-     * @parameter
      */
+    @Parameter
     private String servicename;
 
     /**
      * Specify the Port name to use in the generated WSDL.
      * Used in conjunction with the <code>genWsdl</code> option.
-     *
-     * @parameter
      */
+    @Parameter
     private String portname;
 
     /**
      * Inline schemas in the generated WSDL.
      * Used in conjunction with the <code>genWsdl</code> option.
-     *
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     private boolean inlineSchemas;
 
     /**
      * Turn off compilation after code generation and let generated sources be
      * compiled by maven during compilation phase; keep is turned on with this option.
-     *
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     private boolean xnocompile;
 
     /**
-     *
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     private boolean xdonotoverwrite;
     
     protected abstract File getResourceDestDir();

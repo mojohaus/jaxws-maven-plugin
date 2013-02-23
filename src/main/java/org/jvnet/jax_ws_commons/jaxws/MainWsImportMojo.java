@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
@@ -37,39 +37,36 @@
 package org.jvnet.jax_ws_commons.jaxws;
 
 import java.io.File;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 
 /**
  * Parses wsdl and binding files and generates Java code needed to access it.
  *
- * @goal wsimport
- * @phase generate-sources
- * @requiresDependencyResolution
- * @description JAXWS 2.x Plugin.
- *
  * @author Kohsuke Kawaguchi
  */
+@Mojo(name = "wsimport", defaultPhase = LifecyclePhase.GENERATE_SOURCES, requiresDependencyResolution = ResolutionScope.RUNTIME)
 public class MainWsImportMojo extends WsImportMojo {
 
     /**
      * Specify where to place output generated classes. Use <code>xnocompile</code>
      * to turn this off.
-     *
-     * @parameter default-value="${project.build.outputDirectory}"
      */
+    @Parameter(defaultValue = "${project.build.outputDirectory}")
     private File destDir;
 
     /**
      * Specify where to place generated source files, keep is turned on with this option.
-     *
-     * @parameter default-value="${project.build.directory}/generated-sources/wsimport
      */
+    @Parameter(defaultValue = "${project.build.directory}/generated-sources/wsimport")
     private File sourceDestDir;
 
     /**
      * Specify where to generate JWS implementation file.
-     *
-     * @parameter default-value="${project.build.sourceDirectory}"
      */
+    @Parameter(defaultValue = "${project.build.sourceDirectory}")
     private File implDestDir;
 
     /**

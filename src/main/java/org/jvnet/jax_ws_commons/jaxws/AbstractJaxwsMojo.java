@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
@@ -50,6 +50,7 @@ import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
 import org.apache.maven.model.Build;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
 /**
@@ -60,37 +61,32 @@ import org.apache.maven.project.MavenProject;
 abstract class AbstractJaxwsMojo extends AbstractMojo {
 
     /**
-     * @parameter expression="${project}"
-     * @readonly
      */
+    @Parameter(property = "project",readonly = true)
     protected MavenProject project;
 
     /**
      * Output messages about what the tool is doing.
-     * 
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     protected boolean verbose;
 
     /**
      * Keep generated files.
-     * 
-     * @parameter default-value="true"
      */
+    @Parameter(defaultValue = "true")
     protected boolean keep;
 
     /**
      * Allow to use the JAXWS Vendor Extensions.
-     * 
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     protected boolean extension;
 
     /**
      * Specify character encoding used by source files.
-     *
-     * @parameter default-value="${project.build.sourceEncoding}"
      */
+    @Parameter(property = "project.build.sourceEncoding")
     private String encoding;
 
     /**
@@ -98,25 +94,22 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
      * <p>
      * Multiple elements can be specified, and each token must be placed in its own list.
      * </p>
-     * @parameter
      */
+    @Parameter
     private List<String> args;
 
     /**
      * Turn off compilation after code generation and let generated sources be
      * compiled by maven during compilation phase; keep is turned on with this option.
-     *
-     * @parameter default-value="true"
      */
+    @Parameter(defaultValue = "true")
     private boolean xnocompile;
 
     /**
      * Map of of plugin artifacts.
-     *
-     * @parameter expression="${plugin.artifactMap}"
-     * @readonly
      */
-    private Map pluginArtifactMap;
+    @Parameter(property = "plugin.artifactMap", readonly = true)
+    private Map<String, Artifact> pluginArtifactMap;
 
     /**
      * Either ${build.outputDirectory} or ${build.testOutputDirectory}.

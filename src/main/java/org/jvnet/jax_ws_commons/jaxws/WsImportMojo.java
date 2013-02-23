@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
@@ -57,6 +57,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Settings;
 
@@ -75,61 +76,53 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
 
     /**
      * The package in which the source files will be generated.
-     * 
-     * @parameter
      */
+    @Parameter
     private String packageName;
 
     /**
      * Catalog file to resolve external entity references support TR9401, 
      * XCatalog, and OASIS XML Catalog format.
-     * 
-     * @parameter
      */
+    @Parameter
     private File catalog;
 
     /**
      * Set HTTP/HTTPS proxy. Format is <code>[user[:password]@]proxyHost[:proxyPort]</code>.
-     * 
-     * @parameter
      */
+    @Parameter
     private String httpproxy;
 
     /**
      * Directory containing WSDL files.
-     *
-     * @parameter default-value="${basedir}/src/wsdl"
      */
+    @Parameter(defaultValue = "${basedir}/src/wsdl")
     private File wsdlDirectory;
 
     /**
      * List of files to use for WSDLs. If not specified, all <code>.wsdl</code>
      * files in the <code>wsdlDirectory</code> will be used.
-     * 
-     * @parameter
      */
+    @Parameter
     protected List<String> wsdlFiles;
 
     /**
      * List of external WSDL URLs to be compiled.
-     * 
-     * @parameter
      */
+    @Parameter
     private List wsdlUrls;
 
     /**
      * Directory containing binding files.
-     * 
-     * @parameter default-value="${basedir}/src/jaxws"
      */
+    @Parameter(defaultValue = "${basedir}/src/jaxws")
     protected File bindingDirectory;
 
     /**
      * List of files to use for bindings. If not specified, all <code>.xml</code>
      * files in the <code>bindingDirectory</code> will be used.
-     * 
-     * @parameter
      */
+    @Parameter
     protected List bindingFiles;
 
     /**
@@ -162,25 +155,22 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * <p>
      * Note: External binding files cannot be used if asterisk notation is in place.
      * </p>
-     * 
-     * @parameter
      */
+    @Parameter
     private String wsdlLocation;
 
     /**
      * Generate code as per the given JAXWS specification version.
      * Setting "2.0" will cause JAX-WS to generate artifacts
      * that run with JAX-WS 2.0 runtime.
-     * 
-     * @parameter
      */
+    @Parameter
     private String target;
 
     /**
      * Suppress wsimport output.
-     *
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     private boolean quiet;
 
     /**
@@ -188,9 +178,8 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * Implies <code>genJWS=true</code>.
      *
      * Note: It is a QName string, formatted as: "{" + Namespace URI + "}" + local part
-     *
-     * @parameter
      */
+    @Parameter
     private String implServiceName = null;
 
     /**
@@ -198,64 +187,56 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * Implies <code>genJWS=true</code>.
      *
      * Note: It is a QName string, formatted as: "{" + Namespace URI + "}" + local part
-     *
-     * @parameter
      */
+    @Parameter
     private String implPortName = null;
 
     /**
      * Generate stubbed JWS implementation file.
-     *
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     private boolean genJWS;
 
     /**
      * Maps headers not bound to the request or response messages to Java method parameters.
-     *
-     * @parameter default-value="false"
      */
-    private Boolean xadditionalHeaders;
+    @Parameter(defaultValue = "false")
+    private boolean xadditionalHeaders;
 
     /**
      * Turn on debug message.
-     *
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     private boolean xdebug;
 
     /**
      * Binding W3C EndpointReferenceType to Java. By default WsImport follows spec and does not bind
      * EndpointReferenceType to Java and uses the spec provided {@link javax.xml.ws.wsaddressing.W3CEndpointReference}
-     *
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     private boolean xnoAddressingDataBinding;
 
     /**
      * Specify the location of authorization file.
-     *
-     * @parameter 
      */
+    @Parameter
     protected File xauthFile;
 
     /**
      * Disable the SSL Hostname verification while fetching WSDL(s).
-     *
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     private boolean xdisableSSLHostnameVerification;
 
     /**
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     private boolean xuseBaseResourceAndURLToLoadWSDL;
 
     /**
      * Disable Authenticator used by JAX-WS RI, <code>xauthfile</code> will be ignored if set.
-     *
-     * @parameter default-value="false"
      */
+    @Parameter(defaultValue = "false")
     private boolean xdisableAuthenticator;
 
     /**
@@ -264,21 +245,19 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * <p>
      * Multiple elements can be specified, and each token must be placed in its own list.
      * </p>
-     * @parameter
      */
+    @Parameter
     private List<String> xjcArgs;
 
     /**
      * The folder containing flag files used to determine if the output is stale.
-     *
-     * @parameter default-value="${project.build.directory}/jaxws/stale"
      */
+    @Parameter(defaultValue = "${project.build.directory}/jaxws/stale")
     private File staleFile;
 
     /**
-     * @parameter default-value="${settings}"
-     * @readonly
      */
+    @Parameter(property = "settings", readonly = true)
     private Settings settings;
 
     protected abstract File getImplDestDir();
