@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
@@ -137,6 +137,14 @@ public class WsImportMojoITCase {
         assertFileContains("target/generated-sources/wsimport/test/jaxwscommons_62/A.java", "http://example.com/mywebservices/a.wsdl");
         assertFileContains("target/generated-sources/wsimport/test/jaxwscommons_62/B.java", "http://example.com/mywebservices/b/b.wsdl");
         assertFileContains("target/generated-sources/wsimport/test/jaxwscommons_62/C.java", "jaxwscommons-62/src/mywsdls/c.wsdl");
+    }
+
+    @Test
+    public void jaxwscommons87() throws IOException {
+        project = new File(PROJECTS_DIR, "jaxwscommons-87");
+
+        assertFileNotPresent("org/jvnet/jax_ws_commons/jaxws/test/EchoService_Service_handler.xml");
+        assertFilePresent("child/target/classes/org/jvnet/jax_ws_commons/jaxws/test/EchoService_Service_handler.xml");
     }
 
     private void assertFilePresent(String path) {
