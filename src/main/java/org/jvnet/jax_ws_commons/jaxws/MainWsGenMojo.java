@@ -145,7 +145,9 @@ public class MainWsGenMojo extends AbstractWsGenMojo {
             target = targetPath != null ? new File(targetPath) : new File(target, project.getBuild().getFinalName());
             target = new File(target, "WEB-INF/wsdl");
         }
-        target.mkdirs();
+        if (!target.mkdirs() && !target.exists()) {
+            getLog().warn("Cannot create directory: " + target.getAbsolutePath());
+        }
         getLog().debug("Packaging WSDL(s) to: " + target);
         FileUtils.copyDirectory(getResourceDestDir(), target);
     }

@@ -306,8 +306,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * @throws IOException
      */
     private void processLocalWsdlFiles(URL[] wsdls)
-        throws MojoExecutionException,  IOException
-    {
+            throws MojoExecutionException, IOException {
         for (URL u : wsdls) {
             String url = u.toExternalForm();
             if (isOutputStale(url)) {
@@ -334,8 +333,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * @throws MojoExecutionException
      */
     private void processWsdlViaUrls()
-        throws MojoExecutionException, IOException
-    {
+            throws MojoExecutionException, IOException {
         for (int i = 0; wsdlUrls != null && i < wsdlUrls.size(); i++) {
             String wsdlUrl = wsdlUrls.get(i).toString();
             if (isOutputStale(wsdlUrl)) {
@@ -371,8 +369,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * @throws MojoExecutionException
      */
     private ArrayList<String> getWsImportArgs(String relativePath)
-        throws MojoExecutionException
-    {
+            throws MojoExecutionException {
         ArrayList<String> args = new ArrayList<String>();
         args.addAll(getCommonArgs());
 
@@ -432,9 +429,12 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                 args.add("-implPortName");
                 args.add(implPortName);
             }
-            getImplDestDir().mkdirs();
+            File implDestDir = getImplDestDir();
+            if (!implDestDir.mkdirs() && !implDestDir.exists()) {
+                getLog().warn("Cannot create directory: " + implDestDir.getAbsolutePath());
+            }
             args.add("-implDestDir");
-            args.add(getImplDestDir().getAbsolutePath());
+            args.add(implDestDir.getAbsolutePath());
         }
 
         if(xdebug){
@@ -711,19 +711,21 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         return stale;
     }
 
-    private void touchStaleFile(String resource)
-        throws IOException
-    {
+    private void touchStaleFile(String resource) throws IOException {
         File stFile = new File(staleFile, STALE_FILE_PREFIX + getHash(resource));
-        if ( !stFile.exists() )
-        {
-            stFile.getParentFile().mkdirs();
-            stFile.createNewFile();
-            getLog().debug( "Stale flag file created.[" + stFile.getAbsolutePath() + "]");
-        }
-        else
-        {
-            stFile.setLastModified( System.currentTimeMillis() );
+        if (!stFile.exists()) {
+            File staleDir = stFile.getParentFile();
+            if (!staleDir.mkdirs() && !staleDir.exists()) {
+                getLog().warn("Cannot create directory: " + staleDir.getAbsolutePath());
+            }
+            if (!stFile.createNewFile()) {
+                getLog().warn("Cannot create file: " + stFile.getAbsolutePath());
+            }
+            getLog().debug("Stale flag file created.[" + stFile.getAbsolutePath() + "]");
+        } else {
+            if (!stFile.setLastModified(System.currentTimeMillis())) {
+                getLog().warn("Stale file has not been updated!");
+            }
         }
     }
 
