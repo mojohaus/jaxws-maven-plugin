@@ -29,7 +29,7 @@
     </parent>
 
     <groupId>org.jvnet.jax-ws-commons.test</groupId>
-    <artifactId>mojo.it.jaxwscommons83</artifactId>
+    <artifactId>mojo.it.jaxwscommons87</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
