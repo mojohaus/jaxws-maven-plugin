@@ -195,14 +195,9 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         }
 
         File destDir = getDestDir();
-        if (xnocompile && isDefaultOut(getDestDir())) {
-            destDir = null;//new File(project.getBuild().getDirectory(), "dummy-ws");
-        }
-        if (destDir != null) {
-            destDir.mkdirs();
-            commonArgs.add("-d");
-            commonArgs.add(destDir.getAbsolutePath());
-        }
+        destDir.mkdirs();
+        commonArgs.add("-d");
+        commonArgs.add(destDir.getAbsolutePath());
 
         if (verbose) {
             commonArgs.add("-verbose");
@@ -252,13 +247,6 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
             getLog().warn("'" + arg + "' is not supported by jaxws-tools:" + v);
         }
         return isSupported;
-    }
-
-    private boolean isDefaultOut(File wsout) {
-        Build b = project.getBuild();
-        String out = b.getOutputDirectory();
-        String testOut = b.getTestOutputDirectory();
-        return wsout.equals(new File(out)) || wsout.equals(new File(testOut));
     }
 
     private boolean isDefaultSrc(File srcout) {
