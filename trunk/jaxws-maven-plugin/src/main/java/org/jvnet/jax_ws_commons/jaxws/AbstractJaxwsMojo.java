@@ -47,7 +47,6 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
-import org.apache.maven.model.Build;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -190,12 +189,16 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
             commonArgs.add("-keep");
             commonArgs.add("-s");
             commonArgs.add(getSourceDestDir().getAbsolutePath());
-            getSourceDestDir().mkdirs();
+            if (!getSourceDestDir().mkdirs() && !getSourceDestDir().exists()) {
+                getLog().warn("Cannot create directory: " + getSourceDestDir().getAbsolutePath());
+            }
             addSourceRoot(getSourceDestDir().getAbsolutePath());
         }
 
         File destDir = getDestDir();
-        destDir.mkdirs();
+        if (!destDir.mkdirs() && !destDir.exists()) {
+            getLog().warn("Cannot create directory: " + destDir.getAbsolutePath());
+        }
         commonArgs.add("-d");
         commonArgs.add(destDir.getAbsolutePath());
 

@@ -170,8 +170,7 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      * @return a list of arguments
      * @throws MojoExecutionException
      */
-    private ArrayList<String> getWsGenArgs(String aSei)
-        throws MojoExecutionException {
+    private ArrayList<String> getWsGenArgs(String aSei) throws MojoExecutionException {
         ArrayList<String> args = new ArrayList<String>();
         args.addAll(getCommonArgs());
 
@@ -210,7 +209,9 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
             }
 
             File resourceDir = getResourceDestDir();
-            resourceDir.mkdirs();
+            if (!resourceDir.mkdirs() && !resourceDir.exists()) {
+                getLog().warn("Cannot create directory: " + resourceDir.getAbsolutePath());
+            }
             args.add("-r");
             args.add(resourceDir.getAbsolutePath());
             Resource r = new Resource();
