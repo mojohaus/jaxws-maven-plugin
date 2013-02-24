@@ -321,6 +321,10 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                 getLog().info("jaxws:wsimport args: " + args);
                 wsImport(args);
                 touchStaleFile(url);
+            } else {
+                getLog().info("Ignoring: " + url);
+                //http://java.net/jira/browse/JAX_WS_COMMONS-95
+                addSourceRoot(getSourceDestDir().getAbsolutePath());
             }
         }
     }
