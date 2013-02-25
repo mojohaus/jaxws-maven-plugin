@@ -244,7 +244,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     
     protected boolean isArgSupported(String arg) throws MojoExecutionException {
         boolean isSupported = true;
-        Artifact a = (Artifact) pluginArtifactMap.get("com.sun.xml.ws:jaxws-tools");
+        Artifact a = pluginArtifactMap.get("com.sun.xml.ws:jaxws-tools");
         String v = null;
         try {
             ArtifactVersion av = a.getSelectedVersion();
@@ -289,6 +289,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private String[] getCP() throws ArtifactResolutionException, ArtifactNotFoundException {
         Set<Artifact> cp = new HashSet<Artifact>();
         Artifact originatingArtifact = artifactFactory.createBuildArtifact("dummy", "dummy", "1.0", "jar");
