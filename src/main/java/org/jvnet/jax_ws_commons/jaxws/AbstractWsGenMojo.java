@@ -163,6 +163,7 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      * @return a list of arguments
      * @throws MojoExecutionException
      */
+    @SuppressWarnings("unchecked")
     private ArrayList<String> getWsGenArgs(String aSei) throws MojoExecutionException {
         ArrayList<String> args = new ArrayList<String>();
         args.addAll(getCommonArgs());
@@ -236,7 +237,7 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
         ClassLoader cl = null;
         try {
             cl = new URLClassLoader(new URL[]{directory.toURI().toURL()});
-            for (String s : (List<String>) FileUtils.getFileAndDirectoryNames(directory, "**/*.class", null, false, true, true, false)) {
+            for (String s : FileUtils.getFileAndDirectoryNames(directory, "**/*.class", null, false, true, true, false)) {
                 try {
                     String clsName = s.replace(File.separator, ".");
                     Class<?> c = cl.loadClass(clsName.substring(0, clsName.length() - 6));

@@ -32,8 +32,8 @@ public final class Invoker {
         String[] wsargs = new String[args.length - 1];
         System.arraycopy(args, 1, wsargs, 0, args.length - 1);
         try {
-            Class compileTool = ClassLoader.getSystemClassLoader().loadClass(args[0]);
-            Constructor ctor = compileTool.getConstructor(OutputStream.class);
+            Class<?> compileTool = ClassLoader.getSystemClassLoader().loadClass(args[0]);
+            Constructor<?> ctor = compileTool.getConstructor(OutputStream.class);
             Object tool = ctor.newInstance(System.out);
             Method runMethod = compileTool.getMethod("run", String[].class);
             runMethod.invoke(tool, new Object[]{wsargs});

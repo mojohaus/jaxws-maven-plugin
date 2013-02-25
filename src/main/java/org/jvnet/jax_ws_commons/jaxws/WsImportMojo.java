@@ -112,7 +112,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * List of external WSDL URLs to be compiled.
      */
     @Parameter
-    private List wsdlUrls;
+    private List<?> wsdlUrls;
 
     /**
      * Directory containing binding files.
@@ -125,7 +125,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * files in the <code>bindingDirectory</code> will be used.
      */
     @Parameter
-    protected List bindingFiles;
+    protected List<String> bindingFiles;
 
     /**
      * &#64;WebService.wsdlLocation and &#64;WebServiceClient.wsdlLocation value.
@@ -480,7 +480,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             bindings = new File[bindingFiles.size()];
             for ( int i = 0 ; i < bindingFiles.size(); ++i ) 
             {
-                String schemaName = (String) bindingFiles.get( i );
+                String schemaName = bindingFiles.get(i);
                 File file = new File( schemaName );
                 if (!file.isAbsolute()) {
                     file = new File( bindingDirectory, schemaName );
@@ -507,6 +507,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      */
     private URL[] getWSDLFiles() {
         URL[] files;
+        @SuppressWarnings("unchecked")
         Set<Artifact> dependencyArtifacts = project.getDependencyArtifacts();
         List<URL> urlCpath = new ArrayList<URL>(dependencyArtifacts.size());
         for (Artifact a: dependencyArtifacts) {
@@ -522,7 +523,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             files = new URL[ wsdlFiles.size() ];
             for ( int i = 0 ; i < wsdlFiles.size(); ++i )
             {
-                String wsdlFileName = (String) wsdlFiles.get( i );
+                String wsdlFileName = wsdlFiles.get(i);
                 File wsdl = new File(wsdlFileName);
                 if (!wsdl.isAbsolute()) {
                     wsdl = new File(wsdlDirectory, wsdlFileName);
@@ -729,7 +730,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      */
     static String getActiveHttpProxy(Settings s) {
         String retVal = null;
-        for (Proxy p : (List<Proxy>) s.getProxies()) {
+        for (Proxy p : s.getProxies()) {
             if (p.isActive() && "http".equals(p.getProtocol())) {
                 StringBuilder sb = new StringBuilder();
                 String user = p.getUsername();
