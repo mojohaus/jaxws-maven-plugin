@@ -37,7 +37,7 @@ public class WsImportMojoITCase {
     public WsImportMojoITCase() {
     }
 
-    @Test
+    @Test(enabled = false)
     public void wsimport217() throws IOException {
         project = new File(PROJECTS_DIR, "wsimport217");
 

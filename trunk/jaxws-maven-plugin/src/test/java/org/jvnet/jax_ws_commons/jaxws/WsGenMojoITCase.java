@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
@@ -39,7 +39,7 @@ public class WsGenMojoITCase {
     public WsGenMojoITCase() {
     }
 
-    @Test
+    @Test(enabled = false)
     public void wsgen217() throws IOException {
         project = new File(PROJECTS_DIR, "wsgen217");
 
@@ -167,6 +167,14 @@ public class WsGenMojoITCase {
 
         assertFilePresent("target/cst/WEB-INF/wsdl/NewWebService.wsdl");
         assertJarContains("jaxwscommons-3-1.0.war", "WEB-INF/wsdl/NewWebService.wsdl");
+    }
+
+    @Test
+    public void jaxwscommons91() throws IOException {
+        project = new File(PROJECTS_DIR, "jaxwscommons-91");
+
+        assertFilePresent("target/generated-sources/wsgen/com/mycompany/mavenproject2/jaxws/CustomExBean.java");
+        assertFilePresent("target/generated-sources/wsdl/NewWebService.wsdl");
     }
 
     private void assertFilePresent(String path) {

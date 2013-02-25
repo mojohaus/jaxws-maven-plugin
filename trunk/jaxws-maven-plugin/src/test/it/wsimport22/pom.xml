@@ -3,7 +3,7 @@
 
     DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 
-    Copyright (c) 2011-2012 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2011-2013 Oracle and/or its affiliates. All rights reserved.
 
     Oracle licenses this file to You under the Apache License, Version 2.0
     (the "License"); you may not use this file except in compliance with
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org.jvnet.jaxb2_commons</groupId>
             <artifactId>jaxb2-basics-runtime</artifactId>
-            <version>0.6.3</version>
+            <version>0.6.4</version>
         </dependency>
     </dependencies>
 
@@ -57,7 +57,7 @@
                     <dependency>
                         <groupId>org.jvnet.jaxb2_commons</groupId>
                         <artifactId>jaxb2-basics</artifactId>
-                        <version>0.6.3</version>
+                        <version>0.6.4</version>
                     </dependency>
                 </dependencies>
                 <executions>
