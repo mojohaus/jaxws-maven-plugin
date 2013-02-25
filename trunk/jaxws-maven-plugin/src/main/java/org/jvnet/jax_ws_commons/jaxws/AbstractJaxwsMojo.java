@@ -60,7 +60,6 @@ import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -122,6 +121,9 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
      */
     @Parameter(defaultValue = "true")
     private boolean xnocompile;
+
+    @Parameter
+    private File executable;
 
     /**
      * Map of of plugin artifacts.
@@ -270,15 +272,22 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         StreamConsumer sc = new DefaultConsumer();
         try {
             Commandline cmd = new Commandline();
-            cmd.setExecutable(new File(new File(System.getProperty("java.home"), "bin"), getJavaExec()).getAbsolutePath());
+            if (executable != null) {
+                if (executable.isFile() && executable.canExecute()) {
+                    cmd.setExecutable(new File(new File(System.getProperty("java.home"), "bin"), getJavaExec()).getAbsolutePath());
+                } else {
+                    throw new MojoExecutionException("Cannot execute: " + executable.getAbsolutePath());
+                }
+            } else {
+                cmd.setExecutable(new File(new File(System.getProperty("java.home"), "bin"), getJavaExec()).getAbsolutePath());
+                String[] classpath = getCP();
+                cmd.createArg().setLine("-Xbootclasspath/p:" + classpath[0]);
+                cmd.createArg().setLine("-cp " + project.getBuild().getOutputDirectory() + File.pathSeparator + classpath[1]);
+                cmd.createArg().setLine("org.jvnet.jax_ws_commons.jaxws.Invoker");
+                cmd.createArg().setLine(getMain());
+            }
             cmd.setWorkingDirectory(project.getBasedir());
-            String[] classpath = getCP();
-            cmd.createArg().setLine("-Xbootclasspath/p:" + classpath[0]);
-            cmd.createArg().setLine("-Dcom.sun.tools.xjc.Options.findServices=true");
 //            cmd.createArg().setLine("-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=6000");
-            cmd.createArg().setLine("-cp " + project.getBuild().getOutputDirectory() + File.pathSeparator + classpath[1]);
-            cmd.createArg().setLine("org.jvnet.jax_ws_commons.jaxws.Invoker");
-            cmd.createArg().setLine(getMain());
             for (String arg : args) {
                 cmd.createArg().setLine(arg);
             }
@@ -302,7 +311,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
                     List<String> toExclude = new ArrayList<String>();
                     for (Exclusion e : d.getExclusions()) {
                         toExclude.add(e.getGroupId() + ":" + e.getArtifactId());
-                        getLog().info("excluding: " + e.getGroupId() + ":" + e.getArtifactId());
+                        getLog().debug("excluding: " + e.getGroupId() + ":" + e.getArtifactId());
                     }
                     if (("jaxws-tools".equals(p.getArtifactId()) && "com.sun.xml.ws".equals(p.getGroupId()))
                             || ("webservices-tools".equals(p.getArtifactId())) && "org.glassfish.metro".equals(p.getGroupId())) {
@@ -310,7 +319,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
                     }
                     toInclude.add(pluginArtifactMap.get(d.getGroupId() + ":" + d.getArtifactId()));
                     ArtifactFilter filter = new ExcludesArtifactFilter(toExclude);
-                    getLog().info("resolving: " + d.getGroupId() + ":" + d.getArtifactId());
+                    getLog().debug("resolving: " + d.getGroupId() + ":" + d.getArtifactId());
                     ArtifactResolutionResult res = artifactResolver.resolveTransitively(
                             toInclude,
                             originatingArtifact, localRepository, remoteRepositories,
