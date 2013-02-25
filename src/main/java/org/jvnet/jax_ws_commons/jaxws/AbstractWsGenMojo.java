@@ -36,7 +36,6 @@
 
 package org.jvnet.jax_ws_commons.jaxws;
 
-import com.sun.tools.ws.WsGen;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -130,11 +129,6 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
     @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException {
-
-        // Need to build a URLClassloader since Maven removed it form the chain
-        ClassLoader parent = this.getClass().getClassLoader();
-        String orginalSystemClasspath = this.initClassLoader(parent);
-
         Set<String> seis = new HashSet<String>();
         if (sei != null) {
             seis.add(sei);
@@ -150,19 +144,18 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
         try {
             for (String aSei : seis) {
                 ArrayList<String> args = getWsGenArgs(aSei);
-
-                if (WsGen.doMain(args.toArray(new String[args.size()])) != 0)
-                    throw new MojoExecutionException("Error executing: wsgen " + args);
+                exec(args);
             }
         } catch (MojoExecutionException e) {
             throw e;
         } catch (Throwable e) {
             throw new MojoExecutionException("Failed to execute wsgen",e);
-        } finally {
-            // Set back the old classloader
-            Thread.currentThread().setContextClassLoader(parent);
-            System.setProperty("java.class.path", orginalSystemClasspath);
         }
+    }
+
+    @Override
+    protected String getMain() {
+        return "com.sun.tools.ws.wscompile.WsgenTool";
     }
 
     /**

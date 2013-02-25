@@ -36,7 +36,6 @@
 
 package org.jvnet.jax_ws_commons.jaxws;
 
-import com.sun.tools.ws.WsImport;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -44,18 +43,21 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Formatter;
 import java.util.List;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Proxy;
@@ -263,41 +265,25 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     protected abstract File getImplDestDir();
 
     @Override
-    public void execute()
-        throws MojoExecutionException
-    {
-
-        // Need to build a URLClassloader since Maven removed it form the chain
-        ClassLoader parent = this.getClass().getClassLoader();
-        String originalSystemClasspath = this.initClassLoader( parent );
-
-        try
-        {
-
+    public void execute() throws MojoExecutionException {
+        try {
             URL[] wsdls = getWSDLFiles();
             if (wsdls.length == 0 && (wsdlUrls == null || wsdlUrls.isEmpty())) {
-                getLog().info( "No WSDLs are found to process, Specify atleast one of the following parameters: wsdlFiles, wsdlDirectory or wsdlUrls.");
+                getLog().info("No WSDLs are found to process, Specify atleast one of the following parameters: wsdlFiles, wsdlDirectory or wsdlUrls.");
                 return;
             }
-
             this.processWsdlViaUrls();
-
             this.processLocalWsdlFiles(wsdls);
-        }
-        catch ( MojoExecutionException e )
-        {
+        } catch (MojoExecutionException e) {
             throw e;
+        } catch (Exception e) {
+            throw new MojoExecutionException(e.getMessage(), e);
         }
-        catch ( Exception e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
-        finally
-        {
-            // Set back the old classloader
-            Thread.currentThread().setContextClassLoader( parent );
-            System.setProperty( "java.class.path", originalSystemClasspath );
-        }
+    }
+
+    @Override
+    protected String getMain() {
+        return "com.sun.tools.ws.wscompile.WsimportTool";
     }
 
     /**
@@ -318,7 +304,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                 ArrayList<String> args = getWsImportArgs(relPath);
                 args.add(url);
                 getLog().info("jaxws:wsimport args: " + args);
-                wsImport(args);
+                exec(args);
                 touchStaleFile(url);
             } else {
                 getLog().info("Ignoring: " + url);
@@ -341,26 +327,10 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                 ArrayList<String> args = getWsImportArgs(null);
                 args.add(wsdlUrl);
                 getLog().info("jaxws:wsimport args: " + args);
-                wsImport(args);
+                exec(args);
                 touchStaleFile(wsdlUrl);
             }
         }
-    }
-
-    /**
-     * Invoke wsimport compiler
-     * @param args
-     * @throws MojoExecutionException
-     */
-    private void wsImport( ArrayList<String> args )
-        throws MojoExecutionException
-    {
-      try {
-        if (WsImport.doMain(args.toArray(new String[args.size()])) != 0)
-            throw new MojoExecutionException("Error executing: wsimport " + args);
-      } catch (Throwable t) {
-          throw new MojoExecutionException( "Error executing: wsimport " + args, t);
-      }
     }
 
     /**
@@ -535,10 +505,18 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * 
      * @return An array of schema files to be parsed by the schema compiler.
      */
-    private URL[] getWSDLFiles()
-    {
+    private URL[] getWSDLFiles() {
         URL[] files;
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        Set<Artifact> dependencyArtifacts = project.getDependencyArtifacts();
+        List<URL> urlCpath = new ArrayList<URL>(dependencyArtifacts.size());
+        for (Artifact a: dependencyArtifacts) {
+            try {
+                urlCpath.add(a.getFile().toURI().toURL());
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(WsImportMojo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        ClassLoader loader = new URLClassLoader(urlCpath.toArray(new URL[urlCpath.size()]));
         if ( wsdlFiles != null )
         {
             files = new URL[ wsdlFiles.size() ];
@@ -560,9 +538,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                 }
                 getLog().debug( "The wsdl File is '" +  wsdlFileName + "' from '" + files[i] + "'");
             }
-        }
-        else
-        {
+        } else {
             getLog().debug( "The wsdl Directory is " + wsdlDirectory );
             if (wsdlDirectory.exists()) {
                 File[] wsdls = wsdlDirectory.listFiles(new WSDLFile());

@@ -1,7 +1,7 @@
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
- * Copyright (c) 2012 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012-2013 Oracle and/or its affiliates. All rights reserved.
  *
  * Oracle licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
@@ -48,14 +48,12 @@ public class RepositoryITCase {
 
         File versions = new File(wsDir, "jaxws-rt");
         List<String> list = Arrays.asList(versions.list(ff));
-        Assert.assertEquals(list.size(), 2);
-        Assert.assertTrue(list.contains("2.1.7"));
+        Assert.assertEquals(list.size(), 1);
         Assert.assertTrue(list.contains(System.getProperty("jaxws-ri.version")));
 
         versions = new File(wsDir, "jaxws-tools");
         list = Arrays.asList(versions.list(ff));
-        Assert.assertEquals(list.size(), 2);
-        Assert.assertTrue(list.contains("2.1.7"));
+        Assert.assertEquals(list.size(), 1);
         Assert.assertTrue(list.contains(System.getProperty("jaxws-ri.version")));
     }
 }
