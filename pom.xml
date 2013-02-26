@@ -213,7 +213,10 @@
                     <target>1.6</target>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
-                    <compilerArgument>-Xlint:all</compilerArgument>
+                    <compilerArguments>
+                        <Xlint:all/>
+                        <proc:none/>
+                    </compilerArguments>
                 </configuration>
             </plugin>
             <plugin>
