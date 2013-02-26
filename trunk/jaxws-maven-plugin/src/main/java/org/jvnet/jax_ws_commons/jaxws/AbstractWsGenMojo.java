@@ -158,6 +158,25 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
         return "com.sun.tools.ws.wscompile.WsgenTool";
     }
 
+    @Override
+    protected String getExtraClasspath() {
+        //TODO: do we really need all deps on the wsgen cp?
+        //if yes then consider creating manifest-only jar
+        //to prevent long cmd line issue on WIN
+//        StringBuilder buf = new StringBuilder();
+//        buf.append(getDestDir().getAbsolutePath());
+//        for (Artifact a : (Set<Artifact>)project.getArtifacts()) {
+//            buf.append(File.pathSeparatorChar);
+//            buf.append(a.getFile().getAbsolutePath());
+//        }
+//        for (Artifact a : pluginArtifacts) {
+//            buf.append(File.pathSeparatorChar);
+//            buf.append(a.getFile().getAbsolutePath());
+//        }
+//        args.add(buf.toString());
+        return getClassesDir().getAbsolutePath();
+    }
+
     /**
      * Construct wsgen arguments
      * @return a list of arguments
@@ -168,19 +187,6 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
         ArrayList<String> args = new ArrayList<String>();
         args.addAll(getCommonArgs());
 
-        args.add("-cp");
-        StringBuilder buf = new StringBuilder();
-        buf.append(getDestDir().getAbsolutePath());
-        for (Artifact a : (Set<Artifact>)project.getArtifacts()) {
-            buf.append(File.pathSeparatorChar);
-            buf.append(a.getFile().getAbsolutePath());
-        }
-        for (Artifact a : pluginArtifacts) {
-            buf.append(File.pathSeparatorChar);
-            buf.append(a.getFile().getAbsolutePath());
-        }
-        args.add(buf.toString());
-
         if (this.genWsdl) {
             if (this.protocol != null) {
                 args.add("-wsdl:" + this.protocol);
@@ -189,7 +195,7 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
             }
 
             if (inlineSchemas) {
-                args.add("-inlineSchemas");
+                maybeUnsupportedOption("-inlineSchemas", null, args);
             }
 
             if (servicename != null) {

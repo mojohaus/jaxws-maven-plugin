@@ -116,12 +116,28 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     private List<String> args;
 
     /**
+     * Specify optional JVM options.
+     * <p>
+     * Multiple elements can be specified, and each token must be placed in its own list.
+     * </p>
+     */
+    @Parameter
+    private List<String> vmArgs;
+
+    /**
      * Turn off compilation after code generation and let generated sources be
      * compiled by maven during compilation phase; keep is turned on with this option.
      */
     @Parameter(defaultValue = "true")
     private boolean xnocompile;
 
+    /**
+     * Path to the executable. Should be either wsgen or wsimport
+     * but basically any script which will understand passed in arguments
+     * will work.
+     *
+     * @since 2.3
+     */
     @Parameter
     private File executable;
 
@@ -137,7 +153,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
      * @since 2.3
      */
     @Component
-    protected ArtifactResolver artifactResolver;
+    private ArtifactResolver artifactResolver;
 
     /**
      * Creates the artifact.
@@ -145,7 +161,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
      * @since 2.3
      */
     @Component
-    protected ArtifactFactory artifactFactory;
+    private ArtifactFactory artifactFactory;
 
     /**
      * ArtifactRepository of the localRepository.
@@ -153,7 +169,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
      * @since 2.3
      */
     @Parameter(defaultValue = "${localRepository}", required = true, readonly = true)
-    protected ArtifactRepository localRepository;
+    private ArtifactRepository localRepository;
 
     /**
      * The remote plugin repositories declared in the POM.
@@ -161,7 +177,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
      * @since 2.3
      */
     @Parameter(defaultValue = "${project.pluginArtifactRepositories}")
-    protected List<ArtifactRepository> remoteRepositories;
+    private List<ArtifactRepository> remoteRepositories;
 
     /**
      * For retrieval of artifact's metadata.
@@ -169,7 +185,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
      * @since 2.3
      */
     @Component
-    protected ArtifactMetadataSource metadataSource;
+    private ArtifactMetadataSource metadataSource;
 
     /*
      * Information about this plugin, used to lookup this plugin's configuration from the currently executing
@@ -193,6 +209,10 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     protected abstract void addSourceRoot(String sourceDir);
 
     protected abstract File getDefaultSrcOut();
+
+    protected String getExtraClasspath() {
+        return null;
+    }
 
     protected List<String> getCommonArgs() throws MojoExecutionException {
         List<String> commonArgs = new ArrayList<String>();
@@ -220,8 +240,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
 
         if (isArgSupported("-encoding")) {
             if (encoding != null) {
-                commonArgs.add("-encoding");
-                commonArgs.add(encoding);
+                maybeUnsupportedOption("-encoding", encoding, commonArgs);
             } else {
                 getLog().warn("Using platform encoding (" + System.getProperty("file.encoding") + "), build is platform dependent!");
             }
@@ -274,27 +293,51 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
             Commandline cmd = new Commandline();
             if (executable != null) {
                 if (executable.isFile() && executable.canExecute()) {
-                    cmd.setExecutable(new File(new File(System.getProperty("java.home"), "bin"), getJavaExec()).getAbsolutePath());
+                    cmd.setExecutable(executable.getAbsolutePath());
+                    if (getExtraClasspath() !=  null) {
+                        cmd.createArg().setLine("-cp " + getExtraClasspath());
+                    }
                 } else {
                     throw new MojoExecutionException("Cannot execute: " + executable.getAbsolutePath());
                 }
             } else {
                 cmd.setExecutable(new File(new File(System.getProperty("java.home"), "bin"), getJavaExec()).getAbsolutePath());
+                // add additional JVM options
+                if (vmArgs != null) {
+                    for (String arg : vmArgs) {
+                        cmd.createArg().setLine(arg);
+                    }
+                }
                 String[] classpath = getCP();
                 cmd.createArg().setLine("-Xbootclasspath/p:" + classpath[0]);
-                cmd.createArg().setLine("-cp " + project.getBuild().getOutputDirectory() + File.pathSeparator + classpath[1]);
+                cmd.createArg().setLine("-cp "
+                        + (getExtraClasspath() != null ? getExtraClasspath() + File.pathSeparator : "")
+                        + classpath[1]);
                 cmd.createArg().setLine("org.jvnet.jax_ws_commons.jaxws.Invoker");
                 cmd.createArg().setLine(getMain());
             }
             cmd.setWorkingDirectory(project.getBasedir());
-//            cmd.createArg().setLine("-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=6000");
             for (String arg : args) {
                 cmd.createArg().setLine(arg);
             }
             getLog().debug(cmd.toString());
-            CommandLineUtils.executeCommandLine(cmd, sc, sc);
+            if (CommandLineUtils.executeCommandLine(cmd, sc, sc) != 0) {
+                throw new MojoExecutionException("Mojo failed - check output");
+            }
         } catch (Throwable t) {
             throw new MojoExecutionException(t.getMessage(), t);
+        }
+    }
+
+    protected void maybeUnsupportedOption(String option, String value, List<String> args) {
+        if (executable == null) {
+            args.add(option);
+            if (value != null) {
+                args.add(value);
+            }
+        } else {
+            getLog().warn(option + " may not supported on older JDKs.\n"
+                    + "Use <args> to bypass this warning if really want to use it.");
         }
     }
 
