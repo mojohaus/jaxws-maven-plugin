@@ -18,11 +18,11 @@
 
 package org.jvnet.jax_ws_commons.jaxws;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import org.testng.Assert;
+import static org.jvnet.jax_ws_commons.jaxws.Assertions.assertFileContains;
+import static org.jvnet.jax_ws_commons.jaxws.Assertions.assertFileNotPresent;
+import static org.jvnet.jax_ws_commons.jaxws.Assertions.assertFilePresent;
 import org.testng.annotations.Test;
 
 /**
@@ -42,35 +42,35 @@ public class WsImportMojoITCase {
         project = new File(PROJECTS_DIR, "wsimport217");
 
         //check HelloWs
-        assertFilePresent("target/classes/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.class");
-        assertFileNotPresent("target/test-classes/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.class");
-        assertFilePresent("target/generated-sources/wsimport/org/jvnet/jax_ws_commons/wsimport/test/HelloWs_Service.java");
+        assertFilePresent(project, "target/classes/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.class");
+        assertFileNotPresent(project, "target/test-classes/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.class");
+        assertFilePresent(project, "target/generated-sources/wsimport/org/jvnet/jax_ws_commons/wsimport/test/HelloWs_Service.java");
         //this needs to be fixed as there should be a way to not generate sources
-        //assertFileNotPresent("target/jaxws/wsimport/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.java");
+        //assertFileNotPresent(project, "target/jaxws/wsimport/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.java");
 
         //check sample.wsdl (url)
-        assertFilePresent("target/custom/classes/org/jvnet/jaxwsri/sample/GreetersPortT.class");
-        assertFilePresent("target/custom/sources/org/jvnet/jaxwsri/sample/MyGreeter.java");
+        assertFilePresent(project, "target/custom/classes/org/jvnet/jaxwsri/sample/GreetersPortT.class");
+        assertFilePresent(project, "target/custom/sources/org/jvnet/jaxwsri/sample/MyGreeter.java");
         //-wsdlLocation
-        assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/MyGreeter.java", "http://example.com:43210/my?wsdl");
+        assertFileContains(project, "target/custom/sources/org/jvnet/jaxwsri/sample/MyGreeter.java", "http://example.com:43210/my?wsdl");
         //dependency on jaxws-tools-2.1.7
-        assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "JAX-WS RI 2.1.7");
+        assertFileContains(project, "target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "JAX-WS RI 2.1.7");
         //-target 2.0
-        assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "Generated source version: 2.0");
+        assertFileContains(project, "target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "Generated source version: 2.0");
         //-XadditionalHeaders
-        assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "Holder<String> additionalHeader2");
+        assertFileContains(project, "target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "Holder<String> additionalHeader2");
 
         //check AddService
-        assertFilePresent("target/test-classes/wsimport/test/AddService.class");
-        assertFilePresent("target/test-classes/wsimport/test/schema/SumType.class");
-        assertFilePresent("target/generated-sources/test-wsimport/wsimport/test/SumUtil.java");
-        assertFileNotPresent("target/classes/wsimport/test/AddService.class");
-        assertFileContains("target/generated-sources/test-wsimport/wsimport/test/SumUtil.java", "JAX-WS RI 2.1.7");
+        assertFilePresent(project, "target/test-classes/wsimport/test/AddService.class");
+        assertFilePresent(project, "target/test-classes/wsimport/test/schema/SumType.class");
+        assertFilePresent(project, "target/generated-sources/test-wsimport/wsimport/test/SumUtil.java");
+        assertFileNotPresent(project, "target/classes/wsimport/test/AddService.class");
+        assertFileContains(project, "target/generated-sources/test-wsimport/wsimport/test/SumUtil.java", "JAX-WS RI 2.1.7");
         //-target (default) - for 2.1.7 it should be 2.1
-        assertFileContains("target/generated-sources/test-wsimport/wsimport/test/SumUtil.java", "Generated source version: 2.1");
+        assertFileContains(project, "target/generated-sources/test-wsimport/wsimport/test/SumUtil.java", "Generated source version: 2.1");
 
         //-encoding is not supported, warning should be present
-        assertFileContains("build.log", "'-encoding' is not supported by jaxws-tools:2.1.7");
+        assertFileContains(project, "build.log", "'-encoding' is not supported by jaxws-tools:2.1.7");
     }
 
     @Test
@@ -83,89 +83,67 @@ public class WsImportMojoITCase {
         String version = i != j ? v.substring(0, i) + v.substring(j) : v;
         
         //check HelloWs
-        assertFilePresent("target/classes/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.class");
-        assertFileNotPresent("target/test-classes/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.class");
-        assertFilePresent("target/generated-sources/wsimport/org/jvnet/jax_ws_commons/wsimport/test/HelloWs_Service.java");
+        assertFilePresent(project, "target/classes/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.class");
+        assertFileNotPresent(project, "target/test-classes/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.class");
+        assertFilePresent(project, "target/generated-sources/wsimport/org/jvnet/jax_ws_commons/wsimport/test/HelloWs_Service.java");
         //this needs to be fixed as there should be a way to not generate sources
-        //assertFileNotPresent("target/jaxws/wsimport/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.java");
+        //assertFileNotPresent(project, "target/jaxws/wsimport/org/jvnet/jax_ws_commons/wsimport/test/HelloWs.java");
 
         //check sample.wsdl (url)
-        assertFilePresent("target/custom/classes/org/jvnet/jaxwsri/sample/GreetersPortT.class");
-        assertFilePresent("target/custom/sources/org/jvnet/jaxwsri/sample/MyGreeter.java");
+        assertFilePresent(project, "target/custom/classes/org/jvnet/jaxwsri/sample/GreetersPortT.class");
+        assertFilePresent(project, "target/custom/sources/org/jvnet/jaxwsri/sample/MyGreeter.java");
         //-wsdlLocation
-        assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/MyGreeter.java", "http://example.com:43210/my?wsdl");
+        assertFileContains(project, "target/custom/sources/org/jvnet/jaxwsri/sample/MyGreeter.java", "http://example.com:43210/my?wsdl");
         //default dependency on 2.2.x
-        assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "JAX-WS RI " + version);
+        assertFileContains(project, "target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "JAX-WS RI " + version);
         //-target 2.0
-        assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "Generated source version: 2.0");
+        assertFileContains(project, "target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "Generated source version: 2.0");
         //-XadditionalHeaders
-        assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "Holder<String> additionalHeader2");
+        assertFileContains(project, "target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java", "Holder<String> additionalHeader2");
         //xjc plugins (-Xequals etc)
-        assertFileContains("target/custom/sources/org/jvnet/jaxwsri/sample/EchoType.java", "import org.jvnet.jaxb2_commons.lang.Equals;");
+        assertFileContains(project, "target/custom/sources/org/jvnet/jaxwsri/sample/EchoType.java", "import org.jvnet.jaxb2_commons.lang.Equals;");
 
         //check AddService
-        assertFilePresent("target/test-classes/wsimport/test/AddService.class");
-        assertFilePresent("target/test-classes/wsimport/test/schema/SumType.class");
-        assertFilePresent("target/generated-sources/test-wsimport/wsimport/test/SumUtil.java");
-        assertFileNotPresent("target/classes/wsimport/test/AddService.class");
-        assertFileContains("target/generated-sources/test-wsimport/wsimport/test/SumUtil.java", "JAX-WS RI " + version);
+        assertFilePresent(project, "target/test-classes/wsimport/test/AddService.class");
+        assertFilePresent(project, "target/test-classes/wsimport/test/schema/SumType.class");
+        assertFilePresent(project, "target/generated-sources/test-wsimport/wsimport/test/SumUtil.java");
+        assertFileNotPresent(project, "target/classes/wsimport/test/AddService.class");
+        assertFileContains(project, "target/generated-sources/test-wsimport/wsimport/test/SumUtil.java", "JAX-WS RI " + version);
         //-target (default) - for 2.2.x it should be 2.2
-        assertFileContains("target/generated-sources/test-wsimport/wsimport/test/SumUtil.java", "Generated source version: 2.2");
+        assertFileContains(project, "target/generated-sources/test-wsimport/wsimport/test/SumUtil.java", "Generated source version: 2.2");
     }
 
     @Test
     public void jaxwscommons4() throws IOException {
         project = new File(PROJECTS_DIR, "jaxwscommons-4");
 
-        assertFilePresent("target/generated-sources/wsimport/sample/ProcessOrder_Service.java");
-        assertFilePresent("target/generated-sources/wsimport/tests/CustomOrder_Service.java");
+        assertFilePresent(project, "target/generated-sources/wsimport/sample/ProcessOrder_Service.java");
+        assertFilePresent(project, "target/generated-sources/wsimport/tests/CustomOrder_Service.java");
     }
 
     @Test
     public void jaxwscommons49() throws IOException {
         project = new File(PROJECTS_DIR, "jaxwscommons-49");
 
-        assertFilePresent("foo/AddService.wsdl");
-        assertFilePresent("src/main/java/org/jvnet/jax_ws_commons/wsimport/test/AddService_Service.java");
-        assertFilePresent("target/classes/org/jvnet/jax_ws_commons/wsimport/test/AddService.class");
+        assertFilePresent(project, "foo/AddService.wsdl");
+        assertFilePresent(project, "src/main/java/org/jvnet/jax_ws_commons/wsimport/test/AddService_Service.java");
+        assertFilePresent(project, "target/classes/org/jvnet/jax_ws_commons/wsimport/test/AddService.class");
     }
 
     @Test
     public void jaxwscommons62() throws IOException {
         project = new File(PROJECTS_DIR, "jaxwscommons-62");
 
-        assertFileContains("target/generated-sources/wsimport/test/jaxwscommons_62/A.java", "http://example.com/mywebservices/a.wsdl");
-        assertFileContains("target/generated-sources/wsimport/test/jaxwscommons_62/B.java", "http://example.com/mywebservices/b/b.wsdl");
-        assertFileContains("target/generated-sources/wsimport/test/jaxwscommons_62/C.java", "jaxwscommons-62/src/mywsdls/c.wsdl");
+        assertFileContains(project, "target/generated-sources/wsimport/test/jaxwscommons_62/A.java", "http://example.com/mywebservices/a.wsdl");
+        assertFileContains(project, "target/generated-sources/wsimport/test/jaxwscommons_62/B.java", "http://example.com/mywebservices/b/b.wsdl");
+        assertFileContains(project, "target/generated-sources/wsimport/test/jaxwscommons_62/C.java", "jaxwscommons-62/src/mywsdls/c.wsdl");
     }
 
     @Test
     public void jaxwscommons87() throws IOException {
         project = new File(PROJECTS_DIR, "jaxwscommons-87");
 
-        assertFileNotPresent("org/jvnet/jax_ws_commons/jaxws/test/EchoService_Service_handler.xml");
-        assertFilePresent("child/target/classes/org/jvnet/jax_ws_commons/jaxws/test/EchoService_Service_handler.xml");
-    }
-
-    private void assertFilePresent(String path) {
-        File f = new File(project, path);
-        Assert.assertTrue(f.exists(), "Not found " + f.getAbsolutePath());
-    }
-
-    private void assertFileNotPresent(String path) {
-        File f = new File(project, path);
-        Assert.assertFalse(f.exists(), "Found " + f.getAbsolutePath());
-    }
-
-    private void assertFileContains(String path, String s) throws IOException {
-        File f = new File(project, path);
-        BufferedReader r = new BufferedReader(new FileReader(f));
-        String line;
-        while ((line = r.readLine()) != null) {
-            if (line.contains(s)) {
-                return;
-            }
-        }
-        Assert.fail("'" + s + "' is missing in:" + f.getAbsolutePath());
+        assertFileNotPresent(project, "org/jvnet/jax_ws_commons/jaxws/test/EchoService_Service_handler.xml");
+        assertFilePresent(project, "child/target/classes/org/jvnet/jax_ws_commons/jaxws/test/EchoService_Service_handler.xml");
     }
 }
