@@ -389,13 +389,14 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             args.add("-quiet");
         }
 
-        if (genJWS || implServiceName != null || implPortName != null) {
+        if ((genJWS || implServiceName != null || implPortName != null)
+                && isArgSupported("-generateJWS")) {
             args.add("-generateJWS");
-            if (implServiceName != null) {
+            if (implServiceName != null && isArgSupported("-implServiceName")) {
                 args.add("-implServiceName");
                 args.add(implServiceName);
             }
-            if (implPortName != null) {
+            if (implPortName != null && isArgSupported("-implPortName")) {
                 args.add("-implPortName");
                 args.add(implPortName);
             }
@@ -433,7 +434,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         if (xuseBaseResourceAndURLToLoadWSDL) {
             args.add("-XuseBaseResourceAndURLToLoadWSDL");
         }
-        if (xdisableAuthenticator) {
+        if (xdisableAuthenticator && isArgSupported("-XdisableAuthenticator")) {
             args.add("-XdisableAuthenticator");
         }
 

@@ -202,6 +202,22 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
 //    @Parameter( defaultValue = "${plugin}", readonly = true )
 //    protected PluginDescriptor pluginDescriptor;
 
+    private static final List<String> METRO_22 = new ArrayList<String>();
+    private static final List<String> METRO_221 = new ArrayList<String>();
+    private static final List<String> METRO_23 = new ArrayList<String>();
+
+    static {
+        METRO_22.add("-encoding");
+        METRO_22.add("-clientjar");
+        METRO_22.add("-generateJWS");
+        METRO_22.add("-implDestDir");
+        METRO_22.add("-implServiceName");
+        METRO_22.add("-implPortName");
+        METRO_221.addAll(METRO_22);
+        METRO_221.add("-XdisableAuthenticator");
+        METRO_23.addAll(METRO_221);
+    }
+
     protected abstract String getMain();
 
     /**
@@ -271,19 +287,37 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     protected boolean isArgSupported(String arg) throws MojoExecutionException {
         boolean isSupported = true;
         Artifact a = pluginArtifactMap.get("com.sun.xml.ws:jaxws-tools");
+        List<String> supportedArgs = null;
         String v = null;
         try {
-            ArtifactVersion av = a.getSelectedVersion();
-            v = av.toString();
-            //2.2.6+
-            if ("-encoding".equals(arg)) {
-                isSupported = av.getMajorVersion() >= 2 && av.getMinorVersion() >= 2 && av.getIncrementalVersion() >= 6;
+            if (a != null) {
+                ArtifactVersion av = a.getSelectedVersion();
+                v = av.toString();
+                if (av.getMajorVersion() == 2 && av.getMinorVersion() == 2 && av.getIncrementalVersion() == 6) {
+                    supportedArgs = METRO_22;
+                } else if (av.getMajorVersion() == 2 && av.getMinorVersion() == 2 && av.getIncrementalVersion() == 7) {
+                    supportedArgs = METRO_221;
+                } else { //if (av.getMajorVersion() >= 2 && av.getMinorVersion() >= 2 && av.getIncrementalVersion() >= 8) {
+                    supportedArgs = METRO_23;
+                }
+            } else {
+                a = pluginArtifactMap.get("org.glassfish.metro:webservices-tools");
+                ArtifactVersion av = a.getSelectedVersion();
+                v = av.toString();
+                if (av.getMajorVersion() == 2 && av.getMinorVersion() == 2 && av.getIncrementalVersion() == 0) {
+                    supportedArgs = METRO_22;
+                } else if (av.getMajorVersion() == 2 && av.getMinorVersion() == 2 && av.getIncrementalVersion() >= 1) {
+                    supportedArgs = METRO_221;
+                } else { //if (av.getMajorVersion() >= 2 && av.getMinorVersion() >= 3) {
+                    supportedArgs = METRO_23;
+                }
             }
         } catch (OverConstrainedVersionException ex) {
             throw new MojoExecutionException(ex.getMessage(), ex);
         }
+        isSupported = supportedArgs.contains(arg);
         if (!isSupported) {
-            getLog().warn("'" + arg + "' is not supported by jaxws-tools:" + v);
+            getLog().warn("'" + arg + "' is not supported by " + a.getArtifactId() + ":" + v);
         }
         return isSupported;
     }
