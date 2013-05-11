@@ -37,12 +37,17 @@
 package org.jvnet.jax_ws_commons.jaxws;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -70,7 +75,7 @@ import org.codehaus.plexus.util.cli.DefaultConsumer;
 import org.codehaus.plexus.util.cli.StreamConsumer;
 
 /**
- * 
+ *
  * @author dantran <dantran@apache.org>
  * @version $Id: AbstractJaxwsMojo.java 3240 2007-02-04 07:13:21Z dantran $ *
  */
@@ -262,7 +267,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         }
         return commonArgs;
     }
-    
+
     protected boolean isArgSupported(String arg) throws MojoExecutionException {
         boolean isSupported = true;
         Artifact a = pluginArtifactMap.get("com.sun.xml.ws:jaxws-tools");
@@ -310,11 +315,16 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
                 }
                 String[] classpath = getCP();
                 cmd.createArg().setLine("-Xbootclasspath/p:" + classpath[0]);
-                cmd.createArg().setLine("-cp "
-                        + (getExtraClasspath() != null ? getExtraClasspath() + File.pathSeparator : "")
-                        + classpath[1]);
+                cmd.createArg().setLine("-cp " + classpath[2]);
                 cmd.createArg().setLine("org.jvnet.jax_ws_commons.jaxws.Invoker");
                 cmd.createArg().setLine(getMain());
+                File pathFile = createPathFile(
+                        (getExtraClasspath() != null ? getExtraClasspath() + File.pathSeparator : "")
+                        + classpath[1]);
+                cmd.createArg().setLine("-pathfile " + pathFile.getAbsolutePath());
+                if (getExtraClasspath() != null) {
+                    cmd.createArg().setLine("-cp " + getExtraClasspath());
+                }
             }
             cmd.setWorkingDirectory(project.getBasedir());
             for (String arg : args) {
@@ -392,7 +402,9 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
             }
         }
         //add custom invoker
-        sb.append(AbstractJaxwsMojo.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm());
+        String invokerPath = AbstractJaxwsMojo.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm();
+        invokerPath = invokerPath.substring(6);
+        sb.append(invokerPath);
         sb.append(File.pathSeparator);
         //don't forget tools.jar
         File toolsJar = new File(System.getProperty("java.home"), "../lib/tools.jar");
@@ -401,10 +413,35 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         }
         sb.append(toolsJar.getAbsolutePath());
         sb.append(File.pathSeparator);
-        return new String[]{esb.substring(0, esb.length() - 1), sb.substring(0, sb.length() - 1)};
+        return new String[]{esb.substring(0, esb.length() - 1), sb.substring(0, sb.length() - 1), invokerPath};
     }
 
     private String getJavaExec() {
         return Os.isFamily(Os.FAMILY_WINDOWS) ? "java.exe" : "java";
+    }
+
+    private File createPathFile(String cp) {
+        File f = new File(System.getProperty("java.io.tmpdir"), "jm.txt");
+        if (f.exists() && f.isFile()) {
+            f.delete();
+        }
+        Properties p = new Properties();
+        p.put("cp", cp.replace(File.separatorChar, '/'));
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(f);
+            p.store(fos, null);
+        } catch (IOException ex) {
+            Logger.getLogger(AbstractJaxwsMojo.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(AbstractJaxwsMojo.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return f;
     }
 }

@@ -17,10 +17,18 @@
  */
 package org.jvnet.jax_ws_commons.jaxws;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,11 +38,29 @@ import java.util.logging.Logger;
  */
 public final class Invoker {
 
-    public static void main(String... args) {
-        String[] wsargs = new String[args.length - 1];
-        System.arraycopy(args, 1, wsargs, 0, args.length - 1);
+    public static void main(String... args) throws Exception {
+        Properties p = new Properties();
+        p.load(new FileInputStream(args[2]));
+        List<URL> cp = new ArrayList<URL>();
+        String c = p.getProperty("cp");
+        for (String s: c.split(File.pathSeparator)) {
+            try {
+                URL f = new File(s).toURI().toURL();
+                System.out.println("adding: " + f.toString());
+                cp.add(f);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(Invoker.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        URLClassLoader cl = new URLClassLoader(cp.toArray(new URL[cp.size()]));
+        String[] wsargs = new String[args.length - 3];
+        System.arraycopy(args, 3, wsargs, 0, args.length - 3);
+        ClassLoader orig = Thread.currentThread().getContextClassLoader();
+        String origJcp = System.getProperty("java.class.path");
+        Thread.currentThread().setContextClassLoader(cl);
+        System.setProperty("java.class.path", c);
         try {
-            Class<?> compileTool = ClassLoader.getSystemClassLoader().loadClass(args[0]);
+            Class<?> compileTool = cl.loadClass(args[0]);
             Constructor<?> ctor = compileTool.getConstructor(OutputStream.class);
             Object tool = ctor.newInstance(System.out);
             Method runMethod = compileTool.getMethod("run", String[].class);
@@ -53,6 +79,9 @@ public final class Invoker {
             Logger.getLogger(Invoker.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InvocationTargetException ex) {
             Logger.getLogger(Invoker.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Thread.currentThread().setContextClassLoader(orig);
+            System.setProperty("java.class.path", origJcp);
         }
     }
 }
