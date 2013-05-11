@@ -151,8 +151,8 @@
                 </os>
             </activation>
             <properties>
-                <tool.wsgen>${java.home}/../bin/wsgen.bat</tool.wsgen>
-                <tool.wsimport>${java.home}/../bin/wsimport.bat</tool.wsimport>
+                <tool.wsgen>${java.home}/../bin/wsgen.exe</tool.wsgen>
+                <tool.wsimport>${java.home}/../bin/wsimport.exe</tool.wsimport>
             </properties>
         </profile>
         <profile>
