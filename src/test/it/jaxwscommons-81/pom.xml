@@ -74,7 +74,7 @@
                             <goal>wsgen</goal>
                         </goals>
                         <configuration>
-                            <executable>${java.home}/../bin/wsgen</executable>
+                            <executable>${tool.wsgen}</executable>
                             <sei>org.jvnet.jax_ws_commons.jaxws.test.AddService</sei>
                         </configuration>
                     </execution>
