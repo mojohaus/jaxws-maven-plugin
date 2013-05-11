@@ -505,8 +505,8 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * 
      * @return An array of schema files to be parsed by the schema compiler.
      */
-    private URL[] getWSDLFiles() {
-        URL[] files;
+    private URL[] getWSDLFiles() throws MojoExecutionException {
+        List<URL> files = new ArrayList<URL>();
         @SuppressWarnings("unchecked")
         Set<Artifact> dependencyArtifacts = project.getDependencyArtifacts();
         List<URL> urlCpath = new ArrayList<URL>(dependencyArtifacts.size());
@@ -518,35 +518,36 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             }
         }
         ClassLoader loader = new URLClassLoader(urlCpath.toArray(new URL[urlCpath.size()]));
-        if ( wsdlFiles != null )
-        {
-            files = new URL[ wsdlFiles.size() ];
-            for ( int i = 0 ; i < wsdlFiles.size(); ++i )
-            {
-                String wsdlFileName = wsdlFiles.get(i);
+        if (wsdlFiles != null) {
+            for (String wsdlFileName : wsdlFiles) {
                 File wsdl = new File(wsdlFileName);
+                URL toAdd = null;
                 if (!wsdl.isAbsolute()) {
                     wsdl = new File(wsdlDirectory, wsdlFileName);
                 }
                 if (!wsdl.exists()) {
-                    files[i] = loader.getResource(wsdlFileName);
+                    toAdd = loader.getResource(wsdlFileName);
                 } else {
                     try {
-                        files[i] = wsdl.toURI().toURL();
+                        toAdd = wsdl.toURI().toURL();
                     } catch (MalformedURLException ex) {
                         Logger.getLogger(WsImportMojo.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                getLog().debug( "The wsdl File is '" +  wsdlFileName + "' from '" + files[i] + "'");
+                getLog().debug("The wsdl File is '" + wsdlFileName + "' from '" + toAdd + "'");
+                if (toAdd != null) {
+                    files.add(toAdd);
+                } else {
+                    throw new MojoExecutionException("'" + wsdlFileName + "' not found.");
+                }
             }
         } else {
             getLog().debug( "The wsdl Directory is " + wsdlDirectory );
             if (wsdlDirectory.exists()) {
                 File[] wsdls = wsdlDirectory.listFiles(new WSDLFile());
-                files = new URL[wsdls != null ? wsdls.length : 0];
-                for (int i = 0; i < files.length; i++) {
+                for (File wsdl:  wsdls) {
                     try {
-                        files[i] = wsdls[i].toURI().toURL();
+                        files.add(wsdl.toURI().toURL());
                     } catch (MalformedURLException ex) {
                         Logger.getLogger(WsImportMojo.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -563,10 +564,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                     dir = "META-INF/wsdl/";
                     u = loader.getResource(dir);
                 }
-                if (u == null || !"jar".equalsIgnoreCase(u.getProtocol())) {
-                    files = new URL[0];
-                } else {
-                    List<URL> res = new ArrayList<URL>();
+                if (!(u == null || !"jar".equalsIgnoreCase(u.getProtocol()))) {
                     String path = u.getPath();
                     try {
                         Pattern p = Pattern.compile(dir.replace(File.separatorChar, '/') + PATTERN, Pattern.CASE_INSENSITIVE);
@@ -576,17 +574,16 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                             Matcher m = p.matcher(je.getName());
                             if (m.matches()) {
                                 String s = "jar:" + path.substring(0, path.indexOf("!/") + 2) + je.getName();
-                                res.add(new URL(s));
+                                files.add(new URL(s));
                             }
                         }
                     } catch (IOException ex) {
                         Logger.getLogger(WsImportMojo.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    files = res.toArray(new URL[res.size()]);
                 }
             }
         }
-        return files;
+        return files.toArray(new URL[files.size()]);
     }
 
     /**
