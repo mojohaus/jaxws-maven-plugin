@@ -46,7 +46,6 @@ public final class Invoker {
         for (String s: c.split(File.pathSeparator)) {
             try {
                 URL f = new File(s).toURI().toURL();
-                System.out.println("adding: " + f.toString());
                 cp.add(f);
             } catch (MalformedURLException ex) {
                 Logger.getLogger(Invoker.class.getName()).log(Level.SEVERE, null, ex);
