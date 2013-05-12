@@ -437,7 +437,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         }
         //add custom invoker
         String invokerPath = AbstractJaxwsMojo.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm();
-        invokerPath = invokerPath.substring(6);
+        invokerPath = invokerPath.substring(5);
         sb.append(invokerPath);
         sb.append(File.pathSeparator);
         //don't forget tools.jar
