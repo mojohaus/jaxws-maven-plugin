@@ -407,6 +407,9 @@
                     <value>true</value>
                 </property>
             </activation>
+            <properties>
+                <ittest.debug>false</ittest.debug>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -431,6 +434,7 @@
                         <artifactId>maven-invoker-plugin</artifactId>
                         <version>1.8</version>
                         <configuration>
+                            <debug>${ittest.debug}</debug>
                             <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
 <!--                            <streamLogs>true</streamLogs>-->
                             <addTestClassPath>true</addTestClassPath>
