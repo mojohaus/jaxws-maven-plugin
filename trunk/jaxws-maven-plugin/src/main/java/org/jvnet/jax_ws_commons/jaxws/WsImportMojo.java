@@ -308,9 +308,9 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                 touchStaleFile(url);
             } else {
                 getLog().info("Ignoring: " + url);
-                //http://java.net/jira/browse/JAX_WS_COMMONS-95
-                addSourceRoot(getSourceDestDir().getAbsolutePath());
             }
+            //http://java.net/jira/browse/JAX_WS_COMMONS-95
+            addSourceRoot(getSourceDestDir().getAbsolutePath());
         }
     }
 
@@ -330,6 +330,8 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                 exec(args);
                 touchStaleFile(wsdlUrl);
             }
+            //http://java.net/jira/browse/JAX_WS_COMMONS-95
+            addSourceRoot(getSourceDestDir().getAbsolutePath());
         }
     }
 

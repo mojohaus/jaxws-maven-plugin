@@ -83,11 +83,6 @@ public class MainWsImportMojo extends WsImportMojo {
     }
 
     @Override
-    protected void addSourceRoot(String sourceDir) {
-        project.addCompileSourceRoot(sourceDir);
-    }
-
-    @Override
     protected File getDefaultSrcOut() {
         return new File(project.getBuild().getDirectory(), "generated-sources/wsimport");
     }

@@ -104,7 +104,12 @@ public class TestWsGenMojo extends AbstractWsGenMojo {
 
     @Override
     protected void addSourceRoot(String sourceDir) {
-        project.addTestCompileSourceRoot(sourceDir);
+        if (!project.getTestCompileSourceRoots().contains(sourceDir)) {
+            getLog().debug("adding test src root: " + sourceDir);
+            project.addTestCompileSourceRoot(sourceDir);
+        } else {
+            getLog().debug("existing test src root: " + sourceDir);
+        }
     }
 
     @Override

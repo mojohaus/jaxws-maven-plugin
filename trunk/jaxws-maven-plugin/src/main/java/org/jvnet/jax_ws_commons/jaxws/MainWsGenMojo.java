@@ -89,11 +89,6 @@ public class MainWsGenMojo extends AbstractWsGenMojo {
     }
 
     @Override
-    protected void addSourceRoot(String sourceDir) {
-        project.addCompileSourceRoot(sourceDir);
-    }
-
-    @Override
     protected File getResourceDestDir() {
         return resourceDestDir;
     }

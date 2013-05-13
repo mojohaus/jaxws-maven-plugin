@@ -227,7 +227,14 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
 
     protected abstract File getSourceDestDir();
 
-    protected abstract void addSourceRoot(String sourceDir);
+    protected void addSourceRoot(String sourceDir) {
+        if (!project.getCompileSourceRoots().contains(sourceDir)) {
+            getLog().debug("adding src root: " + sourceDir);
+            project.addCompileSourceRoot(sourceDir);
+        } else {
+            getLog().debug("existing src root: " + sourceDir);
+        }
+    }
 
     protected abstract File getDefaultSrcOut();
 
