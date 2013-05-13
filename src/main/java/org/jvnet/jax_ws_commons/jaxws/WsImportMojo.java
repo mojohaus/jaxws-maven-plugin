@@ -515,12 +515,18 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         List<URL> urlCpath = new ArrayList<URL>(dependencyArtifacts.size());
         for (Artifact a: dependencyArtifacts) {
             try {
-                urlCpath.add(a.getFile().toURI().toURL());
+                if (a.getFile() != null) {
+                    urlCpath.add(a.getFile().toURI().toURL());
+                } else {
+                    getLog().warn("cannot find file for " + a.getGroupId() + ":" + a.getArtifactId());
+                }
             } catch (MalformedURLException ex) {
                 Logger.getLogger(WsImportMojo.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        ClassLoader loader = new URLClassLoader(urlCpath.toArray(new URL[urlCpath.size()]));
+        ClassLoader loader = urlCpath.isEmpty()
+                ? Thread.currentThread().getContextClassLoader()
+                : new URLClassLoader(urlCpath.toArray(new URL[urlCpath.size()]));
         if (wsdlFiles != null) {
             for (String wsdlFileName : wsdlFiles) {
                 File wsdl = new File(wsdlFileName);
