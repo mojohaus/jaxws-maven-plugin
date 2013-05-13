@@ -202,6 +202,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
 //    @Parameter( defaultValue = "${plugin}", readonly = true )
 //    protected PluginDescriptor pluginDescriptor;
 
+    private static final Logger logger = Logger.getLogger(AbstractJaxwsMojo.class.getName());
     private static final List<String> METRO_22 = new ArrayList<String>();
     private static final List<String> METRO_221 = new ArrayList<String>();
     private static final List<String> METRO_23 = new ArrayList<String>();
@@ -464,7 +465,9 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     private File createPathFile(String cp) {
         File f = new File(System.getProperty("java.io.tmpdir"), "jm.txt");
         if (f.exists() && f.isFile()) {
-            f.delete();
+            if (!f.delete()) {
+                getLog().warn("cannot remove obsolete classpath setting file: " + f.getAbsolutePath());
+            }
         }
         Properties p = new Properties();
         p.put("cp", cp.replace(File.separatorChar, '/'));
@@ -473,13 +476,13 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
             fos = new FileOutputStream(f);
             p.store(fos, null);
         } catch (IOException ex) {
-            Logger.getLogger(AbstractJaxwsMojo.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         } finally {
             if (fos != null) {
                 try {
                     fos.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(AbstractJaxwsMojo.class.getName()).log(Level.SEVERE, null, ex);
+                    logger.log(Level.SEVERE, null, ex);
                 }
             }
         }
