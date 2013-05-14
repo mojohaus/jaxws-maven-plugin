@@ -3,7 +3,7 @@
  ------
  Dan T. Tran, Lukas Jungmann
  ------
- 2011-10-28
+ 2013-05-14
 
 ~~ Copyright 2006 Codehaus
 ~~
@@ -28,42 +28,44 @@ JAX-WS Maven Plugin
 
 * Usage
   
-  Instructions on how to use the JAX-WS Maven Plugin can be found {{{usage.html}here}}.
+  Instructions on how to use the JAX-WS Maven Plugin can be found {{{./usage.html}here}}.
   
 * Goals Overview
   
-  * {{{wsimport-mojo.html}jaxws:wsimport}}: generates JAX-WS portable artifacts used in JAX-WS 
+  * {{{./wsimport-mojo.html}jaxws:wsimport}}: generates JAX-WS portable artifacts used in JAX-WS
      clients and services. The tool reads a WSDL and generates all the required artifacts 
      for web service development, deployment, and invocation. 
   
-  * {{{wsimport-test-mojo.html}jaxws:wsimport-test}}: same as <<<jaxws:wsimport>>> but for tests.
+  * {{{./wsimport-test-mojo.html}jaxws:wsimport-test}}: same as <<<jaxws:wsimport>>> but for tests.
 
-  * {{{wsgen-mojo.html}jaxws:wsgen}}: reads a service endpoint implementation class 
+  * {{{./wsgen-mojo.html}jaxws:wsgen}}: reads a service endpoint implementation class
      and generates all of the portable artifacts for a JAX-WS web service.
 
-  * {{{wsgen-test-mojo.html}jaxws:wsgen-test}}: same as <<<jaxws:wsgen>>> but for tests.
+  * {{{./wsgen-test-mojo.html}jaxws:wsgen-test}}: same as <<<jaxws:wsgen>>> but for tests.
     
   []
   
 * Examples
 
-  * {{{examples/using-jaxb-plugins.html}Using JAXB xjc plugins}}
+  * {{{./examples/using-jaxb-plugins.html}Using JAXB xjc plugins}}
 
-  * {{{examples/using-jaxws22-on-jdk6.html}Using JAX-WS 2.2.x on JDK 6}}
+  * {{{./examples/using-jaxws22-on-jdk6.html}Using JAX-WS 2.2.x on JDK 6}}
 
-  * {{{examples/using-wsdlLocation.html}Using wsdlLocation as a path prefix for multiple WSDL URLs}}
+  * {{{./examples/using-wsdlLocation.html}Using wsdlLocation as a path prefix for multiple WSDL URLs}}
 
-  * {{{examples/using-binding-files.html}Using binding files}}
+  * {{{./examples/using-binding-files.html}Using binding files}}
 
-  * There are also some {{{http://java.net/projects/jax-ws-commons/sources/svn/show/tags/jaxws-maven-plugin-2.2/src/it}buildable examples}}
-    in {{{http://java.net/projects/jax-ws-commons/sources/svn/show/tags/jaxws-maven-plugin-2.2/}SVN repository}}.
-    You can also check {{{http://java.net/projects/jax-ws-commons/sources/svn/show/tags/jaxws-maven-plugin-2.2/src/test/it}available tests}}.
+  * There are also some {{{http://java.net/projects/jax-ws-commons/sources/svn/show/tags/jaxws-maven-plugin-2.2.1/src/it}buildable examples}}
+    in {{{http://java.net/projects/jax-ws-commons/sources/svn/show/tags/jaxws-maven-plugin-2.2.1/}SVN repository}}.
+    You can also check {{{http://java.net/projects/jax-ws-commons/sources/svn/show/tags/jaxws-maven-plugin-2.2.1/src/test/it}available tests}}.
 
  []
 
 * Release Notes
 
-  * {{{release-notes-22.html}Changes in version 2.2}}
+  * {{{./release-notes-221.html}Changes in version 2.2.1}}
 
-  * {{{release-notes-21.html}Changes in version 2.1}}
+  * {{{./release-notes-22.html}Changes in version 2.2}}
+
+  * {{{./release-notes-21.html}Changes in version 2.1}}
 
