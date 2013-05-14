@@ -53,10 +53,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * <code>${maven.test.skip}</code> property is honored. If it is set, code generation is skipped.
  * </p>
  *
- * @goal wsgen-test
- * @phase process-test-classes
- * @requiresDependencyResolution
- * @description generate JAX-WS wrapper beans.
  */
 @Mojo(name = "wsgen-test", defaultPhase = LifecyclePhase.PROCESS_TEST_CLASSES, requiresDependencyResolution = ResolutionScope.TEST)
 public class TestWsGenMojo extends AbstractWsGenMojo {
