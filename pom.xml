@@ -213,10 +213,13 @@
                     <target>1.6</target>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
+                    <!--
+                    http://jira.codehaus.org/browse/MRELEASE-715
                     <compilerArguments>
                         <Xlint:all/>
                         <proc:none/>
                     </compilerArguments>
+                    -->
                 </configuration>
             </plugin>
             <plugin>
