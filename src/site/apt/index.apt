@@ -55,13 +55,15 @@ JAX-WS Maven Plugin
 
   * {{{./examples/using-binding-files.html}Using binding files}}
 
-  * There are also some {{{http://java.net/projects/jax-ws-commons/sources/svn/show/tags/jaxws-maven-plugin-2.2.1/src/it}buildable examples}}
-    in {{{http://java.net/projects/jax-ws-commons/sources/svn/show/tags/jaxws-maven-plugin-2.2.1/}SVN repository}}.
-    You can also check {{{http://java.net/projects/jax-ws-commons/sources/svn/show/tags/jaxws-maven-plugin-2.2.1/src/test/it}available tests}}.
+  * There are also some {{{http://java.net/projects/jax-ws-commons/sources/svn/show/tags/jaxws-maven-plugin-2.3/src/it}buildable examples}}
+    in {{{http://java.net/projects/jax-ws-commons/sources/svn/show/tags/jaxws-maven-plugin-2.3/}SVN repository}}.
+    You can also check {{{http://java.net/projects/jax-ws-commons/sources/svn/show/tags/jaxws-maven-plugin-2.3/src/test/it}available tests}}.
 
  []
 
 * Release Notes
+
+  * {{{./release-notes-23.html}Changes in version 2.3}}
 
   * {{{./release-notes-221.html}Changes in version 2.2.1}}
 
