@@ -29,10 +29,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.jvnet.jax-ws-commons.test</groupId>
     <artifactId>jaxwscommons87.child</artifactId>
-    <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
 
     <name>JAX_WS_COMMONS-87-child</name>
 
