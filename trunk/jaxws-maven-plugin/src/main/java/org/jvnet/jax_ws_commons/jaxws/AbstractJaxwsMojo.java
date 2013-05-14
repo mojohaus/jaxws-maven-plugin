@@ -141,7 +141,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
      * but basically any script which will understand passed in arguments
      * will work.
      *
-     * @since 2.3
+     * @since 2.2.1
      */
     @Parameter
     private File executable;
@@ -155,7 +155,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     /**
      * Resolves the artifacts needed.
      *
-     * @since 2.3
+     * @since 2.2.1
      */
     @Component
     private ArtifactResolver artifactResolver;
@@ -163,7 +163,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     /**
      * Creates the artifact.
      *
-     * @since 2.3
+     * @since 2.2.1
      */
     @Component
     private ArtifactFactory artifactFactory;
@@ -171,7 +171,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     /**
      * ArtifactRepository of the localRepository.
      *
-     * @since 2.3
+     * @since 2.2.1
      */
     @Parameter(defaultValue = "${localRepository}", required = true, readonly = true)
     private ArtifactRepository localRepository;
@@ -179,7 +179,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     /**
      * The remote plugin repositories declared in the POM.
      *
-     * @since 2.3
+     * @since 2.2.1
      */
     @Parameter(defaultValue = "${project.pluginArtifactRepositories}")
     private List<ArtifactRepository> remoteRepositories;
@@ -187,7 +187,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     /**
      * For retrieval of artifact's metadata.
      *
-     * @since 2.3
+     * @since 2.2.1
      */
     @Component
     private ArtifactMetadataSource metadataSource;
@@ -196,7 +196,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
      * Information about this plugin, used to lookup this plugin's configuration from the currently executing
      * project.
      *
-     * @since 2.3
+     * @since 2.2.1
      */
     //requires M3 ?
 //    @Parameter( defaultValue = "${plugin}", readonly = true )
