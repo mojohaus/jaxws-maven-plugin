@@ -26,15 +26,14 @@
     <parent>
         <groupId>org.jvnet.jax-ws-commons.test</groupId>
         <artifactId>parent</artifactId>
-        <version>2.2.1-SNAPSHOT</version>
+        <version>2.3-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.jvnet.jax-ws-commons.test</groupId>
     <artifactId>jaxwscommons-3</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
 
-    <name>jaxwscommons-3</name>
+    <name>JAX_WS_COMMONS-3</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>

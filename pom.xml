@@ -159,7 +159,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jaxws-tools.version>2.2.7</jaxws-tools.version>
+        <jaxws-tools.version>2.2.8-b13924</jaxws-tools.version>
         <findbugs.exclude>${project.basedir}/exclude.xml</findbugs.exclude>
         <findbugs.threshold>Low</findbugs.threshold>
     </properties>
