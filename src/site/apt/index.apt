@@ -47,6 +47,8 @@ JAX-WS Maven Plugin
   
 * Examples
 
+  * {{{./examples/using-metro.html}Using Metro binaries}}
+
   * {{{./examples/using-jaxb-plugins.html}Using JAXB xjc plugins}}
 
   * {{{./examples/using-jaxws22-on-jdk6.html}Using JAX-WS 2.2.x on JDK 6}}
