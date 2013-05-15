@@ -38,6 +38,6 @@
       <item name="Usage" href="usage.html"/>
       <!--item name="FAQ" href="faq.html"/-->
     </menu>
-    ${reports}
+    <menu ref="reports"/>
   </body>
 </project>
