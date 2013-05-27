@@ -121,7 +121,13 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      */
     @Parameter(defaultValue = "false")
     private boolean xdonotoverwrite;
-    
+
+    /**
+     * @since 2.3
+     */
+    @Parameter
+    private File metadata;
+
     protected abstract File getResourceDestDir();
 
     protected abstract File getClassesDir();
@@ -143,8 +149,12 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
 
         try {
             for (String aSei : seis) {
+                getLog().info("Processing: " + aSei);
                 ArrayList<String> args = getWsGenArgs(aSei);
                 exec(args);
+                if (metadata != null) {
+                    FileUtils.copyFileToDirectory(metadata, getClassesDir());
+                }
             }
         } catch (MojoExecutionException e) {
             throw e;
@@ -159,22 +169,19 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected String getExtraClasspath() {
-        //TODO: do we really need all deps on the wsgen cp?
-        //if yes then consider creating manifest-only jar
-        //to prevent long cmd line issue on WIN
-//        StringBuilder buf = new StringBuilder();
-//        buf.append(getDestDir().getAbsolutePath());
-//        for (Artifact a : (Set<Artifact>)project.getArtifacts()) {
-//            buf.append(File.pathSeparatorChar);
-//            buf.append(a.getFile().getAbsolutePath());
-//        }
-//        for (Artifact a : pluginArtifacts) {
-//            buf.append(File.pathSeparatorChar);
-//            buf.append(a.getFile().getAbsolutePath());
-//        }
-//        args.add(buf.toString());
-        return getClassesDir().getAbsolutePath();
+        StringBuilder buf = new StringBuilder();
+        buf.append(getClassesDir().getAbsolutePath());
+        for (Artifact a : (Set<Artifact>)project.getArtifacts()) {
+            buf.append(File.pathSeparatorChar);
+            buf.append(a.getFile().getAbsolutePath());
+        }
+        for (Artifact a : pluginArtifacts) {
+            buf.append(File.pathSeparatorChar);
+            buf.append(a.getFile().getAbsolutePath());
+        }
+        return buf.toString();
     }
 
     /**
@@ -222,6 +229,10 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
 
         if (xdonotoverwrite) {
             args.add("-Xdonotoverwrite");
+        }
+
+        if (metadata != null && isArgSupported("-x")) {
+            maybeUnsupportedOption("-x", metadata.getAbsolutePath(), args);
         }
 
         args.add(aSei);

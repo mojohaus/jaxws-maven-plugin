@@ -217,6 +217,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         METRO_221.addAll(METRO_22);
         METRO_221.add("-XdisableAuthenticator");
         METRO_23.addAll(METRO_221);
+        METRO_23.add("-x");
     }
 
     protected abstract String getMain();

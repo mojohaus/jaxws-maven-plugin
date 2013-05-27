@@ -43,8 +43,8 @@ public class Assertions {
 
     public static void assertFileContains(File project, String path, String s) throws IOException {
         File f = new File(project, path);
-        Assert.assertTrue(f.exists());
-        Assert.assertTrue(f.isFile());
+        Assert.assertTrue(f.exists(), f.getAbsolutePath() + " does not exist");
+        Assert.assertTrue(f.isFile(), f.getAbsolutePath() + " is not a file");
         BufferedReader r = new BufferedReader(new FileReader(f));
         String line;
         while ((line = r.readLine()) != null) {
@@ -57,16 +57,16 @@ public class Assertions {
 
     public static void assertJarContains(File project, String jarName, String path) throws ZipException, IOException {
         File f = new File(project, "target/" + jarName);
-        Assert.assertTrue(f.exists());
-        Assert.assertTrue(f.isFile());
+        Assert.assertTrue(f.exists(), f.getAbsolutePath() + " does not exist");
+        Assert.assertTrue(f.isFile(), f.getAbsolutePath() + " is not a file");
         ZipFile zf = new ZipFile(f);
         Assert.assertNotNull(zf.getEntry(path), "'" + path + "' is missing in: " + jarName);
     }
 
     public static void assertJarNotContains(File project, String jarName, String path) throws ZipException, IOException {
         File f = new File(project, "target/" + jarName);
-        Assert.assertTrue(f.exists());
-        Assert.assertTrue(f.isFile());
+        Assert.assertTrue(f.exists(), f.getAbsolutePath() + " does not exist");
+        Assert.assertTrue(f.isFile(), f.getAbsolutePath() + " is not a file");
         ZipFile zf = new ZipFile(f);
         Assert.assertNull(zf.getEntry(path), "'" + path + "' is in: " + jarName);
     }

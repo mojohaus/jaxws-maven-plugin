@@ -177,4 +177,13 @@ public class WsGenMojoITCase {
         assertFilePresent(project, "target/generated-sources/wsdl/NewWebService.wsdl");
     }
 
+    @Test
+    public void jaxwscommons103() throws IOException {
+        project = new File(PROJECTS_DIR, "jaxwscommons-103/ws");
+
+        assertJarContains(project, "jaxwscommons-103.ws.war", "WEB-INF/wsdl/EchoImplService.wsdl");
+        assertJarContains(project, "jaxwscommons-103.ws.war", "WEB-INF/wsdl/EchoImplService_schema1.xsd");
+        assertJarContains(project, "jaxwscommons-103.ws.war", "WEB-INF/classes/metadata-echo.xml");
+    }
+
 }
