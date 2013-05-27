@@ -63,7 +63,7 @@ public final class Invoker {
             Constructor<?> ctor = compileTool.getConstructor(OutputStream.class);
             Object tool = ctor.newInstance(System.out);
             Method runMethod = compileTool.getMethod("run", String[].class);
-            runMethod.invoke(tool, new Object[]{wsargs});
+            System.exit((Boolean) runMethod.invoke(tool, new Object[]{wsargs}) ? 0 : 1);
         } catch (NoSuchMethodException ex) {
             Logger.getLogger(Invoker.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SecurityException ex) {
@@ -77,7 +77,7 @@ public final class Invoker {
         } catch (IllegalArgumentException ex) {
             Logger.getLogger(Invoker.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InvocationTargetException ex) {
-            Logger.getLogger(Invoker.class.getName()).log(Level.SEVERE, null, ex);
+            throw (Exception) ex.getCause();
         } finally {
             Thread.currentThread().setContextClassLoader(orig);
             System.setProperty("java.class.path", origJcp);
