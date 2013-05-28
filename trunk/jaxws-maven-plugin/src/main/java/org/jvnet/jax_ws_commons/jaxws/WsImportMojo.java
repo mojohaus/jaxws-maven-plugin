@@ -276,7 +276,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             this.processLocalWsdlFiles(wsdls);
         } catch (MojoExecutionException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
     }
@@ -302,7 +302,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                     relPath = getRelativePath(new File(u.getPath()));
                 }
                 ArrayList<String> args = getWsImportArgs(relPath);
-                args.add(url);
+                args.add("\"" + url + "\"");
                 getLog().info("jaxws:wsimport args: " + args);
                 exec(args);
                 touchStaleFile(url);
@@ -325,7 +325,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             if (isOutputStale(wsdlUrl)) {
                 getLog().info("Processing: " + wsdlUrl);
                 ArrayList<String> args = getWsImportArgs(null);
-                args.add(wsdlUrl);
+                args.add("\"" + wsdlUrl + "\"");
                 getLog().info("jaxws:wsimport args: " + args);
                 exec(args);
                 touchStaleFile(wsdlUrl);
@@ -516,7 +516,9 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         for (Artifact a: dependencyArtifacts) {
             try {
                 if (a.getFile() != null) {
-                    urlCpath.add(a.getFile().toURI().toURL());
+                    @SuppressWarnings("deprecation")
+                    URL u = new File(a.getFile().toURI()).toURL();
+                    urlCpath.add(u);
                 } else {
                     getLog().warn("cannot find file for " + a.getGroupId() + ":" + a.getArtifactId());
                 }
