@@ -39,6 +39,8 @@ package org.jvnet.jax_ws_commons.jaxws;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -69,6 +71,7 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.Os;
+import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.codehaus.plexus.util.cli.DefaultConsumer;
@@ -357,8 +360,9 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
                     }
                 }
                 String[] classpath = getCP();
-                cmd.createArg().setLine("-Xbootclasspath/p:" + classpath[0]);
-                cmd.createArg().setLine("-cp " + classpath[2]);
+                cmd.createArg().setValue("-Xbootclasspath/p:" + classpath[0]);
+                cmd.createArg().setValue("-cp");
+                cmd.createArg().setValue(classpath[2]);
                 cmd.createArg().setLine("org.jvnet.jax_ws_commons.jaxws.Invoker");
                 cmd.createArg().setLine(getMain());
                 File pathFile = createPathFile(
@@ -377,7 +381,11 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
             if (CommandLineUtils.executeCommandLine(cmd, sc, sc) != 0) {
                 throw new MojoExecutionException("Mojo failed - check output");
             }
-        } catch (Throwable t) {
+        } catch (ArtifactNotFoundException t) {
+            throw new MojoExecutionException(t.getMessage(), t);
+        } catch (ArtifactResolutionException t) {
+            throw new MojoExecutionException(t.getMessage(), t);
+        } catch (CommandLineException t) {
             throw new MojoExecutionException(t.getMessage(), t);
         }
     }
@@ -446,8 +454,12 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         }
         //add custom invoker
         String invokerPath = AbstractJaxwsMojo.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm();
-        invokerPath = invokerPath.substring(5);
-        sb.append(invokerPath);
+        try {
+            invokerPath = new URI(invokerPath.substring(5)).getPath();
+            sb.append(invokerPath);
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
         sb.append(File.pathSeparator);
         //don't forget tools.jar
         File toolsJar = new File(System.getProperty("java.home"), "../lib/tools.jar");
