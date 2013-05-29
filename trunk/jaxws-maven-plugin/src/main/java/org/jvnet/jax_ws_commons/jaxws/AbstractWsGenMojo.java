@@ -151,6 +151,7 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
             for (String aSei : seis) {
                 getLog().info("Processing: " + aSei);
                 ArrayList<String> args = getWsGenArgs(aSei);
+                getLog().info("jaxws:wsgen args: " + args);
                 exec(args);
                 if (metadata != null) {
                     FileUtils.copyFileToDirectory(metadata, getClassesDir());
