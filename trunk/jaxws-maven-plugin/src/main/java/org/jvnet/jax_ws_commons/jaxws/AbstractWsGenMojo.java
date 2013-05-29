@@ -185,6 +185,11 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
         return buf.toString();
     }
 
+    @Override
+    protected boolean getXnocompile() {
+        return xnocompile;
+    }
+
     /**
      * Construct wsgen arguments
      * @return a list of arguments

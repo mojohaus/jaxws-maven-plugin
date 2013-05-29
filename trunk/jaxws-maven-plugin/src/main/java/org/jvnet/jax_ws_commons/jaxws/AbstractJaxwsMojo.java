@@ -133,13 +133,6 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     private List<String> vmArgs;
 
     /**
-     * Turn off compilation after code generation and let generated sources be
-     * compiled by maven during compilation phase; keep is turned on with this option.
-     */
-    @Parameter(defaultValue = "true")
-    private boolean xnocompile;
-
-    /**
      * Path to the executable. Should be either wsgen or wsimport
      * but basically any script which will understand passed in arguments
      * will work.
@@ -243,6 +236,8 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
 
     protected abstract File getDefaultSrcOut();
 
+    protected abstract boolean getXnocompile();
+
     protected String getExtraClasspath() {
         return null;
     }
@@ -283,7 +278,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
             commonArgs.add("-extension");
         }
 
-        if(xnocompile){
+        if(getXnocompile()){
             commonArgs.add("-Xnocompile");
         }
 

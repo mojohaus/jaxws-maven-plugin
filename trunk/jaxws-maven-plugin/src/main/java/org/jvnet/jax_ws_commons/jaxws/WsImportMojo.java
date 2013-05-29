@@ -200,6 +200,13 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     private boolean genJWS;
 
     /**
+     * Turn off compilation after code generation and let generated sources be
+     * compiled by maven during compilation phase; keep is turned on with this option.
+     */
+    @Parameter(defaultValue = "true")
+    private boolean xnocompile;
+
+    /**
      * Maps headers not bound to the request or response messages to Java method parameters.
      */
     @Parameter(defaultValue = "false")
@@ -284,6 +291,11 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     @Override
     protected String getMain() {
         return "com.sun.tools.ws.wscompile.WsimportTool";
+    }
+
+    @Override
+    protected boolean getXnocompile() {
+        return xnocompile;
     }
 
     /**
