@@ -159,7 +159,7 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
             }
         } catch (MojoExecutionException e) {
             throw e;
-        } catch (Throwable e) {
+        } catch (IOException e) {
             throw new MojoExecutionException("Failed to execute wsgen",e);
         }
     }
