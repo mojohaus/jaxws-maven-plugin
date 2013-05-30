@@ -33,7 +33,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jvnet.jax_ws_commons.jaxws;
 
 import java.io.File;
@@ -121,6 +120,20 @@ public class TestWsGenMojo extends AbstractWsGenMojo {
     @Override
     protected File getClassesDir() {
         return new File(project.getBuild().getTestOutputDirectory());
+    }
+
+    @Override
+    protected String getExtraClasspath() {
+        String cp = super.getExtraClasspath();
+        StringBuilder buf = new StringBuilder();
+        int i = cp.indexOf(File.pathSeparatorChar);
+        buf.append(i > 0 ? cp.substring(0, i) : cp);
+        buf.append(File.pathSeparatorChar);
+        buf.append(project.getBuild().getOutputDirectory());
+        if (i > 0 && cp.substring(i).length() > 0) {
+            buf.append(cp.substring(i));
+        }
+        return buf.toString();
     }
 
     @Override
