@@ -227,10 +227,11 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
             }
             args.add("-r");
             args.add(resourceDir.getAbsolutePath());
-            Resource r = new Resource();
-            r.setDirectory(getRelativePath(project.getBasedir(), getResourceDestDir()));
-            project.addResource(r);
-
+            if (!"war".equals(project.getPackaging())) {
+                Resource r = new Resource();
+                r.setDirectory(getRelativePath(project.getBasedir(), getResourceDestDir()));
+                project.addResource(r);
+            }
         }
 
         if (xdonotoverwrite) {
