@@ -412,8 +412,8 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
                         toExclude.add(e.getGroupId() + ":" + e.getArtifactId());
                         getLog().debug("excluding: " + e.getGroupId() + ":" + e.getArtifactId());
                     }
-                    if (("jaxws-tools".equals(p.getArtifactId()) && "com.sun.xml.ws".equals(p.getGroupId()))
-                            || ("webservices-tools".equals(p.getArtifactId())) && "org.glassfish.metro".equals(p.getGroupId())) {
+                    if (("jaxws-tools".equals(d.getArtifactId()) && "com.sun.xml.ws".equals(d.getGroupId()))
+                            || ("webservices-tools".equals(d.getArtifactId())) && "org.glassfish.metro".equals(d.getGroupId())) {
                         toolsAdded = true;
                     }
                     toInclude.add(pluginArtifactMap.get(d.getGroupId() + ":" + d.getArtifactId()));
@@ -439,7 +439,9 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         for (Artifact a : cp) {
             if ("jaxws-api".equals(a.getArtifactId()) || "jaxb-api".equals(a.getArtifactId())
                     || "saaj-api".equals(a.getArtifactId()) || "jsr181-api".equals(a.getArtifactId())
-                    || "javax.annotation".equals(a.getArtifactId())) {
+                    || "javax.annotation".equals(a.getArtifactId())
+                    || "javax.annotation-api".equals(a.getArtifactId())
+                    || "webservices-api".equals(a.getArtifactId())) {
                 esb.append(a.getFile().getAbsolutePath());
                 esb.append(File.pathSeparator);
             } else {
