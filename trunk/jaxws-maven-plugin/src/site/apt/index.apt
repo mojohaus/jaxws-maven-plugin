@@ -3,7 +3,7 @@
  ------
  Dan T. Tran, Lukas Jungmann
  ------
- 2013-05-14
+ 2013-06-03
 
 ~~ Copyright 2006 Codehaus
 ~~
@@ -48,6 +48,8 @@ JAX-WS Maven Plugin
 * Examples
 
   * {{{./examples/using-metro.html}Using Metro binaries}}
+
+  * {{{./examples/using-wstools-from-jdk.html}Using JAX-WS tools from JDK}}
 
   * {{{./examples/using-jaxb-plugins.html}Using JAXB xjc plugins}}
 
