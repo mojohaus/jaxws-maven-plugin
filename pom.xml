@@ -380,6 +380,7 @@
                                     <searchPath>${basedir}</searchPath>
                                     <sourceFolders>
                                         <sourceFolder>${project.build.sourceDirectory}</sourceFolder>
+                                        <sourceFolder>${project.build.directory}/generated-sources/plugin</sourceFolder>
                                     </sourceFolders>
                                 </configuration>
                             </execution>
