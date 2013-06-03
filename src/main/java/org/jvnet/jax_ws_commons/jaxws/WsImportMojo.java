@@ -615,41 +615,34 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     /**
      * A class used to look up .xml documents from a given directory.
      */
-    private static final class XMLFile
-        implements FileFilter
-    {
+    private static final class XMLFile implements FileFilter {
+
         /**
          * Returns true if the file ends with an xml extension.
          *
-         * @param file
-         *            The filed being reviewed by the filter.
+         * @param file The filed being reviewed by the filter.
          * @return true if an xml file.
          */
         @Override
-        public boolean accept( final java.io.File file )
-        {
-            return file.getName().endsWith( ".xml" );
+        public boolean accept(final java.io.File file) {
+            return file.getName().endsWith(".xml");
         }
     }
 
     /**
      * A class used to look up .wsdl documents from a given directory.
      */
-    private static final class WSDLFile
-        implements FileFilter
-    {
+    private static final class WSDLFile implements FileFilter {
 
         /**
          * Returns true if the file ends with a wsdl extension.
          *
-         * @param file
-         *            The filed being reviewed by the filter.
+         * @param file The filed being reviewed by the filter.
          * @return true if an wsdl file.
          */
         @Override
-        public boolean accept( final java.io.File file )
-        {
-            return file.getName().endsWith( ".wsdl" );
+        public boolean accept(final java.io.File file) {
+            return file.getName().endsWith(".wsdl");
         }
 
     }
@@ -672,13 +665,11 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * 
      * @return True if wsdl files have been modified since the last build.
      */
-    private boolean isOutputStale(String resource)
-    {
+    private boolean isOutputStale(String resource) {
         File[] sourceBindings = getBindingFiles();
         File stFile = new File(staleFile, STALE_FILE_PREFIX + getHash(resource));
         boolean stale = !stFile.exists();
-        if ( !stale )
-        {
+        if (!stale) {
             getLog().debug("Stale flag file exists, comparing to wsdls and bindings.");
             long staleMod = stFile.lastModified();
 
