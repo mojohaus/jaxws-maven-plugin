@@ -420,6 +420,9 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             }
             args.add("-implDestDir");
             args.add(implDestDir.getAbsolutePath());
+            if (!project.getCompileSourceRoots().contains(implDestDir.getAbsolutePath())) {
+                project.addCompileSourceRoot(implDestDir.getAbsolutePath());
+            }
         }
 
         if(xdebug){

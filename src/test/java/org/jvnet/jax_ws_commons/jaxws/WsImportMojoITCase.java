@@ -146,4 +146,13 @@ public class WsImportMojoITCase {
         assertFileNotPresent(project, "org/jvnet/jax_ws_commons/jaxws/test/EchoService_Service_handler.xml");
         assertFilePresent(project, "child/target/classes/org/jvnet/jax_ws_commons/jaxws/test/EchoService_Service_handler.xml");
     }
+
+    @Test
+    public void metro_wsimport() throws IOException {
+        project = new File(PROJECTS_DIR, "metro");
+
+        assertFilePresent(project, "target/gen-src/org/example/duke/AddNumbersService_AddNumbersPortImpl.java");
+        assertFilePresent(project, "target/classes/org/example/duke/AddNumbersService_AddNumbersPortImpl.class");
+    }
+
 }
