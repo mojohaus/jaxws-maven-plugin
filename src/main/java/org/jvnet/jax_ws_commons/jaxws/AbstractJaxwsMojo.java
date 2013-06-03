@@ -293,22 +293,12 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
 
     protected boolean isArgSupported(String arg) throws MojoExecutionException {
         boolean isSupported = true;
-        Artifact a = pluginArtifactMap.get("com.sun.xml.ws:jaxws-tools");
+        //try Metro first
+        Artifact a = pluginArtifactMap.get("org.glassfish.metro:webservices-tools");
         List<String> supportedArgs = null;
         String v = null;
         try {
             if (a != null) {
-                ArtifactVersion av = a.getSelectedVersion();
-                v = av.toString();
-                if (av.getMajorVersion() == 2 && av.getMinorVersion() == 2 && av.getIncrementalVersion() == 6) {
-                    supportedArgs = METRO_22;
-                } else if (av.getMajorVersion() == 2 && av.getMinorVersion() == 2 && av.getIncrementalVersion() == 7) {
-                    supportedArgs = METRO_221;
-                } else { //if (av.getMajorVersion() >= 2 && av.getMinorVersion() >= 2 && av.getIncrementalVersion() >= 8) {
-                    supportedArgs = METRO_23;
-                }
-            } else {
-                a = pluginArtifactMap.get("org.glassfish.metro:webservices-tools");
                 ArtifactVersion av = a.getSelectedVersion();
                 v = av.toString();
                 if (av.getMajorVersion() == 2 && av.getMinorVersion() == 2 && av.getIncrementalVersion() == 0) {
@@ -316,6 +306,18 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
                 } else if (av.getMajorVersion() == 2 && av.getMinorVersion() == 2 && av.getIncrementalVersion() >= 1) {
                     supportedArgs = METRO_221;
                 } else { //if (av.getMajorVersion() >= 2 && av.getMinorVersion() >= 3) {
+                    supportedArgs = METRO_23;
+                }
+            } else {
+                //fallback to RI
+                a = pluginArtifactMap.get("com.sun.xml.ws:jaxws-tools");
+                ArtifactVersion av = a.getSelectedVersion();
+                v = av.toString();
+                if (av.getMajorVersion() == 2 && av.getMinorVersion() == 2 && av.getIncrementalVersion() == 6) {
+                    supportedArgs = METRO_22;
+                } else if (av.getMajorVersion() == 2 && av.getMinorVersion() == 2 && av.getIncrementalVersion() == 7) {
+                    supportedArgs = METRO_221;
+                } else { //if (av.getMajorVersion() >= 2 && av.getMinorVersion() >= 2 && av.getIncrementalVersion() >= 8) {
                     supportedArgs = METRO_23;
                 }
             }
