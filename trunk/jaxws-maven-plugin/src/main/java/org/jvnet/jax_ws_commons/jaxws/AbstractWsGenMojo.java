@@ -84,12 +84,6 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
     private String protocol;
 
     /**
-     * List of plugin artifacts.
-     */
-    @Parameter(property = "plugin.artifacts", readonly = true)
-    private List<Artifact> pluginArtifacts;
-
-    /**
      * Specify the Service name to use in the generated WSDL.
      * Used in conjunction with the <code>genWsdl</code> option.
      */
@@ -175,10 +169,6 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
         StringBuilder buf = new StringBuilder();
         buf.append(getClassesDir().getAbsolutePath());
         for (Artifact a : (Set<Artifact>)project.getArtifacts()) {
-            buf.append(File.pathSeparatorChar);
-            buf.append(a.getFile().getAbsolutePath());
-        }
-        for (Artifact a : pluginArtifacts) {
             buf.append(File.pathSeparatorChar);
             buf.append(a.getFile().getAbsolutePath());
         }
