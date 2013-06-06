@@ -33,6 +33,7 @@
     <packaging>pom</packaging>
 
     <name>JAX_WS_COMMONS-87</name>
+    <description>wsimport -  generate handler folder in the child project</description>
 
     <modules>
         <module>child</module>

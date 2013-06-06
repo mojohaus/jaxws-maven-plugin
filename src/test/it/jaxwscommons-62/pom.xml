@@ -32,6 +32,7 @@
     <artifactId>mojo.it.jaxwscommons62</artifactId>
 
     <name>JAX_WS_COMMONS-62</name>
+    <description>wsimport - support relative WSDL</description>
 
     <build>
         <plugins>

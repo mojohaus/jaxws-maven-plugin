@@ -32,6 +32,7 @@
     <artifactId>mojo.it.jaxwscommons98</artifactId>
 
     <name>JAX_WS_COMMONS-98</name>
+    <description>wsimport - NPE When WSDL File Cannot be found</description>
 
     <build>
         <plugins>

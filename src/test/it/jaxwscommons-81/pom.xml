@@ -33,6 +33,7 @@
     <version>2.2.6</version>
 
     <name>JAX_WS_COMMONS-81</name>
+    <description>wsgen, wsimport - support tools from JDK</description>
 
     <build>
         <plugins>
