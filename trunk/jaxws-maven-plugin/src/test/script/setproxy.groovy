@@ -24,12 +24,12 @@ if (settings?.proxies) {
     settings?.proxies?.each { proxy ->
         if (proxy.active) {
             if ("http".equals(proxy.protocol)) {
-                itproxy =  "-Dhttp.proxyHost=" + proxy.host
+                itproxy +=  "-Dhttp.proxyHost=" + proxy.host
                 if (proxy.port) {
                     itproxy += " -Dhttp.proxyPort=" + proxy.port
                 }
             } else if ("https".equals(proxy.protocol)) {
-                itproxy =  "-Dhttps.proxyHost=" + proxy.host
+                itproxy +=  "-Dhttps.proxyHost=" + proxy.host
                 if (proxy.port) {
                     itproxy += " -Dhttps.proxyPort=" + proxy.port
                 }
