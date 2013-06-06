@@ -31,6 +31,7 @@
     <artifactId>jaxwscommons-91</artifactId>
 
     <name>JAX_WS_COMMONS-91</name>
+    <description>wsgen - failure when wsdl generation is set to true</description>
 
     <build>
         <plugins>

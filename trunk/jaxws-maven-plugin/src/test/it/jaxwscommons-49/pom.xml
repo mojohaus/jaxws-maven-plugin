@@ -32,6 +32,7 @@
     <artifactId>mojo.it.jaxwscommons49</artifactId>
 
     <name>JAX_WS_COMMONS-49</name>
+    <description>wsimport - execution's configuration is ignored</description>
 
     <build>
         <plugins>

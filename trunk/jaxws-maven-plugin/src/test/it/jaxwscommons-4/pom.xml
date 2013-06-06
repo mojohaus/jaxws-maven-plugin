@@ -32,6 +32,7 @@
     <artifactId>jaxwscommons-4</artifactId>
 
     <name>JAX_WS_COMMONS-4</name>
+    <description>wsimport - support compilation from maven repository</description>
 
     <dependencies>
         <dependency>

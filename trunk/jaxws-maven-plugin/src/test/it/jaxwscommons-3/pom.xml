@@ -34,6 +34,7 @@
     <packaging>war</packaging>
 
     <name>JAX_WS_COMMONS-3</name>
+    <description>wsgen - support attaching WSDL to artifacts</description>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>

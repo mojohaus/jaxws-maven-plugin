@@ -32,6 +32,7 @@
     <packaging>pom</packaging>
 
     <name>JAX_WS_COMMONS-103</name>
+    <description>wsgen - support for external metadata</description>
     
     <modules>
         <module>lib</module>
