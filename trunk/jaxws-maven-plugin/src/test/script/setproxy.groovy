@@ -28,6 +28,11 @@ if (settings?.proxies) {
                 if (proxy.port) {
                     itproxy += " -Dhttp.proxyPort=" + proxy.port
                 }
+            } else if ("https".equals(proxy.protocol)) {
+                itproxy =  "-Dhttps.proxyHost=" + proxy.host
+                if (proxy.port) {
+                    itproxy += " -Dhttps.proxyPort=" + proxy.port
+                }
             }
             def p = new Node(proxies, "proxy")
             new Node(p, "protocol", proxy.protocol)
