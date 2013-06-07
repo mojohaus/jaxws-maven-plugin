@@ -39,10 +39,17 @@ import java.util.logging.Logger;
 public final class Invoker {
 
     public static void main(String... args) throws Exception {
-        Properties p = new Properties();
-        p.load(new FileInputStream(args[2]));
+        int idx = 1;
+        String c = args[2];
+        if ("-pathfile".equals(args[1])) {
+            Properties p = new Properties();
+            File pathFile = new File(args[2]);
+            pathFile.deleteOnExit();
+            p.load(new FileInputStream(pathFile));
+            c = p.getProperty("cp");
+            idx = 3;
+        }
         List<URL> cp = new ArrayList<URL>();
-        String c = p.getProperty("cp");
         for (String s: c.split(File.pathSeparator)) {
             try {
                 URL f = new File(s).toURI().toURL();
@@ -52,8 +59,8 @@ public final class Invoker {
             }
         }
         URLClassLoader cl = new URLClassLoader(cp.toArray(new URL[cp.size()]));
-        String[] wsargs = new String[args.length - 3];
-        System.arraycopy(args, 3, wsargs, 0, args.length - 3);
+        String[] wsargs = new String[args.length - idx];
+        System.arraycopy(args, idx, wsargs, 0, args.length - idx);
         ClassLoader orig = Thread.currentThread().getContextClassLoader();
         String origJcp = System.getProperty("java.class.path");
         Thread.currentThread().setContextClassLoader(cl);
