@@ -26,10 +26,14 @@ JAX-WS Maven Plugin
   toolset. The original version of this was developed in the codehaus mojo project,
   but as of March 2007, the project is moved to jax-ws-commons.
 
+  * <<License:>> {{{http://www.apache.org/licenses/LICENSE-2.0}Apache License, Version 2.0}}
+
+  []
+
 * Usage
-  
+
   Instructions on how to use the JAX-WS Maven Plugin can be found {{{./usage.html}here}}.
-  
+
 * Goals Overview
   
   * {{{./wsimport-mojo.html}jaxws:wsimport}}: generates JAX-WS portable artifacts used in JAX-WS
