@@ -39,6 +39,7 @@
 
     <properties>
         <jaxws-ri.version>2.2.9-b14002</jaxws-ri.version>
+        <metro.version>2.3.1-b104</metro.version>
         <jaxws.plugin.version>2.3.1-SNAPSHOT</jaxws.plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
