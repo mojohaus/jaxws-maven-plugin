@@ -368,7 +368,8 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
                     File pathFile = createPathFile(cp);
                     cmd.createArg().setLine("-pathfile " + pathFile.getAbsolutePath());
                     if (getExtraClasspath() != null) {
-                        cmd.createArg().setLine("-cp " + getExtraClasspath());
+                        cmd.createArg().setValue("-cp");
+                        cmd.createArg().setValue(getExtraClasspath());
                     }
                 } catch (IOException ioe) {
                     //creation of temporary file can fail, in such case just put everything on cp
