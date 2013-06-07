@@ -362,19 +362,32 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
                 cmd.createArg().setValue(classpath[2]);
                 cmd.createArg().setLine("org.jvnet.jax_ws_commons.jaxws.Invoker");
                 cmd.createArg().setLine(getMain());
-                File pathFile = createPathFile(
-                        (getExtraClasspath() != null ? getExtraClasspath() + File.pathSeparator : "")
-                        + classpath[1]);
-                cmd.createArg().setLine("-pathfile " + pathFile.getAbsolutePath());
-                if (getExtraClasspath() != null) {
-                    cmd.createArg().setLine("-cp " + getExtraClasspath());
+                String cp = getExtraClasspath() != null ? getExtraClasspath() + File.pathSeparator : "";
+                cp += classpath[1];
+                try {
+                    File pathFile = createPathFile(cp);
+                    cmd.createArg().setLine("-pathfile " + pathFile.getAbsolutePath());
+                    if (getExtraClasspath() != null) {
+                        cmd.createArg().setLine("-cp " + getExtraClasspath());
+                    }
+                } catch (IOException ioe) {
+                    //creation of temporary file can fail, in such case just put everything on cp
+                    cmd.createArg().setValue("-cp");
+                    cmd.createArg().setValue(cp);
                 }
             }
             cmd.setWorkingDirectory(project.getBasedir());
             for (String arg : args) {
                 cmd.createArg().setLine(arg);
             }
-            getLog().debug(cmd.toString());
+            String fullCommand = cmd.toString();
+            if (isWindows() && 8191 <= fullCommand.length()) {
+                getLog().warn("Length of the command is limitted to 8191 characters but it has "
+                        + fullCommand.length() + " characters.");
+                getLog().warn(fullCommand);
+            } else {
+                getLog().debug(fullCommand);
+            }
             if (CommandLineUtils.executeCommandLine(cmd, sc, sc) != 0) {
                 throw new MojoExecutionException("Mojo failed - check output");
             }
@@ -471,13 +484,14 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     }
 
     private String getJavaExec() {
-        return Os.isFamily(Os.FAMILY_WINDOWS) ? "java.exe" : "java";
+        return isWindows() ? "java.exe" : "java";
     }
 
-    private File createPathFile(String cp) {
-        File f = new File(System.getProperty("java.io.tmpdir"), "jax-ws-mvn-plugin-cp.txt");
+    private File createPathFile(String cp) throws IOException {
+        File f = File.createTempFile("jax-ws-mvn-plugin-cp", ".txt");
         if (f.exists() && f.isFile()) {
             if (!f.delete()) {
+                //this should not happen
                 getLog().warn("cannot remove obsolete classpath setting file: " + f.getAbsolutePath());
             }
         }
@@ -500,5 +514,9 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
             }
         }
         return f;
+    }
+
+    private boolean isWindows() {
+        return Os.isFamily(Os.FAMILY_WINDOWS);
     }
 }
