@@ -42,7 +42,7 @@ from JDK
           <execution>
             <id>wsimport-from-jdk</id>
             <goals>
-              <goal>wsgen</goal>
+              <goal>wsimport</goal>
             </goals>
             <configuration>
               <executable>${tool.wsimport}</executable>
