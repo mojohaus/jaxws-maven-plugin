@@ -116,7 +116,12 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
     private boolean xdonotoverwrite;
 
     /**
+     * Metadata file for wsgen. See <a href="https://jax-ws.java.net/2.2.8/docs/ch03.html#users-guide-external-metadata">the JAX-WS Guide</a>
+     * for the description of this feature.
+     * Unmatched files will be ignored.
+     *
      * @since 2.3
+     * @see <a href="https://jax-ws.java.net/2.2.8/docs/ch03.html#users-guide-external-metadata">External Web Service Metadata</a>
      */
     @Parameter
     private File metadata;
