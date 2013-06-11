@@ -34,8 +34,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jaxws.plugin.version>2.3.1</jaxws.plugin.version>
-        <jaxws-ri.version>2.2.9</jaxws-ri.version>
+        <jaxws.plugin.version>2.3</jaxws.plugin.version>
+        <jaxws-ri.version>2.2.8</jaxws-ri.version>
     </properties>
 
     <dependencies>
