@@ -24,12 +24,12 @@ if (settings?.proxies) {
     settings?.proxies?.each { proxy ->
         if (proxy.active) {
             if ("http".equals(proxy.protocol)) {
-                itproxy +=  "-Dhttp.proxyHost=" + proxy.host
+                itproxy +=  " -Dhttp.proxyHost=" + proxy.host
                 if (proxy.port) {
                     itproxy += " -Dhttp.proxyPort=" + proxy.port
                 }
             } else if ("https".equals(proxy.protocol)) {
-                itproxy +=  "-Dhttps.proxyHost=" + proxy.host
+                itproxy +=  " -Dhttps.proxyHost=" + proxy.host
                 if (proxy.port) {
                     itproxy += " -Dhttps.proxyPort=" + proxy.port
                 }
@@ -47,7 +47,7 @@ if (settings?.proxies) {
 }
 
 if (itproxy.trim().length() > 0) {
-    log.info("Setting: " + itproxy)
+    log.info("Setting: " + itproxy.trim())
 } else {
     log.info("No proxy found")
 }
@@ -57,4 +57,5 @@ XmlNodePrinter printer = new XmlNodePrinter(new PrintWriter(writer))
 printer.setPreserveWhitespace(true);
 printer.print(itsettings)
 
-project.getModel().addProperty("ittest-proxy", itproxy)
+project.getModel().addProperty("ittest-proxy", itproxy.trim())
+
