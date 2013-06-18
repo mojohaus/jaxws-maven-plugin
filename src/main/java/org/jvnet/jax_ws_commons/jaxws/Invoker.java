@@ -84,7 +84,9 @@ public final class Invoker {
         } catch (IllegalArgumentException ex) {
             Logger.getLogger(Invoker.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InvocationTargetException ex) {
-            throw (Exception) ex.getCause();
+            Exception rex = new RuntimeException();
+            rex.initCause(ex);
+            throw ex;
         } finally {
             Thread.currentThread().setContextClassLoader(orig);
             System.setProperty("java.class.path", origJcp);
