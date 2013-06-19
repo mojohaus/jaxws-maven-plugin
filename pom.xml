@@ -124,6 +124,10 @@
                         <artifactId>maven-model</artifactId>
                         <groupId>org.apache.maven</groupId>
                     </exclusion>
+                    <exclusion>
+                        <artifactId>plexus-interpolation</artifactId>
+                        <groupId>org.codehaus.plexus</groupId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>

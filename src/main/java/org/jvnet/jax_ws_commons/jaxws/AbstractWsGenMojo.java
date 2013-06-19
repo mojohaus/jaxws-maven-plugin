@@ -189,7 +189,6 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      * @return a list of arguments
      * @throws MojoExecutionException
      */
-    @SuppressWarnings("unchecked")
     private ArrayList<String> getWsGenArgs(String aSei) throws MojoExecutionException {
         ArrayList<String> args = new ArrayList<String>();
         args.addAll(getCommonArgs());
