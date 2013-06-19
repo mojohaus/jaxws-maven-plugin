@@ -118,11 +118,22 @@
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-project</artifactId>
-                <version>2.2.1</version>
+                <version>3.0-alpha-2</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>maven-model</artifactId>
+                        <groupId>org.apache.maven</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-plugin-api</artifactId>
+                <version>3.0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-core</artifactId>
                 <version>3.0.5</version>
             </dependency>
             <dependency>
@@ -141,6 +152,21 @@
                 <artifactId>testng</artifactId>
                 <version>6.8.5</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-settings</artifactId>
+                <version>3.0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sonatype.aether</groupId>
+                <artifactId>aether-api</artifactId>
+                <version>1.13.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sonatype.aether</groupId>
+                <artifactId>aether-util</artifactId>
+                <version>1.13.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -175,6 +201,22 @@
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-settings</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.sonatype.aether</groupId>
+            <artifactId>aether-util</artifactId>
+        </dependency>
     </dependencies>
 
     <scm>
@@ -192,6 +234,7 @@
 
     <properties>
         <jaxws-tools.version>2.2.9-b14002</jaxws-tools.version>
+        <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
     </properties>
 
     <build>

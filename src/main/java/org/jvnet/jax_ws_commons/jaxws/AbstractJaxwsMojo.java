@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * 
+ *
  * This file incorporates work covered by the following copyright and
  * permission notice:
  *
@@ -33,7 +33,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jvnet.jax_ws_commons.jaxws;
 
 import java.io.File;
@@ -42,7 +41,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -51,19 +49,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
-import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
-import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
-import org.apache.maven.artifact.resolver.filter.ExcludesArtifactFilter;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
 import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -76,6 +64,11 @@ import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.codehaus.plexus.util.cli.DefaultConsumer;
 import org.codehaus.plexus.util.cli.StreamConsumer;
+import org.sonatype.aether.RepositorySystem;
+import org.sonatype.aether.RepositorySystemSession;
+import org.sonatype.aether.repository.RemoteRepository;
+import org.sonatype.aether.resolution.DependencyResolutionException;
+import org.sonatype.aether.resolution.DependencyResult;
 
 /**
  *
@@ -149,44 +142,38 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     private Map<String, Artifact> pluginArtifactMap;
 
     /**
-     * Resolves the artifacts needed.
+     * The entry point to Aether, i.e. the component doing all the work.
      *
-     * @since 2.2.1
+     * @since 2.3.1
      */
     @Component
-    private ArtifactResolver artifactResolver;
+    private RepositorySystem repoSystem;
 
     /**
-     * Creates the artifact.
+     * The current repository/network configuration of Maven.
      *
-     * @since 2.2.1
+     * @since 2.3.1
      */
-    @Component
-    private ArtifactFactory artifactFactory;
+    @Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
+    private RepositorySystemSession repoSession;
 
     /**
-     * ArtifactRepository of the localRepository.
+     * The project's remote repositories to use for the resolution of project
+     * dependencies.
      *
-     * @since 2.2.1
+     * @since 2.3.1
      */
-    @Parameter(defaultValue = "${localRepository}", required = true, readonly = true)
-    private ArtifactRepository localRepository;
+    @Parameter(defaultValue = "${project.remoteProjectRepositories}", readonly = true)
+    private List<RemoteRepository> projectRepos;
 
     /**
-     * The remote plugin repositories declared in the POM.
+     * The project's remote repositories to use for the resolution of plugins
+     * and their dependencies.
      *
-     * @since 2.2.1
+     * @since 2.3.1
      */
-    @Parameter(defaultValue = "${project.pluginArtifactRepositories}")
-    private List<ArtifactRepository> remoteRepositories;
-
-    /**
-     * For retrieval of artifact's metadata.
-     *
-     * @since 2.2.1
-     */
-    @Component
-    private ArtifactMetadataSource metadataSource;
+    @Parameter(defaultValue = "${project.remotePluginRepositories}", readonly = true)
+    private List<RemoteRepository> pluginRepos;
 
     /*
      * Information about this plugin, used to lookup this plugin's configuration from the currently executing
@@ -392,10 +379,8 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
             if (CommandLineUtils.executeCommandLine(cmd, sc, sc) != 0) {
                 throw new MojoExecutionException("Mojo failed - check output");
             }
-        } catch (ArtifactNotFoundException t) {
-            throw new MojoExecutionException(t.getMessage(), t);
-        } catch (ArtifactResolutionException t) {
-            throw new MojoExecutionException(t.getMessage(), t);
+        } catch (DependencyResolutionException dre) {
+            throw new MojoExecutionException(dre.getMessage(), dre);
         } catch (CommandLineException t) {
             throw new MojoExecutionException(t.getMessage(), t);
         }
@@ -413,58 +398,31 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private String[] getCP() throws ArtifactResolutionException, ArtifactNotFoundException {
-        Set<Artifact> cp = new HashSet<Artifact>();
-        Artifact originatingArtifact = artifactFactory.createBuildArtifact("dummy", "dummy", "1.0", "jar");
+    private String[] getCP() throws DependencyResolutionException {
+        Set<org.sonatype.aether.artifact.Artifact> endorsedCp = new HashSet<org.sonatype.aether.artifact.Artifact>();
+        Set<org.sonatype.aether.artifact.Artifact> cp = new HashSet<org.sonatype.aether.artifact.Artifact>();
+        @SuppressWarnings("unchecked")
         List<Plugin> plugins = project.getBuildPlugins();
         for (Plugin p : plugins) {
             if ("jaxws-maven-plugin".equals(p.getArtifactId()) && "org.jvnet.jax-ws-commons".equals(p.getGroupId())) {
                 boolean toolsAdded = false;
                 for (Dependency d : p.getDependencies()) {
-                    Set<Artifact> toInclude = new HashSet<Artifact>();
-                    List<String> toExclude = new ArrayList<String>();
-                    for (Exclusion e : d.getExclusions()) {
-                        toExclude.add(e.getGroupId() + ":" + e.getArtifactId());
-                        getLog().debug("excluding: " + e.getGroupId() + ":" + e.getArtifactId());
-                    }
                     if (("jaxws-tools".equals(d.getArtifactId()) && "com.sun.xml.ws".equals(d.getGroupId()))
                             || ("webservices-tools".equals(d.getArtifactId())) && "org.glassfish.metro".equals(d.getGroupId())) {
                         toolsAdded = true;
                     }
-                    toInclude.add(pluginArtifactMap.get(d.getGroupId() + ":" + d.getArtifactId()));
-                    ArtifactFilter filter = new ExcludesArtifactFilter(toExclude);
-                    getLog().debug("resolving: " + d.getGroupId() + ":" + d.getArtifactId());
-                    ArtifactResolutionResult res = artifactResolver.resolveTransitively(
-                            toInclude,
-                            originatingArtifact, localRepository, remoteRepositories,
-                            metadataSource, filter);
-                    cp.addAll(res.getArtifacts());
+                    DependencyResult result = DependencyResolver.resolve(d, pluginRepos, repoSystem, repoSession);
+                    sortArtifacts(result, cp, endorsedCp);
                 }
                 if (!toolsAdded) {
-                    ArtifactResolutionResult res = artifactResolver.resolveTransitively(
-                            Collections.singleton(pluginArtifactMap.get("com.sun.xml.ws:jaxws-tools")),
-                            originatingArtifact, remoteRepositories, localRepository, metadataSource);
-                    cp.addAll(res.getArtifacts());
+                    DependencyResult result = DependencyResolver.resolve(pluginArtifactMap.get("com.sun.xml.ws:jaxws-tools"), pluginRepos, repoSystem, repoSession);
+                    sortArtifacts(result, cp, endorsedCp);
                 }
                 break;
             }
         }
-        StringBuilder sb = new StringBuilder();
-        StringBuilder esb = new StringBuilder();
-        for (Artifact a : cp) {
-            if ("jaxws-api".equals(a.getArtifactId()) || "jaxb-api".equals(a.getArtifactId())
-                    || "saaj-api".equals(a.getArtifactId()) || "jsr181-api".equals(a.getArtifactId())
-                    || "javax.annotation".equals(a.getArtifactId())
-                    || "javax.annotation-api".equals(a.getArtifactId())
-                    || "webservices-api".equals(a.getArtifactId())) {
-                esb.append(a.getFile().getAbsolutePath());
-                esb.append(File.pathSeparator);
-            } else {
-                sb.append(a.getFile().getAbsolutePath());
-                sb.append(File.pathSeparator);
-            }
-        }
+        StringBuilder sb = getCPasString(cp);
+        StringBuilder esb = getCPasString(endorsedCp);
         //add custom invoker
         String invokerPath = AbstractJaxwsMojo.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm();
         try {
@@ -519,5 +477,22 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
 
     private boolean isWindows() {
         return Os.isFamily(Os.FAMILY_WINDOWS);
+    }
+
+    private StringBuilder getCPasString(Set<org.sonatype.aether.artifact.Artifact> artifacts) {
+        StringBuilder sb = new StringBuilder();
+        for (org.sonatype.aether.artifact.Artifact a : artifacts) {
+            sb.append(a.getFile().getAbsolutePath());
+            sb.append(File.pathSeparator);
+        }
+        return sb;
+    }
+
+    private void sortArtifacts(DependencyResult result, Set<org.sonatype.aether.artifact.Artifact> cp, Set<org.sonatype.aether.artifact.Artifact> endorsedCp) {
+        ClassPathNodeListGenerator nlg = new ClassPathNodeListGenerator();
+        result.getRoot().accept(nlg);
+        cp.addAll(nlg.getArtifacts(false));
+        nlg.setEndorsed(true);
+        endorsedCp.addAll(nlg.getArtifacts(false));
     }
 }

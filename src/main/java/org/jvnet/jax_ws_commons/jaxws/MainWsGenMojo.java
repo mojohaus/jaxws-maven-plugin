@@ -124,7 +124,7 @@ public class MainWsGenMojo extends AbstractWsGenMojo {
         } else {
             // WEB-INF/wsdl for war
             String targetPath = null;
-            Plugin war = (Plugin) project.getBuild().getPluginsAsMap().get("org.apache.maven.plugins:maven-war-plugin");
+            Plugin war = project.getBuild().getPluginsAsMap().get("org.apache.maven.plugins:maven-war-plugin");
             for (PluginExecution exec : war.getExecutions()) {
                 //check execution/configuration
                 String s = getWebappDirectory(exec.getConfiguration());
