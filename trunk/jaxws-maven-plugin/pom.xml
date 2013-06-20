@@ -99,8 +99,7 @@
     </licenses>
 
     <prerequisites>
-        <!-- process-test-classes phase was introduced in 2.0.5 -->
-        <maven>2.0.5</maven>
+        <maven>3.0</maven>
     </prerequisites>
 
     <dependencyManagement>
