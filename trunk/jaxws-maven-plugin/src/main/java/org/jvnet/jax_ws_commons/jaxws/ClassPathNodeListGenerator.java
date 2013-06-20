@@ -43,7 +43,7 @@ final class ClassPathNodeListGenerator extends PreorderNodeListGenerator {
 
     @Override
     public List<DependencyNode> getNodes() {
-        List<DependencyNode> retVal = new ArrayList<DependencyNode>(nodes);
+        List<DependencyNode> retVal = new ArrayList<DependencyNode>(super.getNodes());
         if (endorsed) {
             retVal.retainAll(endorsedNodes);
         } else {
