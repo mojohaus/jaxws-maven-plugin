@@ -43,7 +43,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
@@ -55,6 +54,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -136,12 +136,6 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     private File executable;
 
     /**
-     * Map of of plugin artifacts.
-     */
-    @Parameter(property = "plugin.artifactMap", readonly = true)
-    private Map<String, Artifact> pluginArtifactMap;
-
-    /**
      * The entry point to Aether, i.e. the component doing all the work.
      *
      * @since 2.3.1
@@ -176,14 +170,13 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     private List<RemoteRepository> pluginRepos;
 
     /*
-     * Information about this plugin, used to lookup this plugin's configuration from the currently executing
-     * project.
+     * Information about this plugin, used to lookup this plugin's configuration
+     * from the currently executing project.
      *
-     * @since 2.2.1
+     * @since 2.3.1
      */
-    //requires M3 ?
-//    @Parameter( defaultValue = "${plugin}", readonly = true )
-//    protected PluginDescriptor pluginDescriptor;
+    @Parameter(defaultValue = "${plugin}", readonly = true)
+    protected PluginDescriptor pluginDescriptor;
 
     private static final Logger logger = Logger.getLogger(AbstractJaxwsMojo.class.getName());
     private static final List<String> METRO_22 = new ArrayList<String>();
@@ -281,7 +274,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     protected boolean isArgSupported(String arg) throws MojoExecutionException {
         boolean isSupported = true;
         //try Metro first
-        Artifact a = pluginArtifactMap.get("org.glassfish.metro:webservices-tools");
+        Artifact a = pluginDescriptor.getArtifactMap().get("org.glassfish.metro:webservices-tools");
         List<String> supportedArgs = null;
         String v = null;
         try {
@@ -297,7 +290,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
                 }
             } else {
                 //fallback to RI
-                a = pluginArtifactMap.get("com.sun.xml.ws:jaxws-tools");
+                a = pluginDescriptor.getArtifactMap().get("com.sun.xml.ws:jaxws-tools");
                 ArtifactVersion av = a.getSelectedVersion();
                 v = av.toString();
                 if (av.getMajorVersion() == 2 && av.getMinorVersion() == 2 && av.getIncrementalVersion() == 6) {
@@ -401,25 +394,21 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     private String[] getCP() throws DependencyResolutionException {
         Set<org.sonatype.aether.artifact.Artifact> endorsedCp = new HashSet<org.sonatype.aether.artifact.Artifact>();
         Set<org.sonatype.aether.artifact.Artifact> cp = new HashSet<org.sonatype.aether.artifact.Artifact>();
-        @SuppressWarnings("unchecked")
-        List<Plugin> plugins = project.getBuildPlugins();
-        for (Plugin p : plugins) {
-            if ("jaxws-maven-plugin".equals(p.getArtifactId()) && "org.jvnet.jax-ws-commons".equals(p.getGroupId())) {
-                boolean toolsAdded = false;
-                for (Dependency d : p.getDependencies()) {
-                    if (("jaxws-tools".equals(d.getArtifactId()) && "com.sun.xml.ws".equals(d.getGroupId()))
-                            || ("webservices-tools".equals(d.getArtifactId())) && "org.glassfish.metro".equals(d.getGroupId())) {
-                        toolsAdded = true;
-                    }
-                    DependencyResult result = DependencyResolver.resolve(d, pluginRepos, repoSystem, repoSession);
-                    sortArtifacts(result, cp, endorsedCp);
-                }
-                if (!toolsAdded) {
-                    DependencyResult result = DependencyResolver.resolve(pluginArtifactMap.get("com.sun.xml.ws:jaxws-tools"), pluginRepos, repoSystem, repoSession);
-                    sortArtifacts(result, cp, endorsedCp);
-                }
-                break;
+        Plugin p = pluginDescriptor.getPlugin();
+        boolean toolsAdded = false;
+        for (Dependency d : p.getDependencies()) {
+            if (("jaxws-tools".equals(d.getArtifactId()) && "com.sun.xml.ws".equals(d.getGroupId()))
+                    || ("webservices-tools".equals(d.getArtifactId())) && "org.glassfish.metro".equals(d.getGroupId())) {
+                toolsAdded = true;
             }
+            DependencyResult result = DependencyResolver.resolve(d, pluginRepos, repoSystem, repoSession);
+            sortArtifacts(result, cp, endorsedCp);
+        }
+        if (!toolsAdded) {
+            DependencyResult result = DependencyResolver.resolve(
+                    pluginDescriptor.getArtifactMap().get("com.sun.xml.ws:jaxws-tools"),
+                    pluginRepos, repoSystem, repoSession);
+            sortArtifacts(result, cp, endorsedCp);
         }
         StringBuilder sb = getCPasString(cp);
         StringBuilder esb = getCPasString(endorsedCp);
