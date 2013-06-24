@@ -99,7 +99,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
      * Allow to use the JAXWS Vendor Extensions.
      */
     @Parameter(defaultValue = "false")
-    protected boolean extension;
+    private boolean extension;
 
     /**
      * Specify character encoding used by source files.
@@ -222,6 +222,10 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         return null;
     }
 
+    protected boolean isExtensionOn() {
+        return extension;
+    }
+
     protected List<String> getCommonArgs() throws MojoExecutionException {
         List<String> commonArgs = new ArrayList<String>();
 
@@ -254,7 +258,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
             }
         }
 
-        if (extension) {
+        if (isExtensionOn()) {
             commonArgs.add("-extension");
         }
 
@@ -342,14 +346,15 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
                 cmd.createArg().setValue(classpath[2]);
                 cmd.createArg().setLine("org.jvnet.jax_ws_commons.jaxws.Invoker");
                 cmd.createArg().setLine(getMain());
-                String cp = getExtraClasspath() != null ? getExtraClasspath() + File.pathSeparator : "";
+                String extraCp = getExtraClasspath();
+                String cp = extraCp != null ? extraCp + File.pathSeparator : "";
                 cp += classpath[1];
                 try {
                     File pathFile = createPathFile(cp);
                     cmd.createArg().setLine("-pathfile " + pathFile.getAbsolutePath());
-                    if (getExtraClasspath() != null) {
+                    if (extraCp != null) {
                         cmd.createArg().setValue("-cp");
-                        cmd.createArg().setValue(getExtraClasspath());
+                        cmd.createArg().setValue(extraCp);
                     }
                 } catch (IOException ioe) {
                     //creation of temporary file can fail, in such case just put everything on cp
