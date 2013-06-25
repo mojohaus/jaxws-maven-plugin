@@ -40,8 +40,8 @@ final class DependencyResolver {
 
     public static DependencyResult resolve(CollectRequest collectRequest, List<RemoteRepository> remoteRepos,
             RepositorySystem repoSystem, RepositorySystemSession repoSession) throws DependencyResolutionException {
-            DependencyRequest dependencyRequest = new DependencyRequest(collectRequest, null);
-            return repoSystem.resolveDependencies(repoSession, dependencyRequest);
+        DependencyRequest dependencyRequest = new DependencyRequest(collectRequest, null);
+        return repoSystem.resolveDependencies(repoSession, dependencyRequest);
     }
 
     public static DependencyResult resolve(org.apache.maven.artifact.Artifact artifact, List<RemoteRepository> remoteRepos,
