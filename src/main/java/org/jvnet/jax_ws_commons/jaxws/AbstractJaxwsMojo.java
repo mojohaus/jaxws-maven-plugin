@@ -41,8 +41,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
@@ -276,7 +279,6 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     }
 
     protected boolean isArgSupported(String arg) throws MojoExecutionException {
-        boolean isSupported = true;
         //try Metro first
         Artifact a = pluginDescriptor.getArtifactMap().get("org.glassfish.metro:webservices-tools");
         List<String> supportedArgs = null;
@@ -308,7 +310,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         } catch (OverConstrainedVersionException ex) {
             throw new MojoExecutionException(ex.getMessage(), ex);
         }
-        isSupported = supportedArgs.contains(arg);
+        boolean isSupported = supportedArgs.contains(arg);
         if (!isSupported) {
             getLog().warn("'" + arg + "' is not supported by " + a.getArtifactId() + ":" + v);
         }
@@ -396,26 +398,31 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         }
     }
 
+    protected String[] getExtraDependencies() {
+        return new String[0];
+    }
+
     private String[] getCP() throws DependencyResolutionException {
         Set<org.sonatype.aether.artifact.Artifact> endorsedCp = new HashSet<org.sonatype.aether.artifact.Artifact>();
-        Set<org.sonatype.aether.artifact.Artifact> cp = new HashSet<org.sonatype.aether.artifact.Artifact>();
+        Map<String, org.sonatype.aether.artifact.Artifact> cp = new HashMap<String, org.sonatype.aether.artifact.Artifact>();
         Plugin p = pluginDescriptor.getPlugin();
-        boolean toolsAdded = false;
         for (Dependency d : p.getDependencies()) {
-            if (("jaxws-tools".equals(d.getArtifactId()) && "com.sun.xml.ws".equals(d.getGroupId()))
-                    || ("webservices-tools".equals(d.getArtifactId())) && "org.glassfish.metro".equals(d.getGroupId())) {
-                toolsAdded = true;
-            }
             DependencyResult result = DependencyResolver.resolve(d, pluginRepos, repoSystem, repoSession);
             sortArtifacts(result, cp, endorsedCp);
         }
-        if (!toolsAdded) {
+        for (String dep : getExtraDependencies()) {
+            DependencyResult result = DependencyResolver.resolve(
+                    pluginDescriptor.getArtifactMap().get(dep),
+                    pluginRepos, repoSystem, repoSession);
+            sortArtifacts(result, cp, endorsedCp);
+        }
+        if (!(cp.containsKey("com.sun.xml.ws:jaxws-tools") || cp.containsKey("org.glassfish.metro:webservices-tools"))) {
             DependencyResult result = DependencyResolver.resolve(
                     pluginDescriptor.getArtifactMap().get("com.sun.xml.ws:jaxws-tools"),
                     pluginRepos, repoSystem, repoSession);
             sortArtifacts(result, cp, endorsedCp);
         }
-        StringBuilder sb = getCPasString(cp);
+        StringBuilder sb = getCPasString(cp.values());
         StringBuilder esb = getCPasString(endorsedCp);
         //add custom invoker
         String invokerPath = AbstractJaxwsMojo.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm();
@@ -473,7 +480,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         return Os.isFamily(Os.FAMILY_WINDOWS);
     }
 
-    private StringBuilder getCPasString(Set<org.sonatype.aether.artifact.Artifact> artifacts) {
+    private StringBuilder getCPasString(Collection<org.sonatype.aether.artifact.Artifact> artifacts) {
         StringBuilder sb = new StringBuilder();
         for (org.sonatype.aether.artifact.Artifact a : artifacts) {
             sb.append(a.getFile().getAbsolutePath());
@@ -482,10 +489,12 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         return sb;
     }
 
-    private void sortArtifacts(DependencyResult result, Set<org.sonatype.aether.artifact.Artifact> cp, Set<org.sonatype.aether.artifact.Artifact> endorsedCp) {
+    private void sortArtifacts(DependencyResult result, Map<String, org.sonatype.aether.artifact.Artifact> cp, Set<org.sonatype.aether.artifact.Artifact> endorsedCp) {
         ClassPathNodeListGenerator nlg = new ClassPathNodeListGenerator();
         result.getRoot().accept(nlg);
-        cp.addAll(nlg.getArtifacts(false));
+        for (org.sonatype.aether.artifact.Artifact a : nlg.getArtifacts(false)) {
+            cp.put(a.getGroupId() + ":" + a.getArtifactId(), a);
+        }
         nlg.setEndorsed(true);
         endorsedCp.addAll(nlg.getArtifacts(false));
     }
