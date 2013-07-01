@@ -108,7 +108,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
      * Specify character encoding used by source files.
      */
     @Parameter(property = "project.build.sourceEncoding")
-    private String encoding;
+    protected String encoding;
 
     /**
      * Specify optional command-line options.
