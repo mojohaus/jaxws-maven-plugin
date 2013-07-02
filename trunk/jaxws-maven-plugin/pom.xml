@@ -270,19 +270,18 @@
                         <excludeFile>${project.basedir}/copyright-exclude</excludeFile>
                     </configuration>
                 </plugin>
-                <!-- remove this once http://jira.codehaus.org/browse/MRELEASE-715 is fixed -->
-                <!--
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
-                        <compilerArguments>
-                            <Xlint:all />
-                            <proc:none />
-                        </compilerArguments>
+                        <debug>true</debug>
+                        <proc>none</proc>
+                        <compilerArgs>
+                            <arg>-Xlint:all</arg>
+                        </compilerArgs>
                     </configuration>
                 </plugin>
-                -->
+                
             </plugins>
         </pluginManagement>
 
