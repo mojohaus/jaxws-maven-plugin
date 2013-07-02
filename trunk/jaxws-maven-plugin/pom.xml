@@ -281,7 +281,6 @@
                         </compilerArgs>
                     </configuration>
                 </plugin>
-                
             </plugins>
         </pluginManagement>
 
