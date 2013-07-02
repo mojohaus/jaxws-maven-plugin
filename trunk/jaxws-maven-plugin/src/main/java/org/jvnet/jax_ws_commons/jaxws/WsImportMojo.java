@@ -182,7 +182,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * Note: It is a QName string, formatted as: "{" + Namespace URI + "}" + local part
      */
     @Parameter
-    private String implServiceName = null;
+    private String implServiceName;
 
     /**
      * Local portion of port name for generated JWS implementation.
@@ -191,7 +191,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * Note: It is a QName string, formatted as: "{" + Namespace URI + "}" + local part
      */
     @Parameter
-    private String implPortName = null;
+    private String implPortName;
 
     /**
      * Generate stubbed JWS implementation file.
