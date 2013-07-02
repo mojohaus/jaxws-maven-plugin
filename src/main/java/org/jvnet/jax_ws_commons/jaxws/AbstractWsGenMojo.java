@@ -131,8 +131,7 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
     protected abstract File getClassesDir();
 
     @Override
-    public void execute()
-        throws MojoExecutionException, MojoFailureException {
+    public void execute() throws MojoExecutionException, MojoFailureException {
         Set<String> seis = new HashSet<String>();
         if (sei != null) {
             seis.add(sei);
@@ -140,25 +139,25 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
             //find all SEIs within current classes
             seis.addAll(getSEIs(getClassesDir()));
         }
-
         if (seis.isEmpty()) {
             throw new MojoFailureException("No @javax.jws.WebService found.");
         }
+        for (String aSei : seis) {
+            processSei(aSei);
+        }
+    }
 
-        try {
-            for (String aSei : seis) {
-                getLog().info("Processing: " + aSei);
-                ArrayList<String> args = getWsGenArgs(aSei);
-                getLog().info("jaxws:wsgen args: " + args);
-                exec(args);
-                if (metadata != null) {
-                    FileUtils.copyFileToDirectory(metadata, getClassesDir());
-                }
+    protected void processSei(String sei) throws MojoExecutionException {
+        getLog().info("Processing: " + sei);
+        ArrayList<String> args = getWsGenArgs(sei);
+        getLog().info("jaxws:wsgen args: " + args);
+        exec(args);
+        if (metadata != null) {
+            try {
+                FileUtils.copyFileToDirectory(metadata, getClassesDir());
+            } catch (IOException ioe) {
+                throw new MojoExecutionException(ioe.getMessage(), ioe);
             }
-        } catch (MojoExecutionException e) {
-            throw e;
-        } catch (IOException e) {
-            throw new MojoExecutionException("Failed to execute wsgen",e);
         }
     }
 
