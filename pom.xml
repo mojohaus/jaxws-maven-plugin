@@ -567,7 +567,7 @@
                                 </goals>
                                 <configuration>
                                     <projectsDirectory>src/test/it</projectsDirectory>
-                                    <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+                                    <cloneProjectsTo>${project.build.directory}/it tests</cloneProjectsTo>
                                 </configuration>
                             </execution>
                             <execution>
@@ -601,7 +601,7 @@
                                 </goals>
                                 <configuration>
                                     <systemPropertyVariables>
-                                        <it.projects.dir>${project.build.directory}/it</it.projects.dir>
+                                        <it.projects.dir>${project.build.directory}/it tests</it.projects.dir>
                                         <jaxws-ri.version>${jaxws-tools.version}</jaxws-ri.version>
                                     </systemPropertyVariables>
                                     <encoding>${project.build.sourceEncoding}</encoding>

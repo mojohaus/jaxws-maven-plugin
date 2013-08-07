@@ -235,7 +235,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         if (!isDefaultSrc(getSourceDestDir()) || keep) {
             commonArgs.add("-keep");
             commonArgs.add("-s");
-            commonArgs.add(getSourceDestDir().getAbsolutePath());
+            commonArgs.add("'" + getSourceDestDir().getAbsolutePath() + "'");
             if (!getSourceDestDir().mkdirs() && !getSourceDestDir().exists()) {
                 getLog().warn("Cannot create directory: " + getSourceDestDir().getAbsolutePath());
             }
@@ -247,7 +247,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
             getLog().warn("Cannot create directory: " + destDir.getAbsolutePath());
         }
         commonArgs.add("-d");
-        commonArgs.add(destDir.getAbsolutePath());
+        commonArgs.add("'" + destDir.getAbsolutePath() + "'");
 
         if (verbose) {
             commonArgs.add("-verbose");
@@ -329,7 +329,8 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
                 if (executable.isFile() && executable.canExecute()) {
                     cmd.setExecutable(executable.getAbsolutePath());
                     if (getExtraClasspath() !=  null) {
-                        cmd.createArg().setLine("-cp " + getExtraClasspath());
+                        cmd.createArg().setLine("-cp");
+                        cmd.createArg().setValue(getExtraClasspath());
                     }
                 } else {
                     throw new MojoExecutionException("Cannot execute: " + executable.getAbsolutePath());

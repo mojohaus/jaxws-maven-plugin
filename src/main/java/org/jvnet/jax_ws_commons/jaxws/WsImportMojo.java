@@ -376,10 +376,9 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             args.add( packageName );
         }
 
-        if ( catalog != null )
-        {
-            args.add( "-catalog" );
-            args.add( catalog.getAbsolutePath() );
+        if (catalog != null) {
+            args.add("-catalog");
+            args.add("'" + catalog.getAbsolutePath() + "'");
         }
 
         if ( wsdlLocation != null )
@@ -419,7 +418,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                 getLog().warn("Cannot create directory: " + implDestDir.getAbsolutePath());
             }
             args.add("-implDestDir");
-            args.add(implDestDir.getAbsolutePath());
+            args.add("'" + implDestDir.getAbsolutePath() + "'");
             if (!project.getCompileSourceRoots().contains(implDestDir.getAbsolutePath())) {
                 project.addCompileSourceRoot(implDestDir.getAbsolutePath());
             }
@@ -476,7 +475,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
 
         for (File binding : bindings) {
             args.add("-b");
-            args.add(binding.getAbsolutePath());
+            args.add("'" + binding.getAbsolutePath() + "'");
         }
 
         getLog().debug( "jaxws:wsimport args: " + args );
