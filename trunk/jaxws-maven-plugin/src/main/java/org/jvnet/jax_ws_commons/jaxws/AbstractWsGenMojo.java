@@ -218,7 +218,7 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
                 getLog().warn("Cannot create directory: " + resourceDir.getAbsolutePath());
             }
             args.add("-r");
-            args.add(resourceDir.getAbsolutePath());
+            args.add("'" + resourceDir.getAbsolutePath() + "'");
             if (!"war".equals(project.getPackaging())) {
                 Resource r = new Resource();
                 r.setDirectory(getRelativePath(project.getBasedir(), getResourceDestDir()));
@@ -231,7 +231,7 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
         }
 
         if (metadata != null && isArgSupported("-x")) {
-            maybeUnsupportedOption("-x", metadata.getAbsolutePath(), args);
+            maybeUnsupportedOption("-x", "'" + metadata.getAbsolutePath() + "'", args);
         }
 
         args.add(aSei);
