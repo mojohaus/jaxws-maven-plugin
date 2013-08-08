@@ -41,9 +41,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -355,10 +358,6 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
                 try {
                     File pathFile = createPathFile(cp);
                     cmd.createArg().setLine("-pathfile " + pathFile.getAbsolutePath());
-                    if (extraCp != null) {
-                        cmd.createArg().setValue("-cp");
-                        cmd.createArg().setValue(extraCp);
-                    }
                 } catch (IOException ioe) {
                     //creation of temporary file can fail, in such case just put everything on cp
                     cmd.createArg().setValue("-cp");
