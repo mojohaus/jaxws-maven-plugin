@@ -46,7 +46,7 @@ final class DependencyResolver {
 
     public static DependencyResult resolve(org.apache.maven.artifact.Artifact artifact, List<RemoteRepository> remoteRepos,
             RepositorySystem repoSystem, RepositorySystemSession repoSession) throws DependencyResolutionException {
-        Artifact a = new DefaultArtifact(artifact.getGroupId(), artifact.getArtifactId(), artifact.getClassifier(), "jar", artifact.getVersion());
+        Artifact a = new DefaultArtifact(artifact.getGroupId(), artifact.getArtifactId(), artifact.getClassifier(), artifact.getType(), artifact.getVersion());
         Dependency dependency = new Dependency(a, null);
         CollectRequest collectRequest = new CollectRequest(dependency, remoteRepos);
         return resolve(collectRequest, remoteRepos, repoSystem, repoSession);
