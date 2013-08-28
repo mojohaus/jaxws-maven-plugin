@@ -69,6 +69,8 @@ import org.codehaus.plexus.util.cli.DefaultConsumer;
 import org.codehaus.plexus.util.cli.StreamConsumer;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.RepositorySystemSession;
+import org.sonatype.aether.graph.DependencyFilter;
+import org.sonatype.aether.graph.DependencyNode;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.resolution.DependencyResult;
@@ -399,24 +401,35 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         return new String[0];
     }
 
+    protected String[] getExtraArtifactIDs() {
+        return new String[0];
+    }
+
     private String[] getCP() throws DependencyResolutionException {
         Set<org.sonatype.aether.artifact.Artifact> endorsedCp = new HashSet<org.sonatype.aether.artifact.Artifact>();
         Map<String, org.sonatype.aether.artifact.Artifact> cp = new HashMap<String, org.sonatype.aether.artifact.Artifact>();
         Plugin p = pluginDescriptor.getPlugin();
+        boolean toolsFound = false;
         for (Dependency d : p.getDependencies()) {
-            DependencyResult result = DependencyResolver.resolve(d, pluginRepos, repoSystem, repoSession);
+            DependencyResult result = DependencyResolver.resolve(d,
+                    new ExclusionFilter(d.getExclusions()),
+                    pluginRepos, repoSystem, repoSession);
             sortArtifacts(result, cp, endorsedCp);
+            if (containsTools(cp.keySet())) {
+                toolsFound = true;
+            }
         }
         for (String dep : getExtraDependencies()) {
             DependencyResult result = DependencyResolver.resolve(
                     pluginDescriptor.getArtifactMap().get(dep),
+                    toolsFound ? new DepFilter(getExtraArtifactIDs()) : null,
                     pluginRepos, repoSystem, repoSession);
             sortArtifacts(result, cp, endorsedCp);
         }
-        if (!(cp.containsKey("com.sun.xml.ws:jaxws-tools") || cp.containsKey("org.glassfish.metro:webservices-tools"))) {
+        if (!containsTools(cp.keySet())) {
             DependencyResult result = DependencyResolver.resolve(
                     pluginDescriptor.getArtifactMap().get("com.sun.xml.ws:jaxws-tools"),
-                    pluginRepos, repoSystem, repoSession);
+                    null, pluginRepos, repoSystem, repoSession);
             sortArtifacts(result, cp, endorsedCp);
         }
         StringBuilder sb = getCPasString(cp.values());
@@ -494,5 +507,69 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         }
         nlg.setEndorsed(true);
         endorsedCp.addAll(nlg.getArtifacts(false));
+    }
+
+    private boolean containsTools(Set<String> cp) {
+        return  cp.contains("com.sun.xml.ws:jaxws-tools")
+                || cp.contains("org.glassfish.metro:webservices-tools")
+                || cp.contains("com.oracle.weblogic:weblogic-server-pom");
+    }
+
+    private static class DepFilter implements DependencyFilter {
+
+        private final Set<Dep> toExclude = new HashSet<Dep>();
+
+        public DepFilter(String[] artifacts) {
+            if (artifacts != null) {
+                for (String a : artifacts) {
+                    int i = a.indexOf(':');
+                    toExclude.add(new Dep(a.substring(0, i), a.substring(i + 1)));
+                }
+            }
+        }
+
+        @Override
+        public boolean accept(DependencyNode node, List<DependencyNode> parents) {
+            org.sonatype.aether.artifact.Artifact a = node.getDependency().getArtifact();
+            return !toExclude.contains(new Dep(a.getGroupId(), a.getArtifactId()));
+        }
+
+        private static class Dep {
+
+            private final String groupId;
+            private final String artifactId;
+
+            public Dep(String groupId, String artifactId) {
+                this.groupId = groupId;
+                this.artifactId = artifactId;
+            }
+
+            @Override
+            public int hashCode() {
+                int hash = 5;
+                hash = 37 * hash + (this.groupId != null ? this.groupId.hashCode() : 0);
+                return hash;
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                if (obj == null) {
+                    return false;
+                }
+                if (getClass() != obj.getClass()) {
+                    return false;
+                }
+                final Dep other = (Dep) obj;
+                if ((this.groupId == null)
+                        ? (other.groupId != null)
+                        : !this.groupId.equals(other.groupId)) {
+                    return false;
+                }
+                //startsWith here is intentional
+                return !((this.artifactId == null)
+                        ? (other.artifactId != null)
+                        : !this.artifactId.startsWith(other.artifactId));
+            }
+        }
     }
 }

@@ -25,6 +25,7 @@ import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.graph.Dependency;
+import org.sonatype.aether.graph.DependencyFilter;
 import org.sonatype.aether.graph.Exclusion;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.DependencyRequest;
@@ -38,24 +39,27 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
  */
 final class DependencyResolver {
 
-    public static DependencyResult resolve(CollectRequest collectRequest, List<RemoteRepository> remoteRepos,
-            RepositorySystem repoSystem, RepositorySystemSession repoSession) throws DependencyResolutionException {
-        DependencyRequest dependencyRequest = new DependencyRequest(collectRequest, null);
+    public static DependencyResult resolve(CollectRequest collectRequest, DependencyFilter filter,
+            List<RemoteRepository> remoteRepos, RepositorySystem repoSystem,
+            RepositorySystemSession repoSession) throws DependencyResolutionException {
+        DependencyRequest dependencyRequest = new DependencyRequest(collectRequest, filter);
         return repoSystem.resolveDependencies(repoSession, dependencyRequest);
     }
 
-    public static DependencyResult resolve(org.apache.maven.artifact.Artifact artifact, List<RemoteRepository> remoteRepos,
-            RepositorySystem repoSystem, RepositorySystemSession repoSession) throws DependencyResolutionException {
+    public static DependencyResult resolve(org.apache.maven.artifact.Artifact artifact, DependencyFilter filter,
+            List<RemoteRepository> remoteRepos, RepositorySystem repoSystem, RepositorySystemSession repoSession)
+            throws DependencyResolutionException {
         Artifact a = new DefaultArtifact(artifact.getGroupId(), artifact.getArtifactId(), artifact.getClassifier(), artifact.getType(), artifact.getVersion());
         Dependency dependency = new Dependency(a, null);
         CollectRequest collectRequest = new CollectRequest(dependency, remoteRepos);
-        return resolve(collectRequest, remoteRepos, repoSystem, repoSession);
+        return resolve(collectRequest, filter, remoteRepos, repoSystem, repoSession);
     }
 
-    public static DependencyResult resolve(org.apache.maven.model.Dependency dependency, List<RemoteRepository> remoteRepos,
-            RepositorySystem repoSystem, RepositorySystemSession repoSession) throws DependencyResolutionException {
+    public static DependencyResult resolve(org.apache.maven.model.Dependency dependency, DependencyFilter filter,
+            List<RemoteRepository> remoteRepos, RepositorySystem repoSystem, RepositorySystemSession repoSession)
+            throws DependencyResolutionException {
         CollectRequest collectRequest = new CollectRequest(createDependency(dependency), remoteRepos);
-        return resolve(collectRequest, remoteRepos, repoSystem, repoSession);
+        return resolve(collectRequest, filter, remoteRepos, repoSystem, repoSession);
     }
 
     private static Dependency createDependency(org.apache.maven.model.Dependency d) {

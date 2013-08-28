@@ -61,6 +61,9 @@ final class ClassPathNodeListGenerator extends PreorderNodeListGenerator {
                     || "javax.annotation-api".equals(a.getArtifactId())
                     || "webservices-api".equals(a.getArtifactId())) {
             endorsedNodes.add(node);
+        } else if (a.getArtifactId().startsWith("javax.xml.ws")
+                || a.getArtifactId().startsWith("javax.xml.bind")) {
+            endorsedNodes.add(node);
         }
         return super.visitEnter(node);
     }
