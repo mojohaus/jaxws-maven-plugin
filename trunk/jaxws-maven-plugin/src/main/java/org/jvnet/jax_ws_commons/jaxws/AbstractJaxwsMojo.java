@@ -74,6 +74,9 @@ import org.sonatype.aether.graph.DependencyNode;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.resolution.DependencyResult;
+import org.sonatype.aether.util.filter.NotDependencyFilter;
+import org.sonatype.aether.util.graph.FilteringDependencyVisitor;
+import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
 
 /**
  *
@@ -500,12 +503,18 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     }
 
     private void sortArtifacts(DependencyResult result, Map<String, org.sonatype.aether.artifact.Artifact> cp, Set<org.sonatype.aether.artifact.Artifact> endorsedCp) {
-        ClassPathNodeListGenerator nlg = new ClassPathNodeListGenerator();
-        result.getRoot().accept(nlg);
+        PreorderNodeListGenerator nlg = new PreorderNodeListGenerator();
+        FilteringDependencyVisitor visitor = new FilteringDependencyVisitor(
+                nlg, new NotDependencyFilter(new EndorsedFilter()));
+        result.getRoot().accept(visitor);
         for (org.sonatype.aether.artifact.Artifact a : nlg.getArtifacts(false)) {
             cp.put(a.getGroupId() + ":" + a.getArtifactId(), a);
         }
-        nlg.setEndorsed(true);
+
+        nlg = new PreorderNodeListGenerator();
+        visitor = new FilteringDependencyVisitor(
+                nlg, new EndorsedFilter());
+        result.getRoot().accept(visitor);
         endorsedCp.addAll(nlg.getArtifacts(false));
     }
 
