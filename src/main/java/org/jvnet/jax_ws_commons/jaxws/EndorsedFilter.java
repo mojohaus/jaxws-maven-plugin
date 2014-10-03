@@ -18,9 +18,9 @@
 package org.jvnet.jax_ws_commons.jaxws;
 
 import java.util.List;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.graph.DependencyFilter;
-import org.sonatype.aether.graph.DependencyNode;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.graph.DependencyFilter;
+import org.eclipse.aether.graph.DependencyNode;
 
 /**
  *
