@@ -542,6 +542,7 @@
                             <properties>
                                 <jaxws.plugin.version>${project.version}</jaxws.plugin.version>
                                 <jaxws-ri.version>${jaxws-tools.version}</jaxws-ri.version>
+                                <javax.xml.accessExternalSchema>all</javax.xml.accessExternalSchema>
                             </properties>
                             <setupIncludes>
                                 <setupInclude>parent/pom.xml</setupInclude>
