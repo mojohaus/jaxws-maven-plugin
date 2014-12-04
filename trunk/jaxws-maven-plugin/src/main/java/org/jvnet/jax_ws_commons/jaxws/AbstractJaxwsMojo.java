@@ -453,7 +453,9 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         }
         sb.append(toolsJar.getAbsolutePath());
         sb.append(File.pathSeparator);
-        return new String[]{esb.substring(0, esb.length() - 1), sb.substring(0, sb.length() - 1), invokerPath};
+        getLog().debug("getCP esb: " + esb);
+        getLog().debug("getCP sb: " + sb);
+        return new String[]{esb.substring(0, ((esb.length() > 0) ? esb.length() - 1 : 0)), sb.substring(0, sb.length() - 1), invokerPath};
     }
 
     private String getJavaExec() {
