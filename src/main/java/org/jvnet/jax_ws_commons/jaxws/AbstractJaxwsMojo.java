@@ -88,7 +88,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     /**
      * The Maven Project Object.
      */
-    @Component
+	@Parameter(defaultValue = "${project}", readonly = true)
     protected MavenProject project;
 
     /**
