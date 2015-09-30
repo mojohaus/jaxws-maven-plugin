@@ -1,5 +1,5 @@
  ------
- Maven 2 JAX-WS Maven plugin
+ JAX-WS Maven plugin
  ------
  Dan T. Tran, Lukas Jungmann
  ------
@@ -23,8 +23,9 @@
 JAX-WS Maven Plugin
 
   This plugin contains Maven adapter for {{{http://jax-ws.java.net/}JAX-WS}}'s
-  toolset. The original version of this was developed in the codehaus mojo project,
-  but as of March 2007, the project is moved to jax-ws-commons.
+  toolset. The original version of this was developed in the Codehaus Mojo project,
+  then as of March 2007, the project moved to jax-ws-commons, then in September 2015 it
+  went back to MojoHaus (the new home of Codehaus Mojo).
 
   * <<License:>> {{{http://www.apache.org/licenses/LICENSE-2.0}Apache License, Version 2.0}}
 
