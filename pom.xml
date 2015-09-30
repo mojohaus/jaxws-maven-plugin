@@ -27,16 +27,15 @@
         <groupId>org.jvnet.jax-ws-commons</groupId>
         <artifactId>pom</artifactId>
         <version>1.4</version>
-        <relativePath>../pom/pom.xml</relativePath>
     </parent>
 
-    <groupId>org.jvnet.jax-ws-commons</groupId>
+    <groupId>org.codehaus.mojo</groupId>
     <artifactId>jaxws-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <name>Maven JAXWS 2.x Plugin</name>
+    <name>JAXWS 2.x Maven Plugin</name>
     <description>Maven plugin for JAX-WS RI</description>
     <version>2.3.1-SNAPSHOT</version>
-    <url>http://jax-ws-commons.java.net/jaxws-maven-plugin/</url>
+    <url>http://www.mojohaus.org/jaxws-maven-plugin/</url>
 
     <developers>
         <developer>
@@ -44,8 +43,8 @@
             <name>Lukas Jungmann</name>
             <email>lukas.jungmann@oracle.com</email>
             <roles>
-                <role>Lead</role>
-                <role>Maintainer</role>
+                <role>Former lead at jaxws-common</role>
+                <role>Former maintainer at jaxws-common</role>
             </roles>
             <organization>Oracle</organization>
             <organizationUrl>http://www.oracle.com</organizationUrl>
@@ -56,7 +55,7 @@
             <name>Rama Pulavarthi</name>
             <email>rama.pulavarthi@sun.com</email>
             <roles>
-                <role>Maintainer</role>
+                <role>Former maintainer at jaxws-common</role>
             </roles>
         </developer>
         <developer>
@@ -64,7 +63,7 @@
             <name>Kohsuke Kawaguchi</name>
             <email>kohsuke.kawaguchi@sun.com</email>
             <roles>
-                <role>Maintainer</role>
+                <role>Former maintainer at jaxws-common</role>
             </roles>
         </developer>
         <developer>
@@ -74,7 +73,7 @@
             <organization>LogicBlaze, Inc</organization>
             <organizationUrl>http://www.logicblaze.com</organizationUrl>
             <roles>
-                <role>Previous maintainer</role>
+                <role>Previous maintainer at Mojo</role>
                 <role>Original author</role>
             </roles>
             <timezone>+1</timezone>
@@ -84,7 +83,7 @@
             <name>Dan Tran</name>
             <email>dtran@gmail.com</email>
             <roles>
-                <role>Previous maintainer</role>
+                <role>Previous maintainer at Mojo</role>
                 <role>Original author</role>
             </roles>
         </developer>
@@ -101,6 +100,21 @@
     <prerequisites>
         <maven>3.0</maven>
     </prerequisites>
+
+   <scm>
+     <connection>scm:git:https://github.com/mojohaus/jaxws-maven-plugin.git</connection>
+     <developerConnection>scm:git:ssh://git@github.com/mojohaus/jaxws-maven-plugin.git</developerConnection>
+     <url>https://github.com/mojohaus/jaxws-maven-plugin</url>
+   </scm>
+   <issueManagement>
+     <system>GitHub</system>
+     <url>https://github.com/mojohaus/jaxws-maven-plugin/issues</url>
+   </issueManagement>
+
+    <properties>
+        <jaxws-tools.version>2.2.9-b14002</jaxws-tools.version>
+        <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -221,24 +235,6 @@
             <artifactId>aether-util</artifactId>
         </dependency>
     </dependencies>
-
-    <scm>
-        <connection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk/jaxws-maven-plugin</connection>
-        <developerConnection>scm:svn:https://svn.java.net/svn/jax-ws-commons~svn/trunk/jaxws-maven-plugin</developerConnection>
-        <url>http://java.net/projects/jax-ws-commons/sources/svn/show/trunk/jaxws-maven-plugin</url>
-    </scm>
-
-    <distributionManagement>
-        <site>
-            <id>jaxws-mvn-plugin-www</id>
-            <url>file://${basedir}/../www/${project.artifactId}</url>
-        </site>
-    </distributionManagement>
-
-    <properties>
-        <jaxws-tools.version>2.2.9-b14002</jaxws-tools.version>
-        <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
-    </properties>
 
     <build>
         <pluginManagement>
