@@ -16,11 +16,12 @@
  * limitations under the License.
  */
 
-package org.jvnet.jax_ws_commons.jaxws;
+package org.codehaus.mojo.jaxws;
 
 import java.io.IOException;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.io.xpp3.SettingsXpp3Reader;
+import org.codehaus.mojo.jaxws.WsImportMojo;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.testng.Assert;
 import org.testng.annotations.Test;

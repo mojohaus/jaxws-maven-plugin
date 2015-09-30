@@ -33,7 +33,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jvnet.jax_ws_commons.jaxws;
+package org.codehaus.mojo.jaxws;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -352,7 +352,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
                 cmd.createArg().setValue("-Xbootclasspath/p:" + classpath[0]);
                 cmd.createArg().setValue("-cp");
                 cmd.createArg().setValue(classpath[2]);
-                cmd.createArg().setLine("org.jvnet.jax_ws_commons.jaxws.Invoker");
+                cmd.createArg().setLine("org.codehaus.mojo.jaxws.Invoker");
                 cmd.createArg().setLine(getMain());
                 String extraCp = getExtraClasspath();
                 String cp = extraCp != null ? extraCp + File.pathSeparator : "";

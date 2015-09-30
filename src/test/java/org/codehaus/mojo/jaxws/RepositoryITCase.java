@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.jvnet.jax_ws_commons.jaxws;
+package org.codehaus.mojo.jaxws;
 
 import java.io.File;
 import java.io.FilenameFilter;

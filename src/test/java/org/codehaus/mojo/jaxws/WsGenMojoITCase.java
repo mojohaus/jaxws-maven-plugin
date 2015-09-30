@@ -16,15 +16,17 @@
  * limitations under the License.
  */
 
-package org.jvnet.jax_ws_commons.jaxws;
+package org.codehaus.mojo.jaxws;
+
+import static org.codehaus.mojo.jaxws.Assertions.assertFileContains;
+import static org.codehaus.mojo.jaxws.Assertions.assertFileNotPresent;
+import static org.codehaus.mojo.jaxws.Assertions.assertFilePresent;
+import static org.codehaus.mojo.jaxws.Assertions.assertJarContains;
+import static org.codehaus.mojo.jaxws.Assertions.assertJarNotContains;
 
 import java.io.File;
 import java.io.IOException;
-import static org.jvnet.jax_ws_commons.jaxws.Assertions.assertFileContains;
-import static org.jvnet.jax_ws_commons.jaxws.Assertions.assertFileNotPresent;
-import static org.jvnet.jax_ws_commons.jaxws.Assertions.assertFilePresent;
-import static org.jvnet.jax_ws_commons.jaxws.Assertions.assertJarContains;
-import static org.jvnet.jax_ws_commons.jaxws.Assertions.assertJarNotContains;
+
 import org.testng.annotations.Test;
 
 /**

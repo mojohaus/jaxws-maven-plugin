@@ -15,11 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jvnet.jax_ws_commons.jaxws;
+package org.codehaus.mojo.jaxws;
+
+import static org.codehaus.mojo.jaxws.Assertions.assertFileContains;
 
 import java.io.File;
 import java.io.IOException;
-import static org.jvnet.jax_ws_commons.jaxws.Assertions.assertFileContains;
+
 import org.testng.annotations.Test;
 
 /**

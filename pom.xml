@@ -486,7 +486,7 @@
                 </property>
             </activation>
             <properties>
-                <ittest.debug>false</ittest.debug>
+                <ittest.debug>true</ittest.debug>
             </properties>
             <build>
                 <pluginManagement>
