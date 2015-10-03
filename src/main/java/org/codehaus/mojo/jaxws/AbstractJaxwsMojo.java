@@ -88,7 +88,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     /**
      * The Maven Project Object.
      */
-	@Parameter(defaultValue = "${project}", readonly = true)
+    @Parameter(defaultValue = "${project}", readonly = true, required = true)
     protected MavenProject project;
 
     /**
@@ -112,7 +112,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
     /**
      * Specify character encoding used by source files.
      */
-    @Parameter(property = "project.build.sourceEncoding")
+    @Parameter(defaultValue = "${project.build.sourceEncoding}")
     protected String encoding;
 
     /**

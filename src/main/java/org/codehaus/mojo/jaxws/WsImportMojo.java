@@ -266,7 +266,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
 
     /**
      */
-    @Parameter(property = "settings", readonly = true)
+    @Parameter(defaultValue = "${settings}", readonly = true, required = true)
     private Settings settings;
 
     protected abstract File getImplDestDir();
