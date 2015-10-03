@@ -517,6 +517,8 @@
             <configuration>
               <streamLogs>true</streamLogs>
               <debug>${ittest.debug}</debug>
+              <showErrors>true</showErrors>
+              <suppressSummaries>false</suppressSummaries>
               <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
               <!--                            <streamLogs>true</streamLogs>-->
               <addTestClassPath>true</addTestClassPath>
