@@ -229,19 +229,19 @@
             <extractors>
               <extractor>java-annotations</extractor>
             </extractors>
-            <executions>
-              <execution>
-                <id>default-descriptor</id>
-                <phase>process-classes</phase>
-              </execution>
-              <execution>
-                <id>generated-helpmojo</id>
-                <goals>
-                  <goal>helpmojo</goal>
-                </goals>
-              </execution>
-            </executions>
           </configuration>
+          <executions>
+            <execution>
+              <id>default-descriptor</id>
+              <phase>process-classes</phase>
+            </execution>
+            <execution>
+              <id>generated-helpmojo</id>
+              <goals>
+                <goal>helpmojo</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
         <!-- inherited plugins -->
         <plugin>
