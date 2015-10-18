@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codehaus.mojo.jaxws;
+package org.codehaus.mojo.jaxws.deps;
 
 import java.util.List;
 import org.apache.maven.model.Exclusion;
@@ -27,7 +27,7 @@ import org.eclipse.aether.graph.DependencyNode;
  *
  * @author lukas
  */
-final class ExclusionFilter implements DependencyFilter {
+public final class ExclusionFilter implements DependencyFilter {
 
     private final List<Exclusion> toExclude;
 
