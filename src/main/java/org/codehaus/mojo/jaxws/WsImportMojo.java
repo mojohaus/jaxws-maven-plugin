@@ -535,7 +535,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                     URL u = new File(a.getFile().toURI()).toURL();
                     urlCpath.add(u);
                 } else {
-                    getLog().warn("cannot find file for " + a.getGroupId() + ":" + a.getArtifactId());
+                    getLog().warn("cannot find file for " + a.getGroupId() + ":" + a.getArtifactId() + ":" + a.getVersion());
                 }
             } catch (MalformedURLException ex) {
                 Logger.getLogger(WsImportMojo.class.getName()).log(Level.SEVERE, null, ex);
