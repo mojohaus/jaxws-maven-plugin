@@ -295,7 +295,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     }
 
     @Override
-    protected boolean getXnocompile() {
+    protected boolean isXnocompile() {
         return xnocompile;
     }
 

@@ -215,7 +215,11 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
 
     protected abstract File getDefaultSrcOut();
 
-    protected abstract boolean getXnocompile();
+    /**
+     * Checks if compilation after code generation and let generated sources be
+     * compiled by maven during compilation phase.
+     */
+    protected abstract boolean isXnocompile();
 
     protected String getExtraClasspath() {
         return null;
@@ -261,7 +265,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
             commonArgs.add("-extension");
         }
 
-        if(getXnocompile()){
+        if(isXnocompile()){
             commonArgs.add("-Xnocompile");
         }
 
