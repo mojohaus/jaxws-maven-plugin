@@ -531,8 +531,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         for (Artifact a: dependencyArtifacts) {
             try {
                 if (a.getFile() != null) {
-                    @SuppressWarnings("deprecation")
-                    URL u = new File(a.getFile().toURI()).toURL();
+                    URL u = a.getFile().toURI().toURL();
                     urlCpath.add(u);
                 } else {
                     getLog().warn("cannot find file for " + a.getGroupId() + ":" + a.getArtifactId() + ":" + a.getVersion());
