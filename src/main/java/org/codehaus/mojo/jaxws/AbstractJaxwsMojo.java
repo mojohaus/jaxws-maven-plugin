@@ -452,11 +452,9 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
 
     private File createPathFile(String cp) throws IOException {
         File f = File.createTempFile("jax-ws-mvn-plugin-cp", ".txt");
-        if (f.exists() && f.isFile()) {
-            if (!f.delete()) {
-                //this should not happen
-                getLog().warn("cannot remove obsolete classpath setting file: " + f.getAbsolutePath());
-            }
+        if (f.exists() && f.isFile() && !f.delete()) {
+            //this should not happen
+            getLog().warn("cannot remove obsolete classpath setting file: " + f.getAbsolutePath());
         }
         Properties p = new Properties();
         p.put("cp", cp.replace(File.separatorChar, '/'));
