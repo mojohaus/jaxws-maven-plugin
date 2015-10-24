@@ -31,10 +31,10 @@
   </parent>
 
   <artifactId>jaxws-maven-plugin</artifactId>
-  <version>2.3.1-SNAPSHOT</version>
+  <version>2.4-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
-  <name>JAXWS 2.x Maven Plugin</name>
+  <name>JAXWS Maven Plugin</name>
   <description>Maven plugin for JAX-WS RI</description>
   <url>http://www.mojohaus.org/jaxws-maven-plugin/</url>
 
