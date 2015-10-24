@@ -57,7 +57,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -540,11 +539,9 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                 Logger.getLogger(WsImportMojo.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        // Suppress this warning because it is actually being closed if the type is URLClassLoader
-        @SuppressWarnings("resource")
         ClassLoader loader = urlCpath.isEmpty()
                 ? Thread.currentThread().getContextClassLoader()
-                : new URLClassLoader(urlCpath.toArray(new URL[0]));
+                : new URLClassLoader(urlCpath.toArray(new URL[urlCpath.size()]));
         if (wsdlFiles != null) {
             for (String wsdlFileName : wsdlFiles) {
                 File wsdl = new File(wsdlFileName);
@@ -595,8 +592,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                     String path = u.getPath();
                     try {
                         Pattern p = Pattern.compile(dir.replace(File.separatorChar, '/') + PATTERN, Pattern.CASE_INSENSITIVE);
-                        JarFile jarFile = new JarFile(path.substring(5, path.indexOf("!/")));
-                        Enumeration<JarEntry> jes = jarFile.entries();
+                        Enumeration<JarEntry> jes = new JarFile(path.substring(5, path.indexOf("!/"))).entries();
                         while (jes.hasMoreElements()) {
                             JarEntry je = jes.nextElement();
                             Matcher m = p.matcher(je.getName());
@@ -605,21 +601,13 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                                 files.add(new URL(s));
                             }
                         }
-                        jarFile.close();
                     } catch (IOException ex) {
                         Logger.getLogger(WsImportMojo.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
         }
-        if (loader instanceof URLClassLoader) {
-            try {
-                ((URLClassLoader) loader).close();
-            } catch (IOException e) {
-                throw new MojoExecutionException(e.getMessage(), e);
-            }
-        }
-        return files.toArray(new URL[0]);
+        return files.toArray(new URL[files.size()]);
     }
 
     /**
@@ -731,9 +719,9 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     }
 
     private String getHash(String s) {
-        Formatter formatter = new Formatter();
         try {
             MessageDigest md = MessageDigest.getInstance("SHA");
+            Formatter formatter = new Formatter();
             for (byte b : md.digest(s.getBytes("UTF-8"))) {
                 formatter.format("%02x", b);
             }
@@ -742,8 +730,6 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             getLog().debug(ex.getMessage(), ex);
         } catch (NoSuchAlgorithmException ex) {
             getLog().debug(ex.getMessage(), ex);
-        } finally {
-            formatter.close();
         }
         //fallback to some default
         getLog().warn("Could not compute hash for " + s + ". Using fallback method.");
