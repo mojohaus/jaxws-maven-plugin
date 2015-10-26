@@ -525,7 +525,6 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      */
     private URL[] getWSDLFiles() throws MojoExecutionException {
         List<URL> files = new ArrayList<URL>();
-        @SuppressWarnings("unchecked")
         Set<Artifact> dependencyArtifacts = project.getDependencyArtifacts();
         List<URL> urlCpath = new ArrayList<URL>(dependencyArtifacts.size());
         for (Artifact a: dependencyArtifacts) {
@@ -540,8 +539,6 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                 Logger.getLogger(WsImportMojo.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        // Suppress this warning because it is actually being closed if the type is URLClassLoader
-        @SuppressWarnings("resource")
         ClassLoader loader = urlCpath.isEmpty()
                 ? Thread.currentThread().getContextClassLoader()
                 : new URLClassLoader(urlCpath.toArray(new URL[0]));

@@ -36,7 +36,6 @@
 
 package org.codehaus.mojo.jaxws;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -45,6 +44,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import javax.jws.WebService;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -167,11 +167,10 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected String getExtraClasspath() {
         StringBuilder buf = new StringBuilder();
         buf.append(getClassesDir().getAbsolutePath());
-        for (Artifact a : (Set<Artifact>)project.getArtifacts()) {
+        for (Artifact a : project.getArtifacts()) {
             buf.append(File.pathSeparatorChar);
             buf.append(a.getFile().getAbsolutePath());
         }
@@ -253,7 +252,7 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
         if (!directory.exists() || directory.isFile()) {
             return seis;
         }
-        ClassLoader cl = null;
+        URLClassLoader cl = null;
         try {
             cl = new URLClassLoader(new URL[]{directory.toURI().toURL()});
             for (String s : FileUtils.getFileAndDirectoryNames(directory, "**/*.class", null, false, true, true, false)) {
@@ -272,9 +271,9 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
         } catch (IOException ex) {
             throw new MojoExecutionException(ex.getMessage(), ex);
         } finally {
-            if (cl != null && cl instanceof Closeable) {
+            if (cl != null) {
                 try {
-                    ((Closeable) cl).close();
+                    cl.close();
                 } catch (IOException ex) {
                     //ignore
                 }
