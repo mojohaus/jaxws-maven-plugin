@@ -612,7 +612,8 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
                 }
             }
         }
-        if (loader instanceof URLClassLoader) {
+        if (!urlCpath.isEmpty()) {
+            // if we created a classloader, cleanup
             try {
                 ((URLClassLoader) loader).close();
             } catch (IOException e) {
