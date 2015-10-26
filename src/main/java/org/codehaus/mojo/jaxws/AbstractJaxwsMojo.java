@@ -356,19 +356,11 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
         }
     }
 
-    protected String[] getExtraDependencies() {
-        return new String[0];
-    }
-
-    protected String[] getExtraArtifactIDs() {
-        return new String[0];
-    }
-
     private String[] getCP() {
         Set<Artifact> endorsedCp = new HashSet<Artifact>();
         Map<String, Artifact> cp = new HashMap<String, Artifact>();
         for (Artifact a : pluginDescriptor.getArtifacts()) {
-            sortArtifact(a, cp, endorsedCp);
+            addArtifactToCp(a, cp, endorsedCp);
         }
         StringBuilder sb = getCPasString(cp.values());
         StringBuilder esb = getCPasString(endorsedCp);
@@ -455,7 +447,7 @@ abstract class AbstractJaxwsMojo extends AbstractMojo {
      * @param endorsedCp
      *            endorsed classpath set
      */
-    private void sortArtifact(Artifact a, Map<String, Artifact> cp,
+    private void addArtifactToCp(Artifact a, Map<String, Artifact> cp,
             Set<Artifact> endorsedCp) {
         if (isEndorsedArtifact(a)) {
             endorsedCp.add(a);
