@@ -30,25 +30,28 @@ import org.testng.annotations.Test;
  *
  * @author Lukas Jungmann
  */
-public class WsImportMojoTest {
-    
+public class WsImportMojoTest
+{
+
     @Test
-    public void testGetActiveHttpProxy() throws IOException, XmlPullParserException {
+    public void testGetActiveHttpProxy()
+        throws IOException, XmlPullParserException
+    {
         SettingsXpp3Reader r = new SettingsXpp3Reader();
-        Settings s = r.read(WsImportMojoTest.class.getResourceAsStream("proxy1.xml"));
-        String proxyString = WsImportMojo.getActiveHttpProxy(s);
-        Assert.assertEquals(proxyString, "proxyActive:8099");
-        
-        s = r.read(WsImportMojoTest.class.getResourceAsStream("proxy2.xml"));
-        proxyString = WsImportMojo.getActiveHttpProxy(s);
-        Assert.assertNull(proxyString, proxyString);
+        Settings s = r.read( WsImportMojoTest.class.getResourceAsStream( "proxy1.xml" ) );
+        String proxyString = WsImportMojo.getActiveHttpProxy( s );
+        Assert.assertEquals( proxyString, "proxyActive:8099" );
 
-        s = r.read(WsImportMojoTest.class.getResourceAsStream("proxy3.xml"));
-        proxyString = WsImportMojo.getActiveHttpProxy(s);
-        Assert.assertEquals(proxyString, "proxyuser:proxypwd@proxy1-auth:8080");
+        s = r.read( WsImportMojoTest.class.getResourceAsStream( "proxy2.xml" ) );
+        proxyString = WsImportMojo.getActiveHttpProxy( s );
+        Assert.assertNull( proxyString, proxyString );
 
-        s = r.read(WsImportMojoTest.class.getResourceAsStream("proxy4.xml"));
-        proxyString = WsImportMojo.getActiveHttpProxy(s);
-        Assert.assertEquals(proxyString, "proxyuser2@proxy1-auth2:7777");
+        s = r.read( WsImportMojoTest.class.getResourceAsStream( "proxy3.xml" ) );
+        proxyString = WsImportMojo.getActiveHttpProxy( s );
+        Assert.assertEquals( proxyString, "proxyuser:proxypwd@proxy1-auth:8080" );
+
+        s = r.read( WsImportMojoTest.class.getResourceAsStream( "proxy4.xml" ) );
+        proxyString = WsImportMojo.getActiveHttpProxy( s );
+        Assert.assertEquals( proxyString, "proxyuser2@proxy1-auth2:7777" );
     }
 }

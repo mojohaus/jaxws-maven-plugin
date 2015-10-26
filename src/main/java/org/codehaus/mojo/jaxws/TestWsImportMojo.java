@@ -37,6 +37,7 @@
 package org.codehaus.mojo.jaxws;
 
 import java.io.File;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -53,39 +54,42 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  *
  * @author Kohsuke Kawaguchi
  */
-@Mojo(name = "wsimport-test", defaultPhase = LifecyclePhase.GENERATE_TEST_SOURCES, requiresDependencyResolution = ResolutionScope.TEST)
-public class TestWsImportMojo extends WsImportMojo {
+@Mojo( name = "wsimport-test", defaultPhase = LifecyclePhase.GENERATE_TEST_SOURCES, requiresDependencyResolution = ResolutionScope.TEST )
+public class TestWsImportMojo
+    extends WsImportMojo
+{
 
     /**
      * Specify where to place output generated classes. Use <code>xnocompile</code>
      * to turn this off.
      */
-    @Parameter(defaultValue = "${project.build.testOutputDirectory}")
+    @Parameter( defaultValue = "${project.build.testOutputDirectory}" )
     private File destDir;
 
     /**
      * Specify where to place generated source files, keep is turned on with this option.
      */
-    @Parameter(defaultValue = "${project.build.directory}/generated-sources/test-wsimport")
+    @Parameter( defaultValue = "${project.build.directory}/generated-sources/test-wsimport" )
     private File sourceDestDir;
 
     /**
      * Specify where to generate JWS implementation file.
      */
-    @Parameter(defaultValue = "${project.build.testSourceDirectory}")
+    @Parameter( defaultValue = "${project.build.testSourceDirectory}" )
     private File implDestDir;
 
     /**
      * Set this to "true" to bypass code generation.
      */
-    @Parameter(property = "maven.test.skip")
+    @Parameter( property = "maven.test.skip" )
     private boolean skip;
 
     /**
      * Either ${build.outputDirectory} or ${build.testOutputDirectory}.
      */
     @Override
-    protected File getDestDir() {
+    protected File getDestDir()
+    {
         return destDir;
     }
 
@@ -93,37 +97,49 @@ public class TestWsImportMojo extends WsImportMojo {
      * ${project.build.directory}/jaxws/wsimport/test.
      */
     @Override
-    protected File getSourceDestDir() {
+    protected File getSourceDestDir()
+    {
         return sourceDestDir;
     }
 
     @Override
-    protected void addSourceRoot(String sourceDir) {
-        if (!project.getTestCompileSourceRoots().contains(sourceDir)) {
-            getLog().debug("adding test src root: " + sourceDir);
-            project.addTestCompileSourceRoot(sourceDir);
-        } else {
-            getLog().debug("existing test src root: " + sourceDir);
+    protected void addSourceRoot( String sourceDir )
+    {
+        if ( !project.getTestCompileSourceRoots().contains( sourceDir ) )
+        {
+            getLog().debug( "adding test src root: " + sourceDir );
+            project.addTestCompileSourceRoot( sourceDir );
+        }
+        else
+        {
+            getLog().debug( "existing test src root: " + sourceDir );
         }
     }
 
     @Override
-    protected File getDefaultSrcOut() {
-        return new File(project.getBuild().getDirectory(), "generated-sources/test-wsimport");
+    protected File getDefaultSrcOut()
+    {
+        return new File( project.getBuild().getDirectory(), "generated-sources/test-wsimport" );
     }
 
     @Override
-    protected File getImplDestDir() {
+    protected File getImplDestDir()
+    {
         return implDestDir;
     }
 
     @Override
-    public void execute() throws MojoExecutionException {
-        //if maven.test.skip is set test compilation is not called, so
-        //no need to generate sources/classes
-        if (skip) {
-            getLog().info("Skipping tests, nothing to do.");
-        } else {
+    public void execute()
+        throws MojoExecutionException
+    {
+        // if maven.test.skip is set test compilation is not called, so
+        // no need to generate sources/classes
+        if ( skip )
+        {
+            getLog().info( "Skipping tests, nothing to do." );
+        }
+        else
+        {
             super.execute();
         }
     }

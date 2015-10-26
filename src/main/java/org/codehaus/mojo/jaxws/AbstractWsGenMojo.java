@@ -59,12 +59,14 @@ import org.codehaus.plexus.util.FileUtils;
  * @author dantran <dantran@apache.org>
  * @version $Id: WsGenMojo.java 3169 2007-01-22 02:51:29Z dantran $
  */
-abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
+abstract class AbstractWsGenMojo
+    extends AbstractJaxwsMojo
+{
 
     /**
      * Specify that a WSDL file should be generated in <code>${resourceDestDir}</code>.
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     protected boolean genWsdl;
 
     /**
@@ -100,19 +102,19 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      * Inline schemas in the generated WSDL.
      * Used in conjunction with the <code>genWsdl</code> option.
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean inlineSchemas;
 
     /**
      * Turn off compilation after code generation and let generated sources be
      * compiled by maven during compilation phase; keep is turned on with this option.
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean xnocompile;
 
     /**
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean xdonotoverwrite;
 
     /**
@@ -131,48 +133,64 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
     protected abstract File getClassesDir();
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute()
+        throws MojoExecutionException, MojoFailureException
+    {
         Set<String> seis = new HashSet<String>();
-        if (sei != null) {
-            seis.add(sei);
-        } else {
-            //find all SEIs within current classes
-            seis.addAll(getSEIs(getClassesDir()));
+        if ( sei != null )
+        {
+            seis.add( sei );
         }
-        if (seis.isEmpty()) {
-            throw new MojoFailureException("No @javax.jws.WebService found.");
+        else
+        {
+            // find all SEIs within current classes
+            seis.addAll( getSEIs( getClassesDir() ) );
         }
-        for (String aSei : seis) {
-            processSei(aSei);
+        if ( seis.isEmpty() )
+        {
+            throw new MojoFailureException( "No @javax.jws.WebService found." );
+        }
+        for ( String aSei : seis )
+        {
+            processSei( aSei );
         }
     }
 
-    protected void processSei(String sei) throws MojoExecutionException {
-        getLog().info("Processing: " + sei);
-        ArrayList<String> args = getWsGenArgs(sei);
-        getLog().info("jaxws:wsgen args: " + args);
-        exec(args);
-        if (metadata != null) {
-            try {
-                FileUtils.copyFileToDirectory(metadata, getClassesDir());
-            } catch (IOException ioe) {
-                throw new MojoExecutionException(ioe.getMessage(), ioe);
+    protected void processSei( String sei )
+        throws MojoExecutionException
+    {
+        getLog().info( "Processing: " + sei );
+        ArrayList<String> args = getWsGenArgs( sei );
+        getLog().info( "jaxws:wsgen args: " + args );
+        exec( args );
+        if ( metadata != null )
+        {
+            try
+            {
+                FileUtils.copyFileToDirectory( metadata, getClassesDir() );
+            }
+            catch ( IOException ioe )
+            {
+                throw new MojoExecutionException( ioe.getMessage(), ioe );
             }
         }
     }
 
     @Override
-    protected String getMain() {
+    protected String getMain()
+    {
         return "com.sun.tools.ws.wscompile.WsgenTool";
     }
 
     @Override
-    protected String getExtraClasspath() {
+    protected String getExtraClasspath()
+    {
         StringBuilder buf = new StringBuilder();
-        buf.append(getClassesDir().getAbsolutePath());
-        for (Artifact a : project.getArtifacts()) {
-            buf.append(File.pathSeparatorChar);
-            buf.append(a.getFile().getAbsolutePath());
+        buf.append( getClassesDir().getAbsolutePath() );
+        for ( Artifact a : project.getArtifacts() )
+        {
+            buf.append( File.pathSeparatorChar );
+            buf.append( a.getFile().getAbsolutePath() );
         }
         return buf.toString();
     }
@@ -181,101 +199,135 @@ abstract class AbstractWsGenMojo extends AbstractJaxwsMojo {
      * {@inheritDoc}
      */
     @Override
-    protected boolean isXnocompile() {
+    protected boolean isXnocompile()
+    {
         return xnocompile;
     }
 
     /**
      * Construct wsgen arguments
+     * 
      * @return a list of arguments
      * @throws MojoExecutionException
      */
-    private ArrayList<String> getWsGenArgs(String aSei) throws MojoExecutionException {
+    private ArrayList<String> getWsGenArgs( String aSei )
+        throws MojoExecutionException
+    {
         ArrayList<String> args = new ArrayList<String>();
-        args.addAll(getCommonArgs());
+        args.addAll( getCommonArgs() );
 
-        if (this.genWsdl) {
-            if (this.protocol != null) {
-                args.add("-wsdl:" + this.protocol);
-            } else {
-                args.add("-wsdl");
+        if ( this.genWsdl )
+        {
+            if ( this.protocol != null )
+            {
+                args.add( "-wsdl:" + this.protocol );
+            }
+            else
+            {
+                args.add( "-wsdl" );
             }
 
-            if (inlineSchemas) {
-                maybeUnsupportedOption("-inlineSchemas", null, args);
+            if ( inlineSchemas )
+            {
+                maybeUnsupportedOption( "-inlineSchemas", null, args );
             }
 
-            if (servicename != null) {
-                args.add("-servicename");
-                args.add(servicename);
+            if ( servicename != null )
+            {
+                args.add( "-servicename" );
+                args.add( servicename );
             }
 
-            if (portname != null) {
-                args.add("-portname");
-                args.add(portname);
+            if ( portname != null )
+            {
+                args.add( "-portname" );
+                args.add( portname );
             }
 
             File resourceDir = getResourceDestDir();
-            if (!resourceDir.mkdirs() && !resourceDir.exists()) {
-                getLog().warn("Cannot create directory: " + resourceDir.getAbsolutePath());
+            if ( !resourceDir.mkdirs() && !resourceDir.exists() )
+            {
+                getLog().warn( "Cannot create directory: " + resourceDir.getAbsolutePath() );
             }
-            args.add("-r");
-            args.add("'" + resourceDir.getAbsolutePath() + "'");
-            if (!"war".equals(project.getPackaging())) {
+            args.add( "-r" );
+            args.add( "'" + resourceDir.getAbsolutePath() + "'" );
+            if ( !"war".equals( project.getPackaging() ) )
+            {
                 Resource r = new Resource();
-                r.setDirectory(getRelativePath(project.getBasedir(), getResourceDestDir()));
-                project.addResource(r);
+                r.setDirectory( getRelativePath( project.getBasedir(), getResourceDestDir() ) );
+                project.addResource( r );
             }
         }
 
-        if (xdonotoverwrite) {
-            args.add("-Xdonotoverwrite");
+        if ( xdonotoverwrite )
+        {
+            args.add( "-Xdonotoverwrite" );
         }
 
-        if (metadata != null && isArgSupported("-x")) {
-            maybeUnsupportedOption("-x", "'" + metadata.getAbsolutePath() + "'", args);
+        if ( metadata != null && isArgSupported( "-x" ) )
+        {
+            maybeUnsupportedOption( "-x", "'" + metadata.getAbsolutePath() + "'", args );
         }
 
-        args.add(aSei);
+        args.add( aSei );
 
-        getLog().debug("jaxws:wsgen args: " + args);
+        getLog().debug( "jaxws:wsgen args: " + args );
 
         return args;
     }
 
-    private String getRelativePath(File root, File f) {
-        return root.toURI().relativize(f.toURI()).getPath();
+    private String getRelativePath( File root, File f )
+    {
+        return root.toURI().relativize( f.toURI() ).getPath();
     }
 
-    private Set<String> getSEIs(File directory) throws MojoExecutionException {
+    private Set<String> getSEIs( File directory )
+        throws MojoExecutionException
+    {
         Set<String> seis = new HashSet<String>();
-        if (!directory.exists() || directory.isFile()) {
+        if ( !directory.exists() || directory.isFile() )
+        {
             return seis;
         }
         URLClassLoader cl = null;
-        try {
-            cl = new URLClassLoader(new URL[]{directory.toURI().toURL()});
-            for (String s : FileUtils.getFileAndDirectoryNames(directory, "**/*.class", null, false, true, true, false)) {
-                try {
-                    String clsName = s.replace(File.separator, ".");
-                    Class<?> c = cl.loadClass(clsName.substring(0, clsName.length() - 6));
-                    WebService ann = c.getAnnotation(WebService.class);
-                    if (!c.isInterface() && ann != null) {
-                        //more sophisticated checks are done by wsgen itself
-                        seis.add(c.getName());
+        try
+        {
+            cl = new URLClassLoader( new URL[] { directory.toURI().toURL() } );
+            for ( String s : FileUtils.getFileAndDirectoryNames( directory, "**/*.class", null, false, true, true,
+                                                                 false ) )
+            {
+                try
+                {
+                    String clsName = s.replace( File.separator, "." );
+                    Class<?> c = cl.loadClass( clsName.substring( 0, clsName.length() - 6 ) );
+                    WebService ann = c.getAnnotation( WebService.class );
+                    if ( !c.isInterface() && ann != null )
+                    {
+                        // more sophisticated checks are done by wsgen itself
+                        seis.add( c.getName() );
                     }
-                } catch (ClassNotFoundException ex) {
-                    throw new MojoExecutionException(ex.getMessage(), ex);
+                }
+                catch ( ClassNotFoundException ex )
+                {
+                    throw new MojoExecutionException( ex.getMessage(), ex );
                 }
             }
-        } catch (IOException ex) {
-            throw new MojoExecutionException(ex.getMessage(), ex);
-        } finally {
-            if (cl != null) {
-                try {
+        }
+        catch ( IOException ex )
+        {
+            throw new MojoExecutionException( ex.getMessage(), ex );
+        }
+        finally
+        {
+            if ( cl != null )
+            {
+                try
+                {
                     cl.close();
-                } catch (IOException ex) {
-                    //ignore
+                }
+                catch ( IOException ex )
+                {
+                    // ignore
                 }
             }
         }

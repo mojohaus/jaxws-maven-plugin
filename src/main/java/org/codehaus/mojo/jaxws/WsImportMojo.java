@@ -70,7 +70,8 @@ import org.apache.maven.settings.Settings;
  * @author dantran <dantran@apache.org>
  * @version $Id: WsImportMojo.java 3169 2007-01-22 02:51:29Z dantran $
  */
-abstract class WsImportMojo extends AbstractJaxwsMojo
+abstract class WsImportMojo
+    extends AbstractJaxwsMojo
 {
 
     private static final String STALE_FILE_PREFIX = ".";
@@ -99,7 +100,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     /**
      * Directory containing WSDL files.
      */
-    @Parameter(defaultValue = "${basedir}/src/wsdl")
+    @Parameter( defaultValue = "${basedir}/src/wsdl" )
     private File wsdlDirectory;
 
     /**
@@ -118,7 +119,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     /**
      * Directory containing binding files.
      */
-    @Parameter(defaultValue = "${basedir}/src/jaxws")
+    @Parameter( defaultValue = "${basedir}/src/jaxws" )
     protected File bindingDirectory;
 
     /**
@@ -173,7 +174,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     /**
      * Suppress wsimport output.
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean quiet;
 
     /**
@@ -197,33 +198,33 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     /**
      * Generate stubbed JWS implementation file.
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean genJWS;
 
     /**
      * Turn off compilation after code generation and let generated sources be
      * compiled by maven during compilation phase; keep is turned on with this option.
      */
-    @Parameter(defaultValue = "true")
+    @Parameter( defaultValue = "true" )
     private boolean xnocompile;
 
     /**
      * Maps headers not bound to the request or response messages to Java method parameters.
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean xadditionalHeaders;
 
     /**
      * Turn on debug message.
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean xdebug;
 
     /**
      * Binding W3C EndpointReferenceType to Java. By default WsImport follows spec and does not bind
      * EndpointReferenceType to Java and uses the spec provided {@link javax.xml.ws.wsaddressing.W3CEndpointReference}
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean xnoAddressingDataBinding;
 
     /**
@@ -235,18 +236,18 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     /**
      * Disable the SSL Hostname verification while fetching WSDL(s).
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean xdisableSSLHostnameVerification;
 
     /**
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean xuseBaseResourceAndURLToLoadWSDL;
 
     /**
      * Disable Authenticator used by JAX-WS RI, <code>xauthfile</code> will be ignored if set.
      */
-    @Parameter(defaultValue = "false")
+    @Parameter( defaultValue = "false" )
     private boolean xdisableAuthenticator;
 
     /**
@@ -262,112 +263,131 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     /**
      * The folder containing flag files used to determine if the output is stale.
      */
-    @Parameter(defaultValue = "${project.build.directory}/jaxws/stale")
+    @Parameter( defaultValue = "${project.build.directory}/jaxws/stale" )
     private File staleFile;
 
     /**
      */
-    @Parameter(defaultValue = "${settings}", readonly = true, required = true)
+    @Parameter( defaultValue = "${settings}", readonly = true, required = true )
     private Settings settings;
 
     protected abstract File getImplDestDir();
 
     @Override
-    public void execute() throws MojoExecutionException {
-        try {
+    public void execute()
+        throws MojoExecutionException
+    {
+        try
+        {
             URL[] wsdls = getWSDLFiles();
-            if (wsdls.length == 0 && (wsdlUrls == null || wsdlUrls.isEmpty())) {
-                getLog().info("No WSDLs are found to process, Specify atleast one of the following parameters: wsdlFiles, wsdlDirectory or wsdlUrls.");
+            if ( wsdls.length == 0 && ( wsdlUrls == null || wsdlUrls.isEmpty() ) )
+            {
+                getLog().info( "No WSDLs are found to process, Specify atleast one of the following parameters: wsdlFiles, wsdlDirectory or wsdlUrls." );
                 return;
             }
             this.processWsdlViaUrls();
-            this.processLocalWsdlFiles(wsdls);
-        } catch (MojoExecutionException e) {
+            this.processLocalWsdlFiles( wsdls );
+        }
+        catch ( MojoExecutionException e )
+        {
             throw e;
-        } catch (IOException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException( e.getMessage(), e );
         }
     }
 
     @Override
-    protected String getMain() {
+    protected String getMain()
+    {
         return "com.sun.tools.ws.wscompile.WsimportTool";
     }
 
     @Override
-    protected boolean isXnocompile() {
+    protected boolean isXnocompile()
+    {
         return xnocompile;
     }
 
     /**
-     * 
      * @throws MojoExecutionException
      * @throws IOException
      */
-    private void processLocalWsdlFiles(URL[] wsdls)
-            throws MojoExecutionException, IOException {
-        for (URL u : wsdls) {
+    private void processLocalWsdlFiles( URL[] wsdls )
+        throws MojoExecutionException, IOException
+    {
+        for ( URL u : wsdls )
+        {
             String url = u.toExternalForm();
-            if (isOutputStale(url)) {
-                getLog().info("Processing: " + url);
+            if ( isOutputStale( url ) )
+            {
+                getLog().info( "Processing: " + url );
                 String relPath = null;
-                if ("file".equals(u.getProtocol())) {
-                    relPath = getRelativePath(new File(u.getPath()));
+                if ( "file".equals( u.getProtocol() ) )
+                {
+                    relPath = getRelativePath( new File( u.getPath() ) );
                 }
-                ArrayList<String> args = getWsImportArgs(relPath);
-                args.add("\"" + url + "\"");
-                getLog().info("jaxws:wsimport args: " + args);
-                exec(args);
-                touchStaleFile(url);
-            } else {
-                getLog().info("Ignoring: " + url);
+                ArrayList<String> args = getWsImportArgs( relPath );
+                args.add( "\"" + url + "\"" );
+                getLog().info( "jaxws:wsimport args: " + args );
+                exec( args );
+                touchStaleFile( url );
             }
-            //http://java.net/jira/browse/JAX_WS_COMMONS-95
-            addSourceRoot(getSourceDestDir().getAbsolutePath());
+            else
+            {
+                getLog().info( "Ignoring: " + url );
+            }
+            // http://java.net/jira/browse/JAX_WS_COMMONS-95
+            addSourceRoot( getSourceDestDir().getAbsolutePath() );
         }
     }
 
     /**
      * process external wsdl
+     * 
      * @throws MojoExecutionException
      */
     private void processWsdlViaUrls()
-            throws MojoExecutionException, IOException {
-        for (int i = 0; wsdlUrls != null && i < wsdlUrls.size(); i++) {
-            String wsdlUrl = wsdlUrls.get(i).toString();
-            if (isOutputStale(wsdlUrl)) {
-                getLog().info("Processing: " + wsdlUrl);
-                ArrayList<String> args = getWsImportArgs(null);
-                args.add("\"" + wsdlUrl + "\"");
-                getLog().info("jaxws:wsimport args: " + args);
-                exec(args);
-                touchStaleFile(wsdlUrl);
+        throws MojoExecutionException, IOException
+    {
+        for ( int i = 0; wsdlUrls != null && i < wsdlUrls.size(); i++ )
+        {
+            String wsdlUrl = wsdlUrls.get( i ).toString();
+            if ( isOutputStale( wsdlUrl ) )
+            {
+                getLog().info( "Processing: " + wsdlUrl );
+                ArrayList<String> args = getWsImportArgs( null );
+                args.add( "\"" + wsdlUrl + "\"" );
+                getLog().info( "jaxws:wsimport args: " + args );
+                exec( args );
+                touchStaleFile( wsdlUrl );
             }
-            //http://java.net/jira/browse/JAX_WS_COMMONS-95
-            addSourceRoot(getSourceDestDir().getAbsolutePath());
+            // http://java.net/jira/browse/JAX_WS_COMMONS-95
+            addSourceRoot( getSourceDestDir().getAbsolutePath() );
         }
     }
 
     /**
-     * 
      * @return wsimport's command arguments
      * @throws MojoExecutionException
      */
-    private ArrayList<String> getWsImportArgs(String relativePath)
-            throws MojoExecutionException {
+    private ArrayList<String> getWsImportArgs( String relativePath )
+        throws MojoExecutionException
+    {
         ArrayList<String> args = new ArrayList<String>();
-        args.addAll(getCommonArgs());
+        args.addAll( getCommonArgs() );
 
         if ( httpproxy != null )
         {
-            args.add( "-httpproxy:" + httpproxy);
+            args.add( "-httpproxy:" + httpproxy );
         }
-        else if (settings != null)
+        else if ( settings != null )
         {
-            String proxyString = getActiveHttpProxy(settings);
-            if (proxyString != null)
+            String proxyString = getActiveHttpProxy( settings );
+            if ( proxyString != null )
             {
-                args.add( "-httpproxy:" + proxyString);
+                args.add( "-httpproxy:" + proxyString );
             }
         }
 
@@ -377,19 +397,23 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             args.add( packageName );
         }
 
-        if (catalog != null) {
-            args.add("-catalog");
-            args.add("'" + catalog.getAbsolutePath() + "'");
+        if ( catalog != null )
+        {
+            args.add( "-catalog" );
+            args.add( "'" + catalog.getAbsolutePath() + "'" );
         }
 
         if ( wsdlLocation != null )
         {
-            if (relativePath != null) {
-                args.add("-wsdllocation");
-                args.add(wsdlLocation.replaceAll("\\*", relativePath));
-            } else if (!wsdlLocation.contains("*")) {
+            if ( relativePath != null )
+            {
                 args.add( "-wsdllocation" );
-                args.add(wsdlLocation);
+                args.add( wsdlLocation.replaceAll( "\\*", relativePath ) );
+            }
+            else if ( !wsdlLocation.contains( "*" ) )
+            {
+                args.add( "-wsdllocation" );
+                args.add( wsdlLocation );
             }
         }
 
@@ -399,84 +423,99 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
             args.add( target );
         }
 
-        if (quiet) {
-            args.add("-quiet");
+        if ( quiet )
+        {
+            args.add( "-quiet" );
         }
 
-        if ((genJWS || implServiceName != null || implPortName != null)
-                && isArgSupported("-generateJWS")) {
-            args.add("-generateJWS");
-            if (implServiceName != null && isArgSupported("-implServiceName")) {
-                args.add("-implServiceName");
-                args.add(implServiceName);
+        if ( ( genJWS || implServiceName != null || implPortName != null ) && isArgSupported( "-generateJWS" ) )
+        {
+            args.add( "-generateJWS" );
+            if ( implServiceName != null && isArgSupported( "-implServiceName" ) )
+            {
+                args.add( "-implServiceName" );
+                args.add( implServiceName );
             }
-            if (implPortName != null && isArgSupported("-implPortName")) {
-                args.add("-implPortName");
-                args.add(implPortName);
+            if ( implPortName != null && isArgSupported( "-implPortName" ) )
+            {
+                args.add( "-implPortName" );
+                args.add( implPortName );
             }
             File implDestDir = getImplDestDir();
-            if (!implDestDir.mkdirs() && !implDestDir.exists()) {
-                getLog().warn("Cannot create directory: " + implDestDir.getAbsolutePath());
+            if ( !implDestDir.mkdirs() && !implDestDir.exists() )
+            {
+                getLog().warn( "Cannot create directory: " + implDestDir.getAbsolutePath() );
             }
-            args.add("-implDestDir");
-            args.add("'" + implDestDir.getAbsolutePath() + "'");
-            if (!project.getCompileSourceRoots().contains(implDestDir.getAbsolutePath())) {
-                project.addCompileSourceRoot(implDestDir.getAbsolutePath());
+            args.add( "-implDestDir" );
+            args.add( "'" + implDestDir.getAbsolutePath() + "'" );
+            if ( !project.getCompileSourceRoots().contains( implDestDir.getAbsolutePath() ) )
+            {
+                project.addCompileSourceRoot( implDestDir.getAbsolutePath() );
             }
         }
 
-        if(xdebug){
-            args.add("-Xdebug");
+        if ( xdebug )
+        {
+            args.add( "-Xdebug" );
         }
 
         /**
          * -Xno-addressing-databinding enable binding of W3C EndpointReferenceType to Java
          */
-        if(xnoAddressingDataBinding){
-            args.add("-Xno-addressing-databinding");
+        if ( xnoAddressingDataBinding )
+        {
+            args.add( "-Xno-addressing-databinding" );
         }
 
-        if(xadditionalHeaders){
-            args.add("-XadditionalHeaders");
+        if ( xadditionalHeaders )
+        {
+            args.add( "-XadditionalHeaders" );
         }
 
-        if(xauthFile != null){
-            args.add("-Xauthfile");
-            args.add(xauthFile.getAbsolutePath());
+        if ( xauthFile != null )
+        {
+            args.add( "-Xauthfile" );
+            args.add( xauthFile.getAbsolutePath() );
         }
 
-        if (xdisableSSLHostnameVerification) {
-            args.add("-XdisableSSLHostnameVerification");
+        if ( xdisableSSLHostnameVerification )
+        {
+            args.add( "-XdisableSSLHostnameVerification" );
         }
-        if (xuseBaseResourceAndURLToLoadWSDL) {
-            args.add("-XuseBaseResourceAndURLToLoadWSDL");
+        if ( xuseBaseResourceAndURLToLoadWSDL )
+        {
+            args.add( "-XuseBaseResourceAndURLToLoadWSDL" );
         }
-        if (xdisableAuthenticator && isArgSupported("-XdisableAuthenticator")) {
-            args.add("-XdisableAuthenticator");
+        if ( xdisableAuthenticator && isArgSupported( "-XdisableAuthenticator" ) )
+        {
+            args.add( "-XdisableAuthenticator" );
         }
 
         // xjcOIptions
-        if (xjcArgs != null) 
+        if ( xjcArgs != null )
         {
-            for (String xjcArg : xjcArgs) {
-                if (xjcArg.startsWith("-"))
-                    args.add("-B" + xjcArg);
+            for ( String xjcArg : xjcArgs )
+            {
+                if ( xjcArg.startsWith( "-" ) )
+                    args.add( "-B" + xjcArg );
                 else
-                    args.add(xjcArg);
+                    args.add( xjcArg );
             }
         }
 
         // Bindings
         File[] bindings = getBindingFiles();
 
-        if (bindings.length > 0 && wsdlLocation != null && wsdlLocation.contains("*")) {
-            throw new MojoExecutionException("External binding file(s) can not be bound to more WSDL files (" + wsdlLocation + ")\n"
-                    + "Please use either inline binding(s) or multiple execution tags.");
+        if ( bindings.length > 0 && wsdlLocation != null && wsdlLocation.contains( "*" ) )
+        {
+            throw new MojoExecutionException( "External binding file(s) can not be bound to more WSDL files ("
+                + wsdlLocation + ")\n" + "Please use either inline binding(s) or multiple execution tags." );
         }
 
-        for (File binding : bindings) {
-            args.add("-b");
-            args.add("'" + binding.getAbsolutePath() + "'");
+        for ( File binding : bindings )
+        {
+            args.add( "-b" );
+            args.add( "'" + binding.getAbsolutePath() + "'" );
         }
 
         getLog().debug( "jaxws:wsimport args: " + args );
@@ -491,16 +530,17 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      */
     public final File[] getBindingFiles()
     {
-        File [] bindings;
-        
+        File[] bindings;
+
         if ( bindingFiles != null )
         {
             bindings = new File[bindingFiles.size()];
-            for ( int i = 0 ; i < bindingFiles.size(); ++i ) 
+            for ( int i = 0; i < bindingFiles.size(); ++i )
             {
-                String schemaName = bindingFiles.get(i);
+                String schemaName = bindingFiles.get( i );
                 File file = new File( schemaName );
-                if (!file.isAbsolute()) {
+                if ( !file.isAbsolute() )
+                {
                     file = new File( bindingDirectory, schemaName );
                 }
                 bindings[i] = file;
@@ -509,7 +549,7 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         else
         {
             getLog().debug( "The binding Directory is " + bindingDirectory );
-            bindings =  bindingDirectory.listFiles( new XMLFile() );
+            bindings = bindingDirectory.listFiles( new XMLFile() );
             if ( bindings == null )
             {
                 bindings = new File[0];
@@ -523,107 +563,152 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
      * 
      * @return An array of schema files to be parsed by the schema compiler.
      */
-    private URL[] getWSDLFiles() throws MojoExecutionException {
+    private URL[] getWSDLFiles()
+        throws MojoExecutionException
+    {
         List<URL> files = new ArrayList<URL>();
         Set<Artifact> dependencyArtifacts = project.getDependencyArtifacts();
-        List<URL> urlCpath = new ArrayList<URL>(dependencyArtifacts.size());
-        for (Artifact a: dependencyArtifacts) {
-            try {
-                if (a.getFile() != null) {
+        List<URL> urlCpath = new ArrayList<URL>( dependencyArtifacts.size() );
+        for ( Artifact a : dependencyArtifacts )
+        {
+            try
+            {
+                if ( a.getFile() != null )
+                {
                     URL u = a.getFile().toURI().toURL();
-                    urlCpath.add(u);
-                } else {
-                    getLog().warn("cannot find file for " + a.getGroupId() + ":" + a.getArtifactId() + ":" + a.getVersion());
+                    urlCpath.add( u );
                 }
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(WsImportMojo.class.getName()).log(Level.SEVERE, null, ex);
+                else
+                {
+                    getLog().warn( "cannot find file for " + a.getGroupId() + ":" + a.getArtifactId() + ":"
+                        + a.getVersion() );
+                }
+            }
+            catch ( MalformedURLException ex )
+            {
+                Logger.getLogger( WsImportMojo.class.getName() ).log( Level.SEVERE, null, ex );
             }
         }
-        ClassLoader loader = urlCpath.isEmpty()
-                ? Thread.currentThread().getContextClassLoader()
-                : new URLClassLoader(urlCpath.toArray(new URL[0]));
-        if (wsdlFiles != null) {
-            for (String wsdlFileName : wsdlFiles) {
-                File wsdl = new File(wsdlFileName);
+        ClassLoader loader = urlCpath.isEmpty() ? Thread.currentThread().getContextClassLoader()
+                        : new URLClassLoader( urlCpath.toArray( new URL[0] ) );
+        if ( wsdlFiles != null )
+        {
+            for ( String wsdlFileName : wsdlFiles )
+            {
+                File wsdl = new File( wsdlFileName );
                 URL toAdd = null;
-                if (!wsdl.isAbsolute()) {
-                    wsdl = new File(wsdlDirectory, wsdlFileName);
+                if ( !wsdl.isAbsolute() )
+                {
+                    wsdl = new File( wsdlDirectory, wsdlFileName );
                 }
-                if (!wsdl.exists()) {
-                    toAdd = loader.getResource(wsdlFileName);
-                } else {
-                    try {
+                if ( !wsdl.exists() )
+                {
+                    toAdd = loader.getResource( wsdlFileName );
+                }
+                else
+                {
+                    try
+                    {
                         toAdd = wsdl.toURI().toURL();
-                    } catch (MalformedURLException ex) {
-                        Logger.getLogger(WsImportMojo.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    catch ( MalformedURLException ex )
+                    {
+                        Logger.getLogger( WsImportMojo.class.getName() ).log( Level.SEVERE, null, ex );
                     }
                 }
-                getLog().debug("The wsdl File is '" + wsdlFileName + "' from '" + toAdd + "'");
-                if (toAdd != null) {
-                    files.add(toAdd);
-                } else {
-                    throw new MojoExecutionException("'" + wsdlFileName + "' not found.");
+                getLog().debug( "The wsdl File is '" + wsdlFileName + "' from '" + toAdd + "'" );
+                if ( toAdd != null )
+                {
+                    files.add( toAdd );
+                }
+                else
+                {
+                    throw new MojoExecutionException( "'" + wsdlFileName + "' not found." );
                 }
             }
-        } else {
+        }
+        else
+        {
             getLog().debug( "The wsdl Directory is " + wsdlDirectory );
-            if (wsdlDirectory.exists()) {
-                File[] wsdls = wsdlDirectory.listFiles(new WSDLFile());
-                for (File wsdl:  wsdls) {
-                    try {
-                        files.add(wsdl.toURI().toURL());
-                    } catch (MalformedURLException ex) {
-                        Logger.getLogger(WsImportMojo.class.getName()).log(Level.SEVERE, null, ex);
+            if ( wsdlDirectory.exists() )
+            {
+                File[] wsdls = wsdlDirectory.listFiles( new WSDLFile() );
+                for ( File wsdl : wsdls )
+                {
+                    try
+                    {
+                        files.add( wsdl.toURI().toURL() );
+                    }
+                    catch ( MalformedURLException ex )
+                    {
+                        Logger.getLogger( WsImportMojo.class.getName() ).log( Level.SEVERE, null, ex );
                     }
                 }
-            } else {
-                URI rel = project.getBasedir().toURI().relativize(wsdlDirectory.toURI());
+            }
+            else
+            {
+                URI rel = project.getBasedir().toURI().relativize( wsdlDirectory.toURI() );
                 String dir = rel.getPath();
-                URL u = loader.getResource(dir);
-                if (u == null) {
+                URL u = loader.getResource( dir );
+                if ( u == null )
+                {
                     dir = "WEB-INF/wsdl/";
-                    u = loader.getResource(dir);
+                    u = loader.getResource( dir );
                 }
-                if (u == null) {
+                if ( u == null )
+                {
                     dir = "META-INF/wsdl/";
-                    u = loader.getResource(dir);
+                    u = loader.getResource( dir );
                 }
-                if (!(u == null || !"jar".equalsIgnoreCase(u.getProtocol()))) {
+                if ( !( u == null || !"jar".equalsIgnoreCase( u.getProtocol() ) ) )
+                {
                     String path = u.getPath();
-                    try {
-                        Pattern p = Pattern.compile(dir.replace(File.separatorChar, '/') + PATTERN, Pattern.CASE_INSENSITIVE);
-                        JarFile jarFile = new JarFile(path.substring(5, path.indexOf("!/")));
+                    try
+                    {
+                        Pattern p = Pattern.compile( dir.replace( File.separatorChar, '/' ) + PATTERN,
+                                                     Pattern.CASE_INSENSITIVE );
+                        JarFile jarFile = new JarFile( path.substring( 5, path.indexOf( "!/" ) ) );
                         Enumeration<JarEntry> jes = jarFile.entries();
-                        while (jes.hasMoreElements()) {
+                        while ( jes.hasMoreElements() )
+                        {
                             JarEntry je = jes.nextElement();
-                            Matcher m = p.matcher(je.getName());
-                            if (m.matches()) {
-                                String s = "jar:" + path.substring(0, path.indexOf("!/") + 2) + je.getName();
-                                files.add(new URL(s));
+                            Matcher m = p.matcher( je.getName() );
+                            if ( m.matches() )
+                            {
+                                String s = "jar:" + path.substring( 0, path.indexOf( "!/" ) + 2 ) + je.getName();
+                                files.add( new URL( s ) );
                             }
                         }
                         jarFile.close();
-                    } catch (IOException ex) {
-                        Logger.getLogger(WsImportMojo.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    catch ( IOException ex )
+                    {
+                        Logger.getLogger( WsImportMojo.class.getName() ).log( Level.SEVERE, null, ex );
                     }
                 }
             }
         }
-        if (!urlCpath.isEmpty()) {
+        if ( !urlCpath.isEmpty() )
+        {
             // if we created a classloader, cleanup
-            try {
-                ((URLClassLoader) loader).close();
-            } catch (IOException e) {
-                throw new MojoExecutionException(e.getMessage(), e);
+            try
+            {
+                ( (URLClassLoader) loader ).close();
+            }
+            catch ( IOException e )
+            {
+                throw new MojoExecutionException( e.getMessage(), e );
             }
         }
-        return files.toArray(new URL[0]);
+        return files.toArray( new URL[0] );
     }
 
     /**
      * A class used to look up .xml documents from a given directory.
      */
-    private static final class XMLFile implements FileFilter {
+    private static final class XMLFile
+        implements FileFilter
+    {
 
         /**
          * Returns true if the file ends with an xml extension.
@@ -632,15 +717,18 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
          * @return true if an xml file.
          */
         @Override
-        public boolean accept(final java.io.File file) {
-            return file.getName().endsWith(".xml");
+        public boolean accept( final java.io.File file )
+        {
+            return file.getName().endsWith( ".xml" );
         }
     }
 
     /**
      * A class used to look up .wsdl documents from a given directory.
      */
-    private static final class WSDLFile implements FileFilter {
+    private static final class WSDLFile
+        implements FileFilter
+    {
 
         /**
          * Returns true if the file ends with a wsdl extension.
@@ -649,17 +737,22 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
          * @return true if an wsdl file.
          */
         @Override
-        public boolean accept(final java.io.File file) {
-            return file.getName().endsWith(".wsdl");
+        public boolean accept( final java.io.File file )
+        {
+            return file.getName().endsWith( ".wsdl" );
         }
 
     }
 
-    private String getRelativePath(File f) {
-        if (wsdlFiles != null) {
-            for (String s : wsdlFiles) {
-                String path = f.getPath().replace(File.separatorChar, '/');
-                if (path.endsWith(s) && path.length() != s.length()) {
+    private String getRelativePath( File f )
+    {
+        if ( wsdlFiles != null )
+        {
+            for ( String s : wsdlFiles )
+            {
+                String path = f.getPath().replace( File.separatorChar, '/' );
+                if ( path.endsWith( s ) && path.length() != s.length() )
+                {
                     return s;
                 }
             }
@@ -668,41 +761,51 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
     }
 
     /**
-     * Returns true if given WSDL resource or any binding file is newer
-     * than the <code>staleFlag</code> file.
+     * Returns true if given WSDL resource or any binding file is newer than the <code>staleFlag</code> file.
      * 
      * @return True if wsdl files have been modified since the last build.
      */
-    private boolean isOutputStale(String resource) {
+    private boolean isOutputStale( String resource )
+    {
         File[] sourceBindings = getBindingFiles();
-        File stFile = new File(staleFile, STALE_FILE_PREFIX + getHash(resource));
+        File stFile = new File( staleFile, STALE_FILE_PREFIX + getHash( resource ) );
         boolean stale = !stFile.exists();
-        if (!stale) {
-            getLog().debug("Stale flag file exists, comparing to wsdls and bindings.");
+        if ( !stale )
+        {
+            getLog().debug( "Stale flag file exists, comparing to wsdls and bindings." );
             long staleMod = stFile.lastModified();
 
-            try {
-                //resource can be URL
-                URL sourceWsdl = new URL(resource);
-                if (sourceWsdl.openConnection().getLastModified() > staleMod) {
-                    getLog().debug(resource + " is newer than the stale flag file.");
+            try
+            {
+                // resource can be URL
+                URL sourceWsdl = new URL( resource );
+                if ( sourceWsdl.openConnection().getLastModified() > staleMod )
+                {
+                    getLog().debug( resource + " is newer than the stale flag file." );
                     stale = true;
                 }
-            } catch (MalformedURLException mue) {
-                //or a file
-                File sourceWsdl = new File(resource);
-                if (sourceWsdl.lastModified() > staleMod) {
-                    getLog().debug(resource + " is newer than the stale flag file.");
+            }
+            catch ( MalformedURLException mue )
+            {
+                // or a file
+                File sourceWsdl = new File( resource );
+                if ( sourceWsdl.lastModified() > staleMod )
+                {
+                    getLog().debug( resource + " is newer than the stale flag file." );
                     stale = true;
                 }
-            } catch (IOException ioe) {
-                //possible error while openning connection
-                getLog().error(ioe);
+            }
+            catch ( IOException ioe )
+            {
+                // possible error while openning connection
+                getLog().error( ioe );
             }
 
-            for (File sourceBinding : sourceBindings) {
-                if (sourceBinding.lastModified() > staleMod) {
-                    getLog().debug(sourceBinding.getName() + " is newer than the stale flag file.");
+            for ( File sourceBinding : sourceBindings )
+            {
+                if ( sourceBinding.lastModified() > staleMod )
+                {
+                    getLog().debug( sourceBinding.getName() + " is newer than the stale flag file." );
                     stale = true;
                 }
             }
@@ -710,66 +813,87 @@ abstract class WsImportMojo extends AbstractJaxwsMojo
         return stale;
     }
 
-    private void touchStaleFile(String resource) throws IOException {
-        File stFile = new File(staleFile, STALE_FILE_PREFIX + getHash(resource));
-        if (!stFile.exists()) {
+    private void touchStaleFile( String resource )
+        throws IOException
+    {
+        File stFile = new File( staleFile, STALE_FILE_PREFIX + getHash( resource ) );
+        if ( !stFile.exists() )
+        {
             File staleDir = stFile.getParentFile();
-            if (!staleDir.mkdirs() && !staleDir.exists()) {
-                getLog().warn("Cannot create directory: " + staleDir.getAbsolutePath());
+            if ( !staleDir.mkdirs() && !staleDir.exists() )
+            {
+                getLog().warn( "Cannot create directory: " + staleDir.getAbsolutePath() );
             }
-            if (!stFile.createNewFile()) {
-                getLog().warn("Cannot create file: " + stFile.getAbsolutePath());
+            if ( !stFile.createNewFile() )
+            {
+                getLog().warn( "Cannot create file: " + stFile.getAbsolutePath() );
             }
-            getLog().debug("Stale flag file created.[" + stFile.getAbsolutePath() + "]");
-        } else {
-            if (!stFile.setLastModified(System.currentTimeMillis())) {
-                getLog().warn("Stale file has not been updated!");
+            getLog().debug( "Stale flag file created.[" + stFile.getAbsolutePath() + "]" );
+        }
+        else
+        {
+            if ( !stFile.setLastModified( System.currentTimeMillis() ) )
+            {
+                getLog().warn( "Stale file has not been updated!" );
             }
         }
     }
 
-    private String getHash(String s) {
+    private String getHash( String s )
+    {
         Formatter formatter = new Formatter();
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA");
-            for (byte b : md.digest(s.getBytes("UTF-8"))) {
-                formatter.format("%02x", b);
+        try
+        {
+            MessageDigest md = MessageDigest.getInstance( "SHA" );
+            for ( byte b : md.digest( s.getBytes( "UTF-8" ) ) )
+            {
+                formatter.format( "%02x", b );
             }
             return formatter.toString();
-        } catch (UnsupportedEncodingException ex) {
-            getLog().debug(ex.getMessage(), ex);
-        } catch (NoSuchAlgorithmException ex) {
-            getLog().debug(ex.getMessage(), ex);
-        } finally {
+        }
+        catch ( UnsupportedEncodingException ex )
+        {
+            getLog().debug( ex.getMessage(), ex );
+        }
+        catch ( NoSuchAlgorithmException ex )
+        {
+            getLog().debug( ex.getMessage(), ex );
+        }
+        finally
+        {
             formatter.close();
         }
-        //fallback to some default
-        getLog().warn("Could not compute hash for " + s + ". Using fallback method.");
-        return s.substring(s.lastIndexOf('/')).replaceAll("\\.", "-");
+        // fallback to some default
+        getLog().warn( "Could not compute hash for " + s + ". Using fallback method." );
+        return s.substring( s.lastIndexOf( '/' ) ).replaceAll( "\\.", "-" );
     }
 
     /**
-     * 
      * @return proxy string as [user[:password]@]proxyHost[:proxyPort] or null
      */
-    static String getActiveHttpProxy(Settings s) {
+    static String getActiveHttpProxy( Settings s )
+    {
         String retVal = null;
-        for (Proxy p : s.getProxies()) {
-            if (p.isActive() && "http".equals(p.getProtocol())) {
+        for ( Proxy p : s.getProxies() )
+        {
+            if ( p.isActive() && "http".equals( p.getProtocol() ) )
+            {
                 StringBuilder sb = new StringBuilder();
                 String user = p.getUsername();
                 String pwd = p.getPassword();
-                if (user != null) {
-                    sb.append(user);
-                    if (pwd != null) {
-                        sb.append(":");
-                        sb.append(pwd);
+                if ( user != null )
+                {
+                    sb.append( user );
+                    if ( pwd != null )
+                    {
+                        sb.append( ":" );
+                        sb.append( pwd );
                     }
-                    sb.append("@");
+                    sb.append( "@" );
                 }
-                sb.append(p.getHost());
-                sb.append(":");
-                sb.append(p.getPort());
+                sb.append( p.getHost() );
+                sb.append( ":" );
+                sb.append( p.getPort() );
                 retVal = sb.toString().trim();
                 break;
             }

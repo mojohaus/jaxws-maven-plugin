@@ -29,51 +29,65 @@ import org.testng.Assert;
  *
  * @author lukas
  */
-public class Assertions {
+public class Assertions
+{
 
-    public static void assertFilePresent(File project, String path) {
-        File f = new File(project, path);
-        Assert.assertTrue(f.exists(), "Not found " + f.getAbsolutePath());
+    public static void assertFilePresent( File project, String path )
+    {
+        File f = new File( project, path );
+        Assert.assertTrue( f.exists(), "Not found " + f.getAbsolutePath() );
     }
 
-    public static void assertFileNotPresent(File project, String path) {
-        File f = new File(project, path);
-        Assert.assertFalse(f.exists(), "Found " + f.getAbsolutePath());
+    public static void assertFileNotPresent( File project, String path )
+    {
+        File f = new File( project, path );
+        Assert.assertFalse( f.exists(), "Found " + f.getAbsolutePath() );
     }
 
-    public static void assertFileContains(File project, String path, String s) throws IOException {
-        File f = new File(project, path);
-        Assert.assertTrue(f.exists(), f.getAbsolutePath() + " does not exist");
-        Assert.assertTrue(f.isFile(), f.getAbsolutePath() + " is not a file");
-        BufferedReader r = new BufferedReader(new FileReader(f));
-        try {
+    public static void assertFileContains( File project, String path, String s )
+        throws IOException
+    {
+        File f = new File( project, path );
+        Assert.assertTrue( f.exists(), f.getAbsolutePath() + " does not exist" );
+        Assert.assertTrue( f.isFile(), f.getAbsolutePath() + " is not a file" );
+        BufferedReader r = new BufferedReader( new FileReader( f ) );
+        try
+        {
             String line;
-            while ((line = r.readLine()) != null) {
-                if (line.contains(s)) {
+            while ( ( line = r.readLine() ) != null )
+            {
+                if ( line.contains( s ) )
+                {
                     return;
                 }
             }
-        } finally {
+        }
+        finally
+        {
             r.close();
         }
-        Assert.fail("'" + s + "' is missing in:" + f.getAbsolutePath());
+        Assert.fail( "'" + s + "' is missing in:" + f.getAbsolutePath() );
     }
 
-    public static void assertJarContains(File project, String jarName, String path) throws ZipException, IOException {
-        File f = new File(project, "target/" + jarName);
-        Assert.assertTrue(f.exists(), f.getAbsolutePath() + " does not exist");
-        Assert.assertTrue(f.isFile(), f.getAbsolutePath() + " is not a file");
-        ZipFile zf = new ZipFile(f);
-        Assert.assertNotNull(zf.getEntry(path), "'" + path + "' is missing in: " + jarName);
+    public static void assertJarContains( File project, String jarName, String path )
+        throws ZipException, IOException
+    {
+        File f = new File( project, "target/" + jarName );
+        Assert.assertTrue( f.exists(), f.getAbsolutePath() + " does not exist" );
+        Assert.assertTrue( f.isFile(), f.getAbsolutePath() + " is not a file" );
+        ZipFile zf = new ZipFile( f );
+        Assert.assertNotNull( zf.getEntry( path ), "'" + path + "' is missing in: " + jarName );
         zf.close();
     }
 
-    public static void assertJarNotContains(File project, String jarName, String path) throws ZipException, IOException {
-        File f = new File(project, "target/" + jarName);
-        Assert.assertTrue(f.exists(), f.getAbsolutePath() + " does not exist");
-        Assert.assertTrue(f.isFile(), f.getAbsolutePath() + " is not a file");
-        ZipFile zf = new ZipFile(f);
-        Assert.assertNull(zf.getEntry(path), "'" + path + "' is in: " + jarName);
+    public static void assertJarNotContains( File project, String jarName, String path )
+        throws ZipException, IOException
+    {
+        File f = new File( project, "target/" + jarName );
+        Assert.assertTrue( f.exists(), f.getAbsolutePath() + " does not exist" );
+        Assert.assertTrue( f.isFile(), f.getAbsolutePath() + " is not a file" );
+        ZipFile zf = new ZipFile( f );
+        Assert.assertNull( zf.getEntry( path ), "'" + path + "' is in: " + jarName );
         zf.close();
     }
 }

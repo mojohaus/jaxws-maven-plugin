@@ -28,20 +28,24 @@ import org.testng.annotations.Test;
  *
  * @author Lukas Jungmann
  */
-public class HelpMojoITCase {
+public class HelpMojoITCase
+{
 
-    private static final File PROJECTS_DIR = new File(System.getProperty("it.projects.dir"));
+    private static final File PROJECTS_DIR = new File( System.getProperty( "it.projects.dir" ) );
+
     private File project;
 
     @Test
-    public void testHelp() throws IOException {
-        project = new File(PROJECTS_DIR, "help");
+    public void testHelp()
+        throws IOException
+    {
+        project = new File( PROJECTS_DIR, "help" );
 
-        assertFileContains(project, "build.log", "This plugin has 5 goals:");
-        assertFileContains(project, "build.log", "jaxws:help");
-        assertFileContains(project, "build.log", "jaxws:wsgen");
-        assertFileContains(project, "build.log", "jaxws:wsimport");
-        assertFileContains(project, "build.log", "jaxws:wsgen-test");
-        assertFileContains(project, "build.log", "jaxws:wsimport-test");
+        assertFileContains( project, "build.log", "This plugin has 5 goals:" );
+        assertFileContains( project, "build.log", "jaxws:help" );
+        assertFileContains( project, "build.log", "jaxws:wsgen" );
+        assertFileContains( project, "build.log", "jaxws:wsimport" );
+        assertFileContains( project, "build.log", "jaxws:wsgen-test" );
+        assertFileContains( project, "build.log", "jaxws:wsimport-test" );
     }
 }
