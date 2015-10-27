@@ -58,7 +58,7 @@
                         </goals>
                         <configuration>
                             <wsdlUrls>
-                                <wsdlUrl>https://raw.githubusercontent.com/mojohaus/jaxws-maven-plugin/master/wsdl/AddNumbers.wsdl</wsdlUrl>
+                                <wsdlUrl>https://raw.githubusercontent.com/mojohaus/jaxws-maven-plugin/master/src/test/it/metro/wsdl/AddNumbers.wsdl</wsdlUrl>
                             </wsdlUrls>
                             <implDestDir>target/gen-src</implDestDir>
                             <implServiceName>{http://duke.example.org}AddNumbersService</implServiceName>
