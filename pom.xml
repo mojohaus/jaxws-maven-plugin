@@ -119,6 +119,7 @@
   <properties>
     <jaxws-tools.version>2.2.9-b14002</jaxws-tools.version>
     <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
+    <scmpublish.content>${project.build.directory}/staging/jaxws-maven-plugin</scmpublish.content>
   </properties>
 
   <dependencyManagement>
