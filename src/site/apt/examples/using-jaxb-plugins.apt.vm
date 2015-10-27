@@ -40,9 +40,9 @@ Using JAXB xjc plugins
     <plugins>
       ...
       <plugin>
-        <groupId>org.jvnet.jax-ws-commons</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>jaxws-maven-plugin</artifactId>
-        <version>2.3</version>
+        <version>${project.version}</version>
         <dependencies>
           <!-- put xjc-plugins on the jaxws-maven-plugin's classpath -->
           <dependency>

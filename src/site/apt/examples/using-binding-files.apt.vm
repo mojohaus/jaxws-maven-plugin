@@ -14,9 +14,12 @@
 ~~ limitations under the License.
 ~~
 
-External binding files can be passed to {{{../wsimport-mojo.html}wsimport mojo}} in two ways:
+Using binding files
+
+ External binding files can be passed to {{{../wsimport-mojo.html}wsimport mojo}} in two ways:
 
    * using <<bindingFiles>> configuration element - absolute and/or relative paths can be used. Note that relative path have their base directory set to <<<src/jaxws>>>
+#set ( $d = "$")
 
 +------------------------------------------+
 <project>
@@ -35,18 +38,18 @@ External binding files can be passed to {{{../wsimport-mojo.html}wsimport mojo}}
     ...
     <plugins>
       <plugin>
-        <groupId>org.jvnet.jax-ws-commons</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>jaxws-maven-plugin</artifactId>
-        <version>2.3</version>
+        <version>${project.version}</version>
         <executions>
           <execution>
             <goals>
               <goal>wsimport</goal>
             </goals>
-            <!-- Following configuration will pass ${basedir}/src/remote-xjc/bindings.xjc and ${basedir}/src/jaxws/bindings-default.xjc to wsimport. -->
+            <!-- Following configuration will pass ${d}{basedir}/src/remote-xjc/bindings.xjc and ${d}{basedir}/src/jaxws/bindings-default.xjc to wsimport. -->
             <configuration>
               <bindingFiles>
-                <bindingFile>${basedir}/src/remote-xjc/bindings.xjc</bindingFile>
+                <bindingFile>${d}{basedir}/src/remote-xjc/bindings.xjc</bindingFile>
                 <bindingFile>bindings-default.xjc</bindingFile>
               </bindingFiles>
               <wsdlUrls>
@@ -83,17 +86,17 @@ External binding files can be passed to {{{../wsimport-mojo.html}wsimport mojo}}
     ...
     <plugins>
       <plugin>
-        <groupId>org.jvnet.jax-ws-commons</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>jaxws-maven-plugin</artifactId>
-        <version>2.3</version>
+        <version>${project.version}</version>
         <executions>
           <execution>
             <goals>
               <goal>wsimport</goal>
             </goals>
-            <!-- Following configuration will pass all XML files from ${basedir}/src/bindings to wsimport. -->
+            <!-- Following configuration will pass all XML files from ${d}{basedir}/src/bindings to wsimport. -->
             <configuration>
-              <bindingDirectory>${basedir}/src/bindings</bindingDirectory>
+              <bindingDirectory>${d}{basedir}/src/bindings</bindingDirectory>
               <wsdlUrls>
                 <wsdlUrl>http://example.com/mywebservices/MyService?WSDL</wsdlUrl>
               </wsdlUrls>

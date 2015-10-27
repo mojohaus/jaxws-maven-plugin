@@ -64,8 +64,6 @@ JAX-WS Maven Plugin
 
   * {{{./examples/using-binding-files.html}Using binding files}}
 
-  * {{{./examples/using-snapshots.html}Using SNAPSHOT build}}
-
   * There are also some {{{https://github.com/mojohaus/jaxws-maven-plugin/tree/master/src/it}buildable examples}}
     in {{{https://github.com/mojohaus/jaxws-maven-plugin/tree/master/}git repository}}.
     You can also check {{{https://github.com/mojohaus/jaxws-maven-plugin/tree/master/src/test/it}available tests}}.

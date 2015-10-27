@@ -16,6 +16,7 @@
 
 Using {{{http://docs.oracle.com/javase/7/docs/technotes/tools/index.html#webservices}Web Services Tools}}
 from JDK
+#set ( $d = "$")
 
 +------------------------------------------+
 <project>
@@ -24,9 +25,9 @@ from JDK
     ...
     <plugins>
       <plugin>
-        <groupId>org.jvnet.jax-ws-commons</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>jaxws-maven-plugin</artifactId>
-        <version>2.3</version>
+        <version>${project.version}</version>
         <executions>
           <execution>
             <id>wsgen-from-jdk</id>
@@ -34,7 +35,7 @@ from JDK
               <goal>wsgen</goal>
             </goals>
             <configuration>
-              <executable>${tool.wsgen}</executable>
+              <executable>${d}{tool.wsgen}</executable>
               <sei>com.mycompany.MyService</sei>
               ...
             </configuration>
@@ -45,7 +46,7 @@ from JDK
               <goal>wsimport</goal>
             </goals>
             <configuration>
-              <executable>${tool.wsimport}</executable>
+              <executable>${d}{tool.wsimport}</executable>
               <wsdlUrls>
                 <wsdlUrl>http://example.org/sample.wsdl</wsdlUrl>
               </wsdlUrls>
@@ -71,8 +72,8 @@ from JDK
         </os>
       </activation>
       <properties>
-        <tool.wsgen>${java.home}/../bin/wsgen.exe</tool.wsgen>
-        <tool.wsimport>${java.home}/../bin/wsimport.exe</tool.wsimport>
+        <tool.wsgen>${d}{java.home}/../bin/wsgen.exe</tool.wsgen>
+        <tool.wsimport>${d}{java.home}/../bin/wsimport.exe</tool.wsimport>
       </properties>
     </profile>
     <profile>
@@ -83,8 +84,8 @@ from JDK
         </os>
       </activation>
       <properties>
-        <tool.wsgen>${java.home}/../bin/wsgen</tool.wsgen>
-        <tool.wsimport>${java.home}/../bin/wsimport</tool.wsimport>
+        <tool.wsgen>${d}{java.home}/../bin/wsgen</tool.wsgen>
+        <tool.wsimport>${d}{java.home}/../bin/wsimport</tool.wsimport>
       </properties>
     </profile>
     ...

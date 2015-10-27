@@ -15,9 +15,10 @@
 
 Usage
 
-  This plugin runs the JAXWS WsImport compiler from Maven2. 
+  This plugin runs the JAXWS WsImport compiler from Maven.
   Please be aware this plugin requires a Java 5.0+ compiler.
-  
+#set ( $d = "$")
+
 +------------------------------------------+
 <project>
   ...
@@ -34,9 +35,9 @@ Usage
   <build>
     <plugins>
       <plugin>
-        <groupId>org.jvnet.jax-ws-commons</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>jaxws-maven-plugin</artifactId>
-        <version>2.3</version>
+        <version>${project.version}</version>
         <executions>
           <execution>
             <goals>
@@ -66,7 +67,7 @@ Usage
           <source>1.6</source>
           <target>1.6</target>
           <compilerArguments>
-            <endorseddirs>${project.build.directory}/endorsed</endorseddirs>
+            <endorseddirs>${d}{project.build.directory}/endorsed</endorseddirs>
           </compilerArguments>
         </configuration>
       </plugin>
@@ -81,7 +82,7 @@ Usage
               <goal>copy</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.directory}/endorsed</outputDirectory>
+              <outputDirectory>${d}{project.build.directory}/endorsed</outputDirectory>
               <silent>true</silent>
               <artifactItems>
                 <artifactItem>

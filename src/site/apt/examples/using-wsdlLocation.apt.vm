@@ -15,6 +15,7 @@
 ~~
 
 Use wsdlLocation as a path prefix for multiple WSDL URLs
+#set ( $d = "$")
 
 +------------------------------------------+
 <project>
@@ -33,9 +34,9 @@ Use wsdlLocation as a path prefix for multiple WSDL URLs
     ...
     <plugins>
       <plugin>
-        <groupId>org.jvnet.jax-ws-commons</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>jaxws-maven-plugin</artifactId>
-        <version>2.3</version>
+        <version>${project.version}</version>
         <executions>
           <execution>
             <goals>
@@ -48,7 +49,7 @@ Use wsdlLocation as a path prefix for multiple WSDL URLs
               <wsdlFiles>
                 <wsdlFile>a.wsdl</wsdlFile>                         <!-- produces wsdlLocation = http://example.com/mywebservices/a.wsdl -->
                 <wsdlFile>b/b.wsdl</wsdlFile>                       <!-- produces wsdlLocation = http://example.com/mywebservices/b/b.wsdl -->
-                <wsdlFile>${basedir}/src/mywsdls/c.wsdl</wsdlFile>  <!-- produces wsdlLocation = /path/to/basedir/src/mywsdls/c.wsdl -->
+                <wsdlFile>${d}{basedir}/src/mywsdls/c.wsdl</wsdlFile>  <!-- produces wsdlLocation = /path/to/basedir/src/mywsdls/c.wsdl -->
               </wsdlFiles>
             </configuration>
           </execution>
