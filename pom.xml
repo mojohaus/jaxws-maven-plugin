@@ -111,6 +111,10 @@
     <system>GitHub</system>
     <url>https://github.com/mojohaus/jaxws-maven-plugin/issues</url>
   </issueManagement>
+  <ciManagement>
+    <system>Travis-CI</system>
+    <url>https://travis-ci.org/mojohaus/jaxws-maven-plugin</url>
+  </ciManagement>
 
   <properties>
     <jaxws-tools.version>2.2.9-b14002</jaxws-tools.version>
