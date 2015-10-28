@@ -664,11 +664,12 @@ abstract class WsImportMojo
                 if ( !( u == null || !"jar".equalsIgnoreCase( u.getProtocol() ) ) )
                 {
                     String path = u.getPath();
+                    JarFile jarFile = null;
                     try
                     {
                         Pattern p = Pattern.compile( dir.replace( File.separatorChar, '/' ) + PATTERN,
                                                      Pattern.CASE_INSENSITIVE );
-                        JarFile jarFile = new JarFile( path.substring( 5, path.indexOf( "!/" ) ) );
+                        jarFile = new JarFile( path.substring( 5, path.indexOf( "!/" ) ) );
                         Enumeration<JarEntry> jes = jarFile.entries();
                         while ( jes.hasMoreElements() )
                         {
@@ -680,11 +681,24 @@ abstract class WsImportMojo
                                 files.add( new URL( s ) );
                             }
                         }
-                        jarFile.close();
                     }
                     catch ( IOException ex )
                     {
                         Logger.getLogger( WsImportMojo.class.getName() ).log( Level.SEVERE, null, ex );
+                    }
+                    finally
+                    {
+                        if ( jarFile != null )
+                        {
+                            try
+                            {
+                                jarFile.close();
+                            }
+                            catch ( IOException ioe )
+                            {
+                                // ignore
+                            }
+                        }
                     }
                 }
             }
@@ -801,7 +815,7 @@ abstract class WsImportMojo
             }
             catch ( IOException ioe )
             {
-                // possible error while openning connection
+                // possible error while opening connection
                 getLog().error( ioe );
             }
 
