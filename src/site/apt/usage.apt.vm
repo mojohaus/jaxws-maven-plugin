@@ -15,7 +15,7 @@
 
 Usage
 
-  This plugin runs the JAXWS WsImport compiler from Maven.
+  This plugin runs the JAX-WS <<<wsimport>>> compiler from Maven.
   Please be aware this plugin requires a Java 5.0+ compiler.
 #set ( $d = "$")
 

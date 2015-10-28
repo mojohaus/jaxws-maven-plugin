@@ -34,7 +34,7 @@
   <version>2.4-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
-  <name>JAXWS Maven Plugin</name>
+  <name>JAX-WS Maven Plugin</name>
   <description>Maven plugin for JAX-WS RI</description>
   <url>http://www.mojohaus.org/jaxws-maven-plugin/</url>
 
