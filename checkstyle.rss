@@ -19,9 +19,9 @@ under the License.
 -->
 <rss version="0.91">
   <channel>
-    <title>JAXWS Maven Plugin - Checkstyle report</title>
+    <title>JAX-WS Maven Plugin - Checkstyle report</title>
     <link>http://www.mojohaus.org/jaxws-maven-plugin/</link>
-    <description>JAXWS Maven Plugin - Checkstyle report</description>
+    <description>JAX-WS Maven Plugin - Checkstyle report</description>
     <language>en-us</language>
     <copyright>&#169;2015 MojoHaus</copyright>
     <item>
