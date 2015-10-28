@@ -36,6 +36,7 @@
 
 package org.codehaus.mojo.jaxws;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -289,7 +290,7 @@ abstract class AbstractWsGenMojo
         {
             return seis;
         }
-        URLClassLoader cl = null;
+        ClassLoader cl = null;
         try
         {
             cl = new URLClassLoader( new URL[] { directory.toURI().toURL() } );
@@ -319,11 +320,11 @@ abstract class AbstractWsGenMojo
         }
         finally
         {
-            if ( cl != null )
+            if ( cl != null && cl instanceof Closeable )
             {
                 try
                 {
-                    cl.close();
+                    ( (Closeable) cl ).close();
                 }
                 catch ( IOException ex )
                 {

@@ -36,6 +36,7 @@
 
 package org.codehaus.mojo.jaxws;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -693,7 +694,10 @@ abstract class WsImportMojo
             // if we created a classloader, cleanup
             try
             {
-                ( (URLClassLoader) loader ).close();
+                if ( loader instanceof Closeable )
+                {
+                    ( (Closeable) loader ).close();
+                }
             }
             catch ( IOException e )
             {
