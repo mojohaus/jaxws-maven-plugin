@@ -15,12 +15,19 @@
  * limitations under the License.
  */
 -->
-<project name="JAX-WS Maven Plugin">
+<project xmlns="http://maven.apache.org/DECORATION/1.4.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/DECORATION/1.4.0 http://maven.apache.org/xsd/decoration-1.4.0.xsd">
   <body>
     <links>
       <item name="JAX-WS" href="http://jax-ws.java.net/" />
       <item name="Glassfish" href="http://glassfish.java.net/"/>
     </links>
+    <breadcrumbs>
+      <item name="MojoHaus" href="http://www.mojohaus.org/"/>
+      <!-- avoid Mojo parent breadcrumb -->
+      <item name="${project.name}" href="${project.url}" />
+    </breadcrumbs>
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
       <item name="Goals" href="plugin-info.html"/>
