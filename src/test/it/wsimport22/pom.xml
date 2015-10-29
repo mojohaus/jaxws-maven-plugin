@@ -57,6 +57,11 @@
                         <version>0.6.4</version>
                     </dependency>
                 </dependencies>
+                <configuration>
+                    <vmArgs><!-- necessary for JDK 8 -->
+                        <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+                    </vmArgs>
+                </configuration>
                 <executions>
                     <execution>
                         <id>id1</id>
