@@ -395,8 +395,8 @@ abstract class AbstractJaxwsMojo
             String fullCommand = cmd.toString();
             if ( isWindows() && 8191 <= fullCommand.length() )
             {
-                getLog().warn( "Length of the command is limitted to 8191 characters but it has " + fullCommand.length()
-                    + " characters." );
+                getLog().warn( "Length of Windows command line is limited to 8191 characters, but current command has " + fullCommand.length()
+                    + " characters:" );
                 getLog().warn( fullCommand );
             }
             else
@@ -405,7 +405,7 @@ abstract class AbstractJaxwsMojo
             }
             if ( CommandLineUtils.executeCommandLine( cmd, sc, sc ) != 0 )
             {
-                throw new MojoExecutionException( "Mojo failed - check output" );
+                throw new MojoExecutionException( "Invocation of " + getMain() + " failed - check output" );
             }
         }
         catch ( CommandLineException t )
