@@ -306,6 +306,12 @@ abstract class WsImportMojo
     }
 
     @Override
+    protected String getToolName()
+    {
+        return "wsimport";
+    }
+
+    @Override
     protected boolean isXnocompile()
     {
         return xnocompile;

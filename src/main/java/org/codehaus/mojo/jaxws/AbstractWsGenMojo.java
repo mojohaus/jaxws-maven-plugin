@@ -184,6 +184,12 @@ abstract class AbstractWsGenMojo
     }
 
     @Override
+    protected String getToolName()
+    {
+        return "wsgen";
+    }
+
+    @Override
     protected String getExtraClasspath()
     {
         StringBuilder buf = new StringBuilder();

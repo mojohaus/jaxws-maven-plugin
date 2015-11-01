@@ -54,11 +54,15 @@ import java.util.logging.Logger;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.toolchain.Toolchain;
+import org.apache.maven.toolchain.ToolchainManager;
 import org.codehaus.plexus.util.Os;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
@@ -142,6 +146,16 @@ abstract class AbstractJaxwsMojo
     @Parameter( defaultValue = "${plugin}", readonly = true )
     protected PluginDescriptor pluginDescriptor;
 
+    /** */
+    @Component
+    private ToolchainManager toolchainManager;
+
+    /**
+     * The current build session instance. This is used for toolchain manager API calls.
+     */
+    @Parameter( defaultValue = "${session}", readonly = true, required = true )
+    protected MavenSession session;
+
     private static final Logger logger = Logger.getLogger( AbstractJaxwsMojo.class.getName() );
 
     private static final List<String> METRO_22 = new ArrayList<String>();
@@ -164,7 +178,17 @@ abstract class AbstractJaxwsMojo
         METRO_23.add( "-x" );
     }
 
+    /**
+     * Main class of the tool to launch when launched as java command.
+     * @return the class name
+     */
     protected abstract String getMain();
+
+    /**
+     * Name of the tool to run when launched as JDK executable from JDK Toolchain.
+     * @return the tool name
+     */
+    protected abstract String getToolName();
 
     /**
      * Either ${build.outputDirectory} or ${build.testOutputDirectory}.
@@ -338,6 +362,13 @@ abstract class AbstractJaxwsMojo
         try
         {
             Commandline cmd = new Commandline();
+
+            if ( ( executable == null ) && ( getToolchain() != null ) )
+            {
+                // get executable from JDK toolchain
+                executable = new File( getToolchain().findTool( getToolName() ) );
+            }
+
             if ( executable != null )
             {
                 if ( executable.isFile() && executable.canExecute() )
@@ -569,5 +600,15 @@ abstract class AbstractJaxwsMojo
                 || "webservices-api".equals( a.getArtifactId() )
                 || a.getArtifactId().startsWith( "javax.xml.ws" )
                 || a.getArtifactId().startsWith( "javax.xml.bind" ) );
+    }
+
+    private Toolchain getToolchain()
+    {
+        Toolchain tc = null;
+        if ( toolchainManager != null )
+        {
+            tc = toolchainManager.getToolchainFromBuildContext( "jdk", session );
+        }
+        return tc;
     }
 }
