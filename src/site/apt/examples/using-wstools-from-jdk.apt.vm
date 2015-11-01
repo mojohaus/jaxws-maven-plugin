@@ -16,6 +16,17 @@
 
 Using {{{http://docs.oracle.com/javase/7/docs/technotes/tools/index.html#webservices}Web Services Tools}}
 from JDK
+
+* Using JDK Maven Toolchain
+
+  Starting with version 2.4, jaxws-maven-plugin supports Maven toolchains: if a JDK Toolchain is defined,
+  <<<wsgen>>> and <<<wsimport>>> tools from this toolchain is used.
+
+  For details on using toolchains, see
+  {{{https://maven.apache.org/guides/mini/guide-using-toolchains.html}Maven guide to using toolchains}}.
+
+* Without Toolchains
+
 #set ( $d = "$")
 
 +------------------------------------------+
