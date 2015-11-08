@@ -368,71 +368,76 @@ abstract class AbstractJaxwsMojo
     protected void exec( List<String> args )
         throws MojoExecutionException
     {
-        StreamConsumer sc = new DefaultConsumer();
-        try
+        String launched = "";
+        Commandline cmd = new Commandline();
+
+        if ( ( executable == null ) && ( getToolchain() != null ) )
         {
-            Commandline cmd = new Commandline();
+            // get executable from JDK toolchain
+            executable = new File( getToolchain().findTool( getToolName() ) );
+        }
 
-            if ( ( executable == null ) && ( getToolchain() != null ) )
+        if ( executable != null )
+        {
+            // use JDK wsgen/wsimport or equivalent executable
+            launched = executable.getName();
+            if ( executable.isFile() && executable.canExecute() )
             {
-                // get executable from JDK toolchain
-                executable = new File( getToolchain().findTool( getToolName() ) );
-            }
-
-            if ( executable != null )
-            {
-                if ( executable.isFile() && executable.canExecute() )
+                cmd.setExecutable( executable.getAbsolutePath() );
+                if ( getExtraClasspath() != null )
                 {
-                    cmd.setExecutable( executable.getAbsolutePath() );
-                    if ( getExtraClasspath() != null )
-                    {
-                        cmd.createArg().setLine( "-cp" );
-                        cmd.createArg().setValue( getExtraClasspath() );
-                    }
-                }
-                else
-                {
-                    throw new MojoExecutionException( "Cannot execute: " + executable.getAbsolutePath() );
+                    cmd.createArg().setLine( "-cp" );
+                    cmd.createArg().setValue( getExtraClasspath() );
                 }
             }
             else
             {
-                cmd.setExecutable( new File( new File( System.getProperty( "java.home" ), "bin" ),
-                                             getJavaExec() ).getAbsolutePath() );
-                // add additional JVM options
-                if ( vmArgs != null )
-                {
-                    for ( String arg : vmArgs )
-                    {
-                        cmd.createArg().setLine( arg );
-                    }
-                }
-                String[] classpath = getCP();
-                cmd.createArg().setValue( "-Xbootclasspath/p:" + classpath[0] );
-                cmd.createArg().setValue( "-cp" );
-                cmd.createArg().setValue( classpath[2] );
-                cmd.createArg().setLine( "org.codehaus.mojo.jaxws.Invoker" );
-                cmd.createArg().setLine( getMain() );
-                String extraCp = getExtraClasspath();
-                String cp = extraCp != null ? extraCp + File.pathSeparator : "";
-                cp += classpath[1];
-                try
-                {
-                    File pathFile = createPathFile( cp );
-                    cmd.createArg().setLine( "-pathfile " + pathFile.getAbsolutePath() );
-                }
-                catch ( IOException ioe )
-                {
-                    // creation of temporary file can fail, in such case just put everything on cp
-                    cmd.createArg().setValue( "-cp" );
-                    cmd.createArg().setValue( cp );
-                }
+                throw new MojoExecutionException( "Cannot execute: " + executable.getAbsolutePath() );
             }
-            cmd.setWorkingDirectory( project.getBasedir() );
-            for ( String arg : args )
+        }
+        else
+        {
+            // use tool's class through Invoker as java execution
+            launched = getMain();
+            cmd.setExecutable( new File( new File( System.getProperty( "java.home" ), "bin" ),
+                                         getJavaExec() ).getAbsolutePath() );
+            // add additional JVM options
+            if ( vmArgs != null )
             {
-                cmd.createArg().setLine( arg );
+                for ( String arg : vmArgs )
+                {
+                    cmd.createArg().setLine( arg );
+                }
             }
+            InvokerCP classpath = getInvokerCP();
+            cmd.createArg().setValue( "-Xbootclasspath/p:" + classpath.ecp );
+            cmd.createArg().setValue( "-cp" );
+            cmd.createArg().setValue( classpath.invokerPath );
+            cmd.createArg().setLine( Invoker.class.getCanonicalName() );
+            cmd.createArg().setLine( getMain() );
+            String extraCp = getExtraClasspath();
+            String cp = ( ( extraCp != null ) ? ( extraCp + File.pathSeparator ) : "" ) + classpath.cp;
+            try
+            {
+                File pathFile = createPathFile( cp );
+                cmd.createArg().setLine( "-pathfile " + pathFile.getAbsolutePath() );
+            }
+            catch ( IOException ioe )
+            {
+                // creation of temporary file can fail, in such case just put everything on cp
+                cmd.createArg().setValue( "-cp" );
+                cmd.createArg().setValue( cp );
+            }
+        }
+
+        cmd.setWorkingDirectory( project.getBasedir() );
+        for ( String arg : args )
+        {
+            cmd.createArg().setLine( arg );
+        }
+
+        try
+        {
             String fullCommand = cmd.toString();
             if ( isWindows() && 8191 <= fullCommand.length() )
             {
@@ -444,9 +449,11 @@ abstract class AbstractJaxwsMojo
             {
                 getLog().debug( fullCommand );
             }
+
+            StreamConsumer sc = new DefaultConsumer();
             if ( CommandLineUtils.executeCommandLine( cmd, sc, sc ) != 0 )
             {
-                throw new MojoExecutionException( "Invocation of " + getMain() + " failed - check output" );
+                throw new MojoExecutionException( "Invocation of " + launched + " failed - check output" );
             }
         }
         catch ( CommandLineException t )
@@ -473,10 +480,11 @@ abstract class AbstractJaxwsMojo
     }
 
     /**
-     * Calculates 3 classpaths used to launched tools.
-     * @return an array of 3 classpaths: endorsed, normal and invoker
+     * Calculates 3 classpaths used to launch tools as class through Invoker.
+     * @return Invoker's classpath
+     * @see Invoker
      */
-    private String[] getCP()
+    private InvokerCP getInvokerCP()
     {
         Set<Artifact> endorsedArtifacts = new HashSet<Artifact>();
         Map<String, Artifact> artifactsMap = new HashMap<String, Artifact>();
@@ -519,7 +527,23 @@ abstract class AbstractJaxwsMojo
             getLog().debug( "getCP() invokerPath: " + invokerPath );
         }
 
-        return new String[] { ecp.toString(), cp.toString(), invokerPath };
+        return new InvokerCP( ecp.toString(), cp.toString(), invokerPath );
+    }
+
+    private static class InvokerCP
+    {
+        public final String ecp;
+
+        public final String cp;
+
+        public final String invokerPath;
+
+        public InvokerCP( String ecp, String cp, String invokerPath )
+        {
+            this.ecp = ecp;
+            this.cp = cp;
+            this.invokerPath = invokerPath;
+        }
     }
 
     private String getJavaExec()
