@@ -278,8 +278,6 @@ abstract class AbstractWsGenMojo
 
         args.add( aSei );
 
-        getLog().debug( "jaxws:wsgen args: " + args );
-
         return args;
     }
 

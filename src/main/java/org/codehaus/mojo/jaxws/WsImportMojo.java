@@ -525,8 +525,6 @@ abstract class WsImportMojo
             args.add( "'" + binding.getAbsolutePath() + "'" );
         }
 
-        getLog().debug( "jaxws:wsimport args: " + args );
-
         return args;
     }
 
