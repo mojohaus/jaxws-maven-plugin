@@ -14,5 +14,4 @@ branches:
         - gh-pages
 notifications:
     email:
-        - olamy@apache.org
         - hboutemy@apache.org
