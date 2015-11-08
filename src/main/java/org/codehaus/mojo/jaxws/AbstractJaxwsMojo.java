@@ -155,6 +155,16 @@ abstract class AbstractJaxwsMojo
     private ToolchainManager toolchainManager;
 
     /**
+     * If a JDK toolchain is found, by default, it is used to get <code>java</code> executable with its <code>tools.jar</code>.
+     * But if set to <code>true</code>, it is used it to find <code>wsgen</code> and <code>wsimport</code>
+     * executables.
+     *
+     * @since 2.4
+     */
+    @Parameter( defaultValue = "false" )
+    protected boolean useJdkToolchainExecutable;
+
+    /**
      * The current build session instance. This is used for toolchain manager API calls.
      */
     @Parameter( defaultValue = "${session}", readonly = true, required = true )
@@ -370,10 +380,10 @@ abstract class AbstractJaxwsMojo
     public final void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        if ( ( executable == null ) && ( getToolchain() != null ) )
+        if ( ( executable == null ) && ( getJdkToolchain() != null ) )
         {
             // get executable from JDK toolchain
-            executable = new File( getToolchain().findTool( getToolName() ) );
+            executable = new File( getJdkToolchain().findTool( getToolName() ) );
         }
 
         executeJaxws();
@@ -410,8 +420,19 @@ abstract class AbstractJaxwsMojo
         {
             // use tool's class through Invoker as java execution
             launched = getMain();
-            cmd.setExecutable( new File( new File( System.getProperty( "java.home" ), "bin" ),
-                                         getJavaExec() ).getAbsolutePath() );
+
+            if ( ( getJdkToolchain() == null ) )
+            {
+                // use java executable from running Maven
+                cmd.setExecutable( new File( new File( System.getProperty( "java.home" ), "bin" ),
+                                             getJavaExec() ).getAbsolutePath() );
+            }
+            else
+            {
+                // use java executable from current JDK toolchain
+                cmd.setExecutable( getJdkToolchain().findTool( "java" ) );
+            }
+
             // add additional JVM options
             if ( vmArgs != null )
             {
@@ -523,19 +544,20 @@ abstract class AbstractJaxwsMojo
         cp.append( invokerPath );
 
         // don't forget tools.jar
-        File toolsJar = new File( System.getProperty( "java.home" ), "../lib/tools.jar" );
+        String javaHome = getJavaHome();
+        File toolsJar = new File( javaHome, "../lib/tools.jar" );
         if ( !toolsJar.exists() )
         {
-            toolsJar = new File( System.getProperty( "java.home" ), "lib/tools.jar" );
+            toolsJar = new File( javaHome, "lib/tools.jar" );
         }
         cp.append( File.pathSeparator );
         cp.append( toolsJar.getAbsolutePath() );
 
         if ( getLog().isDebugEnabled() )
         {
-            getLog().debug( "getCP() ecp: " + ecp );
-            getLog().debug( "getCP() cp: " + cp );
-            getLog().debug( "getCP() invokerPath: " + invokerPath );
+            getLog().debug( "getInvokerCP() ecp: " + ecp );
+            getLog().debug( "getInvokerCP() cp: " + cp );
+            getLog().debug( "getInvokerCP() invokerPath: " + invokerPath );
         }
 
         return new InvokerCP( ecp.toString(), cp.toString(), invokerPath );
@@ -560,6 +582,19 @@ abstract class AbstractJaxwsMojo
     private String getJavaExec()
     {
         return isWindows() ? "java.exe" : "java";
+    }
+
+    private String getJavaHome()
+    {
+        // by default, java.home from JDK/JRE running Maven
+        String javaHome = System.getProperty( "java.home" );
+        if ( getJdkToolchain() != null )
+        {
+            // JDK toolchain used
+            File javaExecutable = new File( getJdkToolchain().findTool( "java" ) ); // ${java.home}/bin/java
+            javaHome = javaExecutable.getParentFile().getParent();
+        }
+        return javaHome;
     }
 
     private File createPathFile( String cp )
@@ -653,7 +688,7 @@ abstract class AbstractJaxwsMojo
                 || a.getArtifactId().startsWith( "javax.xml.bind" ) );
     }
 
-    private Toolchain getToolchain()
+    private Toolchain getJdkToolchain()
     {
         Toolchain tc = null;
         if ( toolchainManager != null )

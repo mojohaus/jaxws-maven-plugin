@@ -20,7 +20,31 @@ from JDK
 * Using JDK Maven Toolchain
 
   Starting with version 2.4, jaxws-maven-plugin supports Maven toolchains: if a JDK Toolchain is defined,
-  <<<wsgen>>> and <<<wsimport>>> tools from this toolchain is used.
+  <<<wsgen>>> and <<<wsimport>>> tools can be used from this toolchain by setting
+  <<<useJdkToolchainExecutable>>> parameter to <<<true>>>.
+
++------------------------------------------+
+<project>
+  ...
+  <build>
+    ...
+    <plugins>
+      <plugin>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>jaxws-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <configuration>
+          <useJdkToolchainExecutable>true</useJdkToolchainExecutable>
+          ...
+        </configuration>
+      </plugin>
+      ...
+    </plugins>
+    ...
+  <build>
+  ...
+<project>
++------------------------------------------+
 
   For details on using toolchains, see
   {{{https://maven.apache.org/guides/mini/guide-using-toolchains.html}Maven guide to using toolchains}}.
