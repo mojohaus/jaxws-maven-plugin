@@ -471,41 +471,54 @@ abstract class AbstractJaxwsMojo
         }
     }
 
+    /**
+     * Calculates 3 classpaths used to launched tools.
+     * @return an array of 3 classpaths: endorsed, normal and invoker
+     */
     private String[] getCP()
     {
-        Set<Artifact> endorsedCp = new HashSet<Artifact>();
-        Map<String, Artifact> cp = new HashMap<String, Artifact>();
+        Set<Artifact> endorsedArtifacts = new HashSet<Artifact>();
+        Map<String, Artifact> artifactsMap = new HashMap<String, Artifact>();
         for ( Artifact a : pluginDescriptor.getArtifacts() )
         {
-            addArtifactToCp( a, cp, endorsedCp );
+            addArtifactToCp( a, artifactsMap, endorsedArtifacts );
         }
-        StringBuilder sb = getCPasString( cp.values() );
-        StringBuilder esb = getCPasString( endorsedCp );
-        // add custom invoker
-        String invokerPath =
-            AbstractJaxwsMojo.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm();
+
+        StringBuilder cp = getCPasString( artifactsMap.values() );
+        StringBuilder ecp = getCPasString( endorsedArtifacts );
+
+        String invokerPath = null;
         try
         {
+            invokerPath = Invoker.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm();
             invokerPath = new URI( invokerPath.substring( 5 ) ).getPath();
-            sb.append( invokerPath );
         }
         catch ( URISyntaxException ex )
         {
             throw new RuntimeException( ex );
         }
-        sb.append( File.pathSeparator );
+
+        // add custom invoker path to normal classpath
+        cp.append( File.pathSeparator );
+        cp.append( invokerPath );
+
         // don't forget tools.jar
         File toolsJar = new File( System.getProperty( "java.home" ), "../lib/tools.jar" );
         if ( !toolsJar.exists() )
         {
             toolsJar = new File( System.getProperty( "java.home" ), "lib/tools.jar" );
         }
-        sb.append( toolsJar.getAbsolutePath() );
-        sb.append( File.pathSeparator );
-        getLog().debug( "getCP esb: " + esb );
-        getLog().debug( "getCP sb: " + sb );
-        return new String[] { esb.substring( 0, ( ( esb.length() > 0 ) ? esb.length() - 1 : 0 ) ),
-            sb.substring( 0, sb.length() - 1 ), invokerPath };
+        cp.append( File.pathSeparator );
+        cp.append( toolsJar.getAbsolutePath() );
+
+        if ( getLog().isDebugEnabled() )
+        {
+            getLog().debug( "getCP() ecp: " + ecp );
+            getLog().debug( "getCP() cp: " + cp );
+            getLog().debug( "getCP() invokerPath: " + invokerPath );
+        }
+
+        return new String[] { ecp.toString(), cp.toString(), invokerPath };
     }
 
     private String getJavaExec()
@@ -568,33 +581,36 @@ abstract class AbstractJaxwsMojo
         StringBuilder sb = new StringBuilder();
         for ( Artifact a : artifacts )
         {
+            if ( sb.length() > 0 )
+            {
+                sb.append( File.pathSeparator );
+            }
             sb.append( a.getFile().getAbsolutePath() );
-            sb.append( File.pathSeparator );
         }
         return sb;
     }
 
     /**
-     * Places the artifact in either the endorsed classpath set or the normal
-     * classpath map.  It will only add those in "compile" and "runtime" scope
+     * Places the artifact in either the endorsed artifacts set or the normal
+     * artifacts map.  It will only add those in "compile" and "runtime" scope
      * or those that are specifically endorsed.
      * 
      * @param a
      *            artifact to sort
-     * @param cp
-     *            normal classpath map
-     * @param endorsedCp
-     *            endorsed classpath set
+     * @param artifactsMap
+     *            normal artifacts map
+     * @param endorsedArtifacts
+     *            endorsed artifacts set
      */
-    private void addArtifactToCp( Artifact a, Map<String, Artifact> cp, Set<Artifact> endorsedCp )
+    private void addArtifactToCp( Artifact a, Map<String, Artifact> artifactsMap, Set<Artifact> endorsedArtifacts )
     {
         if ( isEndorsedArtifact( a ) )
         {
-            endorsedCp.add( a );
+            endorsedArtifacts.add( a );
         }
         else if ( "compile".equals( a.getScope() ) || "runtime".equals( a.getScope() ) )
         {
-            cp.put( a.getGroupId() + ":" + a.getArtifactId(), a );
+            artifactsMap.put( a.getGroupId() + ":" + a.getArtifactId(), a );
         }
     }
 
