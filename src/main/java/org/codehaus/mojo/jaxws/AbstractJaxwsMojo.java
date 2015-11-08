@@ -128,7 +128,7 @@ abstract class AbstractJaxwsMojo
     private List<String> vmArgs;
 
     /**
-     * Path to the executable. Should be either wsgen or wsimport
+     * Path to the executable. Should be either <code>wsgen</code> or <code>wsimport</code>
      * but basically any script which will understand passed in arguments
      * will work.
      *
@@ -137,8 +137,8 @@ abstract class AbstractJaxwsMojo
     @Parameter
     private File executable;
 
-    /*
-     * Information about this plugin, used to lookup this plugin's configuration
+    /**
+     * Information about this plugin, used to lookup this plugin's dependencies
      * from the currently executing project.
      *
      * @since 2.3.1
@@ -146,7 +146,9 @@ abstract class AbstractJaxwsMojo
     @Parameter( defaultValue = "${plugin}", readonly = true )
     protected PluginDescriptor pluginDescriptor;
 
-    /** */
+    /**
+     * Entry point for toolchains, to get JDK toolchain
+     */
     @Component
     private ToolchainManager toolchainManager;
 
@@ -158,10 +160,13 @@ abstract class AbstractJaxwsMojo
 
     private static final Logger logger = Logger.getLogger( AbstractJaxwsMojo.class.getName() );
 
+    // arguments supported by Metro 2.2/JAXWS RI 2.2.6
     private static final List<String> METRO_22 = new ArrayList<String>();
 
+    // arguments supported by Metro 2.2.1/JAXWS RI 2.2.7
     private static final List<String> METRO_221 = new ArrayList<String>();
 
+    // arguments supported by Metro 2.3/JAXWS RI 2.2.8
     private static final List<String> METRO_23 = new ArrayList<String>();
 
     static
@@ -172,8 +177,10 @@ abstract class AbstractJaxwsMojo
         METRO_22.add( "-implDestDir" );
         METRO_22.add( "-implServiceName" );
         METRO_22.add( "-implPortName" );
+
         METRO_221.addAll( METRO_22 );
         METRO_221.add( "-XdisableAuthenticator" );
+
         METRO_23.addAll( METRO_221 );
         METRO_23.add( "-x" );
     }
@@ -191,7 +198,7 @@ abstract class AbstractJaxwsMojo
     protected abstract String getToolName();
 
     /**
-     * Either ${build.outputDirectory} or ${build.testOutputDirectory}.
+     * Either <code>${build.outputDirectory}</code> or <code>${build.testOutputDirectory}</code>.
      */
     protected abstract File getDestDir();
 
@@ -289,65 +296,67 @@ abstract class AbstractJaxwsMojo
                 commonArgs.add( arg );
             }
         }
+
         return commonArgs;
     }
 
     protected boolean isArgSupported( String arg )
         throws MojoExecutionException
     {
+        // by default, use latest version supported args
+        List<String> supportedArgs = METRO_23;
+
+        // then try to find old known versions
         // try Metro first
         Artifact a = pluginDescriptor.getArtifactMap().get( "org.glassfish.metro:webservices-tools" );
-        List<String> supportedArgs = null;
         String v = null;
-        try
+        if ( a != null )
         {
-            if ( a != null )
+            ArtifactVersion av = getSelectedVersion( a );
+            v = av.toString();
+            if ( av.getMajorVersion() == 2 && av.getMinorVersion() == 2 )
             {
-                ArtifactVersion av = a.getSelectedVersion();
-                v = av.toString();
-                if ( av.getMajorVersion() == 2 && av.getMinorVersion() == 2 && av.getIncrementalVersion() == 0 )
+                supportedArgs = av.getIncrementalVersion() == 0 ? METRO_22 : METRO_221;
+            }
+        }
+        else
+        {
+            // fallback to RI
+            a = pluginDescriptor.getArtifactMap().get( "com.sun.xml.ws:jaxws-tools" );
+            ArtifactVersion av = getSelectedVersion( a );
+            v = av.toString();
+            if ( av.getMajorVersion() == 2 && av.getMinorVersion() == 2 )
+            {
+                if ( av.getIncrementalVersion() == 6 )
                 {
                     supportedArgs = METRO_22;
                 }
-                else if ( av.getMajorVersion() == 2 && av.getMinorVersion() == 2 && av.getIncrementalVersion() >= 1 )
+                else if ( av.getIncrementalVersion() == 7 )
                 {
                     supportedArgs = METRO_221;
                 }
-                else
-                { // if (av.getMajorVersion() >= 2 && av.getMinorVersion() >= 3) {
-                    supportedArgs = METRO_23;
-                }
-            }
-            else
-            {
-                // fallback to RI
-                a = pluginDescriptor.getArtifactMap().get( "com.sun.xml.ws:jaxws-tools" );
-                ArtifactVersion av = a.getSelectedVersion();
-                v = av.toString();
-                if ( av.getMajorVersion() == 2 && av.getMinorVersion() == 2 && av.getIncrementalVersion() == 6 )
-                {
-                    supportedArgs = METRO_22;
-                }
-                else if ( av.getMajorVersion() == 2 && av.getMinorVersion() == 2 && av.getIncrementalVersion() == 7 )
-                {
-                    supportedArgs = METRO_221;
-                }
-                else
-                { // if (av.getMajorVersion() >= 2 && av.getMinorVersion() >= 2 && av.getIncrementalVersion() >= 8) {
-                    supportedArgs = METRO_23;
-                }
             }
         }
-        catch ( OverConstrainedVersionException ex )
-        {
-            throw new MojoExecutionException( ex.getMessage(), ex );
-        }
+
         boolean isSupported = supportedArgs.contains( arg );
         if ( !isSupported )
         {
             getLog().warn( "'" + arg + "' is not supported by " + a.getArtifactId() + ":" + v );
         }
         return isSupported;
+    }
+
+    private static ArtifactVersion getSelectedVersion( Artifact artifact )
+        throws MojoExecutionException
+    {
+        try
+        {
+            return artifact.getSelectedVersion();
+        }
+        catch ( OverConstrainedVersionException ex )
+        {
+            throw new MojoExecutionException( ex.getMessage(), ex );
+        }
     }
 
     private boolean isDefaultSrc( File srcout )
