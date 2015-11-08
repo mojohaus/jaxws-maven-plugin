@@ -233,7 +233,7 @@ abstract class AbstractJaxwsMojo
 
     /**
      * Checks if compilation after code generation and let generated sources be
-     * compiled by maven during compilation phase.
+     * compiled by Maven during compilation phase.
      */
     protected abstract boolean isXnocompile();
 
@@ -555,9 +555,12 @@ abstract class AbstractJaxwsMojo
 
         if ( getLog().isDebugEnabled() )
         {
-            getLog().debug( "getInvokerCP() ecp: " + ecp );
-            getLog().debug( "getInvokerCP() cp: " + cp );
-            getLog().debug( "getInvokerCP() invokerPath: " + invokerPath );
+            getLog().debug( "getInvokerCP():\n"
+                            + "    endorsed: " + toString( endorsedArtifacts ) + "\n"
+                            + "    classpath: " + toString( artifactsMap.values() ) + "\n"
+                            + "    ecp: " + ecp + "\n"
+                            + "    cp: " + cp + "\n"
+                            + "    invokerPath: " + invokerPath );
         }
 
         return new InvokerCP( ecp.toString(), cp.toString(), invokerPath );
@@ -649,6 +652,24 @@ abstract class AbstractJaxwsMojo
             sb.append( a.getFile().getAbsolutePath() );
         }
         return sb;
+    }
+
+    private String toString( Collection<Artifact> artifacts )
+    {
+        StringBuilder sb = new StringBuilder();
+        for ( Artifact a : artifacts )
+        {
+            if ( sb.length() > 0 )
+            {
+                sb.append( ' ' );
+            }
+            sb.append( a.getGroupId() );
+            sb.append( ':' );
+            sb.append( a.getArtifactId() );
+            sb.append( ':' );
+            sb.append( a.getVersion() );
+        }
+        return sb.toString();
     }
 
     /**
