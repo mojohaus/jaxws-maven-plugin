@@ -129,7 +129,7 @@ public class TestWsImportMojo
     }
 
     @Override
-    public void execute()
+    public void executeJaxws()
         throws MojoExecutionException
     {
         // if maven.test.skip is set test compilation is not called, so
@@ -140,7 +140,7 @@ public class TestWsImportMojo
         }
         else
         {
-            super.execute();
+            super.executeJaxws();
         }
     }
 }

@@ -36,7 +36,6 @@
 
 package org.codehaus.mojo.jaxws;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -134,7 +133,7 @@ abstract class AbstractWsGenMojo
     protected abstract File getClassesDir();
 
     @Override
-    public void execute()
+    public void executeJaxws()
         throws MojoExecutionException, MojoFailureException
     {
         Set<String> seis = new HashSet<String>();

@@ -58,6 +58,7 @@ import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -365,17 +366,27 @@ abstract class AbstractJaxwsMojo
         return srcout.equals( getDefaultSrcOut() );
     }
 
-    protected void exec( List<String> args )
-        throws MojoExecutionException
+    @Override
+    public final void execute()
+        throws MojoExecutionException, MojoFailureException
     {
-        String launched = "";
-        Commandline cmd = new Commandline();
-
         if ( ( executable == null ) && ( getToolchain() != null ) )
         {
             // get executable from JDK toolchain
             executable = new File( getToolchain().findTool( getToolName() ) );
         }
+
+        executeJaxws();
+    }
+
+    public abstract void executeJaxws()
+        throws MojoExecutionException, MojoFailureException;
+
+    protected void exec( List<String> args )
+        throws MojoExecutionException
+    {
+        String launched = "";
+        Commandline cmd = new Commandline();
 
         if ( executable != null )
         {

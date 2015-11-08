@@ -151,7 +151,7 @@ public class TestWsGenMojo
     }
 
     @Override
-    public void execute()
+    public void executeJaxws()
         throws MojoExecutionException, MojoFailureException
     {
         // if maven.test.skip is set test compilation is not called, so
@@ -162,7 +162,7 @@ public class TestWsGenMojo
         }
         else
         {
-            super.execute();
+            super.executeJaxws();
         }
     }
 }

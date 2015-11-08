@@ -111,10 +111,10 @@ public class MainWsGenMojo
     }
 
     @Override
-    public void execute()
+    public void executeJaxws()
         throws MojoExecutionException, MojoFailureException
     {
-        super.execute();
+        super.executeJaxws();
         if ( genWsdl )
         {
             try

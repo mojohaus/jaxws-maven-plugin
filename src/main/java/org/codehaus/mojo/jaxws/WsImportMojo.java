@@ -36,7 +36,6 @@
 
 package org.codehaus.mojo.jaxws;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -275,7 +274,7 @@ abstract class WsImportMojo
     protected abstract File getImplDestDir();
 
     @Override
-    public void execute()
+    public void executeJaxws()
         throws MojoExecutionException
     {
         try
