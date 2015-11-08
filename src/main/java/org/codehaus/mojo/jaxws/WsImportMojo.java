@@ -692,17 +692,7 @@ abstract class WsImportMojo
                     }
                     finally
                     {
-                        if ( jarFile != null )
-                        {
-                            try
-                            {
-                                jarFile.close();
-                            }
-                            catch ( IOException ioe )
-                            {
-                                // ignore
-                            }
-                        }
+                        closeQuietly( jarFile );
                     }
                 }
             }
@@ -710,17 +700,7 @@ abstract class WsImportMojo
         if ( !urlCpath.isEmpty() )
         {
             // if we created a classloader, cleanup
-            try
-            {
-                if ( loader instanceof Closeable )
-                {
-                    ( (Closeable) loader ).close();
-                }
-            }
-            catch ( IOException e )
-            {
-                throw new MojoExecutionException( e.getMessage(), e );
-            }
+            closeQuietly( loader );
         }
         return files.toArray( new URL[0] );
     }
@@ -883,7 +863,7 @@ abstract class WsImportMojo
         }
         finally
         {
-            formatter.close();
+            closeQuietly( formatter );
         }
         // fallback to some default
         getLog().warn( "Could not compute hash for " + s + ". Using fallback method." );

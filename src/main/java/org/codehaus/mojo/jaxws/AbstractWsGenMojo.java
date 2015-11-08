@@ -324,17 +324,7 @@ abstract class AbstractWsGenMojo
         }
         finally
         {
-            if ( cl != null && cl instanceof Closeable )
-            {
-                try
-                {
-                    ( (Closeable) cl ).close();
-                }
-                catch ( IOException ex )
-                {
-                    // ignore
-                }
-            }
+            closeQuietly( cl );
         }
         return seis;
     }

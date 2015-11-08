@@ -35,6 +35,7 @@
  */
 package org.codehaus.mojo.jaxws;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -550,17 +551,7 @@ abstract class AbstractJaxwsMojo
         }
         finally
         {
-            if ( fos != null )
-            {
-                try
-                {
-                    fos.close();
-                }
-                catch ( IOException ex )
-                {
-                    logger.log( Level.SEVERE, null, ex );
-                }
-            }
+            closeQuietly( fos  );
         }
         return f;
     }
@@ -635,5 +626,20 @@ abstract class AbstractJaxwsMojo
             tc = toolchainManager.getToolchainFromBuildContext( "jdk", session );
         }
         return tc;
+    }
+
+    protected void closeQuietly( Object o )
+    {
+        if ( ( o != null ) && ( o instanceof Closeable ) )
+        {
+            try
+            {
+                ( (Closeable) o ).close();
+            }
+            catch ( IOException ex )
+            {
+                // ignore
+            }
+        }
     }
 }
