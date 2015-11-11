@@ -6,7 +6,7 @@
         <goals>
           <goal>wsimport</goal>
           <goal>wsgen</goal>
-          </goals>
+        </goals>
       </pluginExecutionFilter>
       <action>
         <execute>
