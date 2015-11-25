@@ -162,7 +162,7 @@ abstract class AbstractJaxwsMojo
      * @since 2.4
      */
     @Parameter( defaultValue = "false" )
-    protected boolean useJdkToolchainExecutable;
+    private boolean useJdkToolchainExecutable;
 
     /**
      * The current build session instance. This is used for toolchain manager API calls.
@@ -380,7 +380,7 @@ abstract class AbstractJaxwsMojo
     public final void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        if ( ( executable == null ) && ( getJdkToolchain() != null ) )
+        if ( ( executable == null ) && ( getJdkToolchain() != null ) && useJdkToolchainExecutable )
         {
             // get executable from JDK toolchain
             executable = new File( getJdkToolchain().findTool( getToolName() ) );
