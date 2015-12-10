@@ -170,7 +170,7 @@
 <a class="jxr_linenumber" name="L162" href="#L162">162</a> <em class="jxr_javadoccomment">     * @since 2.4</em>
 <a class="jxr_linenumber" name="L163" href="#L163">163</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>     @Parameter( defaultValue = <span class="jxr_string">"false"</span> )
-<a class="jxr_linenumber" name="L165" href="#L165">165</a>     <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> useJdkToolchainExecutable;
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> useJdkToolchainExecutable;
 <a class="jxr_linenumber" name="L166" href="#L166">166</a> 
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L168" href="#L168">168</a> <em class="jxr_javadoccomment">     * The current build session instance. This is used for toolchain manager API calls.</em>
@@ -388,7 +388,7 @@
 <a class="jxr_linenumber" name="L380" href="#L380">380</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">void</strong> execute()
 <a class="jxr_linenumber" name="L381" href="#L381">381</a>         <strong class="jxr_keyword">throws</strong> MojoExecutionException, MojoFailureException
 <a class="jxr_linenumber" name="L382" href="#L382">382</a>     {
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>         <strong class="jxr_keyword">if</strong> ( ( executable == <strong class="jxr_keyword">null</strong> ) &amp;&amp; ( getJdkToolchain() != <strong class="jxr_keyword">null</strong> ) )
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>         <strong class="jxr_keyword">if</strong> ( ( executable == <strong class="jxr_keyword">null</strong> ) &amp;&amp; ( getJdkToolchain() != <strong class="jxr_keyword">null</strong> ) &amp;&amp; useJdkToolchainExecutable )
 <a class="jxr_linenumber" name="L384" href="#L384">384</a>         {
 <a class="jxr_linenumber" name="L385" href="#L385">385</a>             <em class="jxr_comment">// get executable from JDK toolchain</em>
 <a class="jxr_linenumber" name="L386" href="#L386">386</a>             executable = <strong class="jxr_keyword">new</strong> File( getJdkToolchain().findTool( getToolName() ) );

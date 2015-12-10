@@ -25,8 +25,8 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2015 MojoHaus</copyright>
     <item>
-      <title>File: 9,
-             Errors: 24,
+      <title>File: 8,
+             Errors: 23,
              Warnings: 4,
              Infos: 0
       </title>
@@ -98,20 +98,6 @@ under the License.
                 </td>
                 <td>
                   2
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/jaxws-maven-plugin//checkstyle.html#org.codehaus.mojo.jaxws.HelpMojo.java">org/codehaus/mojo/jaxws/HelpMojo.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
                 </td>
               </tr>
                           <tr>
