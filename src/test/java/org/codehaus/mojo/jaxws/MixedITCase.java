@@ -156,7 +156,7 @@ public class MixedITCase
         {
             fail( "Cannot detect JAX-WS RI version in JDK: " + v );
         }
-        if ( v.startsWith( "1.7" ) )
+        if ( v.startsWith( "1.7" ) || v.startsWith( "1.8" ) )
         {
             return "2.2";
         }

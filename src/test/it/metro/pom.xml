@@ -63,9 +63,6 @@
                             <implDestDir>target/gen-src</implDestDir>
                             <implServiceName>{http://duke.example.org}AddNumbersService</implServiceName>
                             <implPortName>{http://duke.example.org}AddNumbersPort</implPortName>
-                            <vmArgs><!-- necessary for JDK 8 -->
-                                <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
-                            </vmArgs>
                         </configuration>
                     </execution>
                 </executions>
