@@ -29,7 +29,7 @@ Using binding files
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-rt</artifactId>
-      <version>2.2.8</version>
+      <version>2.2.10</version>
     </dependency>
     ...
   </dependencies>
@@ -77,7 +77,7 @@ Using binding files
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-rt</artifactId>
-      <version>2.2.8</version>
+      <version>2.2.10</version>
     </dependency>
     ...
   </dependencies>
