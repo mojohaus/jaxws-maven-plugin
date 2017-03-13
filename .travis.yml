@@ -4,7 +4,7 @@ jdk:
   - oraclejdk7
   - oraclejdk8
 
-script: "mvn --show-version --errors --batch-mode -Prun-its clean verify -Dittest.debug=false -Dinvoker.streamLogs=true"
+script: "mvn --show-version --errors --batch-mode -Prun-its clean verify -Dittest.debug=true -Dinvoker.streamLogs=true -Dinvoker.test=parent,jaxwscommons-43"
 
 cache:
     directories:
