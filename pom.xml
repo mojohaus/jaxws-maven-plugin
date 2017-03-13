@@ -514,6 +514,7 @@
                     <setupInclude>parent/pom.xml</setupInclude>
                   </setupIncludes>
                   <pomIncludes>
+                    <pomInclude>help/pom.xml</pomInclude>
                     <pomInclude>jaxwscommons-43/pom.xml</pomInclude>
                   </pomIncludes>
                 </configuration>
