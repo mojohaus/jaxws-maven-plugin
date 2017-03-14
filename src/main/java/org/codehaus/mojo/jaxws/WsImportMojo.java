@@ -575,22 +575,29 @@ abstract class WsImportMojo
         List<URL> urlCpath = new ArrayList<URL>( dependencyArtifacts.size() );
         for ( Artifact a : dependencyArtifacts )
         {
-            try
-            {
-                if ( a.getFile() != null )
+            // Ignore all artifacts in scope "test" or "provided"
+            if (!Artifact.SCOPE_TEST.equals( a.getScope() ) &&
+                !Artifact.SCOPE_PROVIDED.equals( a.getScope() ) )
+            {  
+                try
                 {
-                    URL u = a.getFile().toURI().toURL();
-                    urlCpath.add( u );
+                    if ( a.getFile() != null )
+                    {
+                        URL u = a.getFile().toURI().toURL();
+                        urlCpath.add( u );
+                    }
+                    else
+                        // Do not warn for optional artefacts
+                        if (!a.isOptional ())
+                        {
+                           getLog().warn( "cannot find file for " + a.getGroupId() + ":" + a.getArtifactId() + ":"
+                                + a.getVersion() );
+                        }
                 }
-                else
+                catch ( MalformedURLException ex )
                 {
-                    getLog().warn( "cannot find file for " + a.getGroupId() + ":" + a.getArtifactId() + ":"
-                        + a.getVersion() );
+                  Logger.getLogger( WsImportMojo.class.getName() ).log( Level.SEVERE, null, ex );
                 }
-            }
-            catch ( MalformedURLException ex )
-            {
-                Logger.getLogger( WsImportMojo.class.getName() ).log( Level.SEVERE, null, ex );
             }
         }
         ClassLoader loader = urlCpath.isEmpty() ? Thread.currentThread().getContextClassLoader()
