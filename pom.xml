@@ -493,6 +493,7 @@
               <addTestClassPath>true</addTestClassPath>
               <settingsFile>${project.build.directory}/it-settings.xml</settingsFile>
               <mavenOpts>${ittest-proxy}</mavenOpts>
+              <postBuildHookScript>verify</postBuildHookScript>
               <setupIncludes>
                 <setupInclude>parent/pom.xml</setupInclude>
                 <setupInclude>wsdl-lib/pom.xml</setupInclude>
