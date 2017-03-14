@@ -49,8 +49,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
@@ -169,8 +167,6 @@ abstract class AbstractJaxwsMojo
      */
     @Parameter( defaultValue = "${session}", readonly = true, required = true )
     protected MavenSession session;
-
-    private static final Logger logger = Logger.getLogger( AbstractJaxwsMojo.class.getName() );
 
     // arguments supported by Metro 2.2/JAXWS RI 2.2.6
     private static final List<String> METRO_22 = new ArrayList<String>();
@@ -622,7 +618,7 @@ abstract class AbstractJaxwsMojo
         }
         catch ( IOException ex )
         {
-            logger.log( Level.SEVERE, null, ex );
+            getLog().error( ex );
         }
         finally
         {

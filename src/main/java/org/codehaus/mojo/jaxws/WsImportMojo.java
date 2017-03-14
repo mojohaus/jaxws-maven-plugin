@@ -53,8 +53,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -595,7 +593,7 @@ abstract class WsImportMojo
             }
             catch ( MalformedURLException ex )
             {
-                Logger.getLogger( WsImportMojo.class.getName() ).log( Level.SEVERE, null, ex );
+                getLog().error( ex );
             }
         }
         ClassLoader loader = urlCpath.isEmpty() ? Thread.currentThread().getContextClassLoader()
@@ -622,7 +620,7 @@ abstract class WsImportMojo
                     }
                     catch ( MalformedURLException ex )
                     {
-                        Logger.getLogger( WsImportMojo.class.getName() ).log( Level.SEVERE, null, ex );
+                        getLog().error( ex );
                     }
                 }
                 getLog().debug( "The wsdl File is '" + wsdlFileName + "' from '" + toAdd + "'" );
@@ -650,7 +648,7 @@ abstract class WsImportMojo
                     }
                     catch ( MalformedURLException ex )
                     {
-                        Logger.getLogger( WsImportMojo.class.getName() ).log( Level.SEVERE, null, ex );
+                        getLog().error( ex );
                     }
                 }
             }
@@ -692,7 +690,7 @@ abstract class WsImportMojo
                     }
                     catch ( IOException ex )
                     {
-                        Logger.getLogger( WsImportMojo.class.getName() ).log( Level.SEVERE, null, ex );
+                        getLog().error( ex );
                     }
                     finally
                     {
