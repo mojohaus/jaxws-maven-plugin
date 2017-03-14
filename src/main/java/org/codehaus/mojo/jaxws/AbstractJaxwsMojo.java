@@ -382,7 +382,7 @@ abstract class AbstractJaxwsMojo
     public final void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        if ( ( executable == null ) && ( getJdkToolchain() != null ) && useJdkToolchainExecutable )
+        if ( executable == null && getJdkToolchain() != null && useJdkToolchainExecutable )
         {
             // get executable from JDK toolchain
             executable = new File( getJdkToolchain().findTool( getToolName() ) );
@@ -423,7 +423,7 @@ abstract class AbstractJaxwsMojo
             // use tool's class through Invoker as java execution
             launched = getMain();
 
-            if ( ( getJdkToolchain() == null ) )
+            if ( getJdkToolchain() == null )
             {
                 // use java executable from running Maven
                 cmd.setExecutable( new File( new File( System.getProperty( "java.home" ), "bin" ),
@@ -636,12 +636,6 @@ abstract class AbstractJaxwsMojo
         return Os.isFamily( Os.FAMILY_WINDOWS );
     }
 
-    private boolean containsTools( Set<String> cp )
-    {
-        return cp.contains( "com.sun.xml.ws:jaxws-tools" ) || cp.contains( "org.glassfish.metro:webservices-tools" )
-            || cp.contains( "com.oracle.weblogic:weblogic-server-pom" );
-    }
-
     private StringBuilder getCPasString( Collection<Artifact> artifacts )
     {
         StringBuilder sb = new StringBuilder();
@@ -700,7 +694,7 @@ abstract class AbstractJaxwsMojo
 
     private boolean isEndorsedArtifact( Artifact a )
     {
-        return ( "jaxws-api".equals( a.getArtifactId() )
+        return "jaxws-api".equals( a.getArtifactId() )
                 || "jaxb-api".equals( a.getArtifactId() )
                 || "saaj-api".equals( a.getArtifactId() )
                 || "jsr181-api".equals( a.getArtifactId() )
@@ -708,7 +702,7 @@ abstract class AbstractJaxwsMojo
                 || "javax.annotation-api".equals( a.getArtifactId() )
                 || "webservices-api".equals( a.getArtifactId() )
                 || a.getArtifactId().startsWith( "javax.xml.ws" )
-                || a.getArtifactId().startsWith( "javax.xml.bind" ) );
+                || a.getArtifactId().startsWith( "javax.xml.bind" );
     }
 
     private Toolchain getJdkToolchain()
@@ -723,7 +717,7 @@ abstract class AbstractJaxwsMojo
 
     protected void closeQuietly( Object o )
     {
-        if ( ( o != null ) && ( o instanceof Closeable ) )
+        if ( o != null && o instanceof Closeable )
         {
             try
             {
