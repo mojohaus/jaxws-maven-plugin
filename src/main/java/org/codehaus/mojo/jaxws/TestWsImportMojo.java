@@ -54,7 +54,8 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  *
  * @author Kohsuke Kawaguchi
  */
-@Mojo( name = "wsimport-test", defaultPhase = LifecyclePhase.GENERATE_TEST_SOURCES, requiresDependencyResolution = ResolutionScope.TEST )
+@Mojo( name = "wsimport-test", defaultPhase = LifecyclePhase.GENERATE_TEST_SOURCES,
+        requiresDependencyResolution = ResolutionScope.TEST )
 public class TestWsImportMojo
     extends WsImportMojo
 {

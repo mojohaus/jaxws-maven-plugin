@@ -170,19 +170,6 @@ public class WsGenMojoITCase
     }
 
     @Test
-    public void jaxwscommons43()
-        throws IOException
-    {
-        project = new File( PROJECTS_DIR, "jaxwscommons-43" );
-
-        assertFilePresent( project, "target/classes/tests/jaxwscommons43/jaxws/Bye.class" );
-        assertFilePresent( project, "target/generated-sources/wsdl/WsImplAService.wsdl" );
-        assertFilePresent( project, "target/generated-sources/wsdl/WsImplBService.wsdl" );
-        assertFileContains( project, "build.log", "No @javax.jws.WebService found." );
-        assertFileContains( project, "build.log", "Skipping tests, nothing to do." );
-    }
-
-    @Test
     public void jaxwscommons3()
         throws IOException
     {
