@@ -53,7 +53,8 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
  * Reads a JAX-WS service endpoint implementation class
  * and generates all of the portable artifacts for a JAX-WS web service.
  */
-@Mojo( name = "wsgen", defaultPhase = LifecyclePhase.PROCESS_CLASSES, requiresDependencyResolution = ResolutionScope.RUNTIME )
+@Mojo( name = "wsgen", defaultPhase = LifecyclePhase.PROCESS_CLASSES,
+        requiresDependencyResolution = ResolutionScope.RUNTIME )
 public class MainWsGenMojo
     extends AbstractWsGenMojo
 {

@@ -282,7 +282,8 @@ abstract class WsImportMojo
             URL[] wsdls = getWSDLFiles();
             if ( wsdls.length == 0 && ( wsdlUrls == null || wsdlUrls.isEmpty() ) )
             {
-                getLog().info( "No WSDLs are found to process, Specify atleast one of the following parameters: wsdlFiles, wsdlDirectory or wsdlUrls." );
+                getLog().info( "No WSDLs are found to process, Specify atleast one of the following parameters: "
+                        + "wsdlFiles, wsdlDirectory or wsdlUrls." );
                 return;
             }
             this.processWsdlViaUrls();
@@ -503,9 +504,13 @@ abstract class WsImportMojo
             for ( String xjcArg : xjcArgs )
             {
                 if ( xjcArg.startsWith( "-" ) )
+                {
                     args.add( "-B" + xjcArg );
+                }
                 else
+                {
                     args.add( xjcArg );
+                }
             }
         }
 

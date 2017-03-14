@@ -155,9 +155,9 @@ abstract class AbstractJaxwsMojo
     private ToolchainManager toolchainManager;
 
     /**
-     * If a JDK toolchain is found, by default, it is used to get <code>java</code> executable with its <code>tools.jar</code>.
-     * But if set to <code>true</code>, it is used it to find <code>wsgen</code> and <code>wsimport</code>
-     * executables.
+     * If a JDK toolchain is found, by default, it is used to get <code>java</code> executable with its
+     * <code>tools.jar</code>. But if set to <code>true</code>, it is used it to find <code>wsgen</code>
+     * and <code>wsimport</code> executables.
      *
      * @since 2.4
      */
@@ -394,7 +394,7 @@ abstract class AbstractJaxwsMojo
     public abstract void executeJaxws()
         throws MojoExecutionException, MojoFailureException;
 
-    protected void exec( List<String> args )
+    protected void exec( List<String> arguments )
         throws MojoExecutionException
     {
         String launched = "";
@@ -465,7 +465,7 @@ abstract class AbstractJaxwsMojo
         }
 
         cmd.setWorkingDirectory( project.getBasedir() );
-        for ( String arg : args )
+        for ( String arg : arguments )
         {
             cmd.createArg().setLine( arg );
         }
@@ -475,8 +475,8 @@ abstract class AbstractJaxwsMojo
             String fullCommand = cmd.toString();
             if ( isWindows() && 8191 <= fullCommand.length() )
             {
-                getLog().warn( "Length of Windows command line is limited to 8191 characters, but current command has " + fullCommand.length()
-                    + " characters:" );
+                getLog().warn( "Length of Windows command line is limited to 8191 characters, but current command has "
+                    + fullCommand.length() + " characters:" );
                 getLog().warn( fullCommand );
             }
             else
@@ -496,14 +496,14 @@ abstract class AbstractJaxwsMojo
         }
     }
 
-    protected void maybeUnsupportedOption( String option, String value, List<String> args )
+    protected void maybeUnsupportedOption( String option, String value, List<String> arguments )
     {
         if ( executable == null )
         {
-            args.add( option );
+            arguments.add( option );
             if ( value != null )
             {
-                args.add( value );
+                arguments.add( value );
             }
         }
         else
