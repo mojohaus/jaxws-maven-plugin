@@ -493,6 +493,7 @@
               <addTestClassPath>true</addTestClassPath>
               <settingsFile>${project.build.directory}/it-settings.xml</settingsFile>
               <mavenOpts>${ittest-proxy}</mavenOpts>
+              <postBuildHookScript>verify</postBuildHookScript>
             </configuration>
             <executions>
               <execution>
