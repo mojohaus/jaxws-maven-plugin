@@ -53,8 +53,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,8 +64,8 @@ import org.apache.maven.settings.Settings;
 
 /**
  * 
- * @author gnodet <gnodet@apache.org>
- * @author dantran <dantran@apache.org>
+ * @author gnodet (gnodet@apache.org)
+ * @author dantran (dantran@apache.org)
  * @version $Id: WsImportMojo.java 3169 2007-01-22 02:51:29Z dantran $
  */
 abstract class WsImportMojo
@@ -282,7 +280,8 @@ abstract class WsImportMojo
             URL[] wsdls = getWSDLFiles();
             if ( wsdls.length == 0 && ( wsdlUrls == null || wsdlUrls.isEmpty() ) )
             {
-                getLog().info( "No WSDLs are found to process, Specify atleast one of the following parameters: wsdlFiles, wsdlDirectory or wsdlUrls." );
+                getLog().info( "No WSDLs are found to process, Specify atleast one of the following parameters: "
+                        + "wsdlFiles, wsdlDirectory or wsdlUrls." );
                 return;
             }
             this.processWsdlViaUrls();
@@ -503,9 +502,13 @@ abstract class WsImportMojo
             for ( String xjcArg : xjcArgs )
             {
                 if ( xjcArg.startsWith( "-" ) )
+                {
                     args.add( "-B" + xjcArg );
+                }
                 else
+                {
                     args.add( xjcArg );
+                }
             }
         }
 
@@ -590,7 +593,7 @@ abstract class WsImportMojo
             }
             catch ( MalformedURLException ex )
             {
-                Logger.getLogger( WsImportMojo.class.getName() ).log( Level.SEVERE, null, ex );
+                getLog().error( ex );
             }
         }
         ClassLoader loader = urlCpath.isEmpty() ? Thread.currentThread().getContextClassLoader()
@@ -617,7 +620,7 @@ abstract class WsImportMojo
                     }
                     catch ( MalformedURLException ex )
                     {
-                        Logger.getLogger( WsImportMojo.class.getName() ).log( Level.SEVERE, null, ex );
+                        getLog().error( ex );
                     }
                 }
                 getLog().debug( "The wsdl File is '" + wsdlFileName + "' from '" + toAdd + "'" );
@@ -645,7 +648,7 @@ abstract class WsImportMojo
                     }
                     catch ( MalformedURLException ex )
                     {
-                        Logger.getLogger( WsImportMojo.class.getName() ).log( Level.SEVERE, null, ex );
+                        getLog().error( ex );
                     }
                 }
             }
@@ -687,7 +690,7 @@ abstract class WsImportMojo
                     }
                     catch ( IOException ex )
                     {
-                        Logger.getLogger( WsImportMojo.class.getName() ).log( Level.SEVERE, null, ex );
+                        getLog().error( ex );
                     }
                     finally
                     {
@@ -718,7 +721,7 @@ abstract class WsImportMojo
          * @return true if an xml file.
          */
         @Override
-        public boolean accept( final java.io.File file )
+        public boolean accept( final File file )
         {
             return file.getName().endsWith( ".xml" );
         }
@@ -738,7 +741,7 @@ abstract class WsImportMojo
          * @return true if an wsdl file.
          */
         @Override
-        public boolean accept( final java.io.File file )
+        public boolean accept( final File file )
         {
             return file.getName().endsWith( ".wsdl" );
         }

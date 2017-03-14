@@ -1,4 +1,4 @@
-# MojoHaus Jaxws Maven Plugin
+# MojoHaus JAX-WS Maven Plugin
 
 This is the [jaxws-maven-plugin](http://www.mojohaus.org/jaxws-maven-plugin/).
  

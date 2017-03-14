@@ -49,8 +49,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
@@ -74,7 +72,7 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
 
 /**
  *
- * @author dantran <dantran@apache.org>
+ * @author dantran (dantran@apache.org)
  * @version $Id: AbstractJaxwsMojo.java 3240 2007-02-04 07:13:21Z dantran $ *
  */
 abstract class AbstractJaxwsMojo
@@ -155,9 +153,9 @@ abstract class AbstractJaxwsMojo
     private ToolchainManager toolchainManager;
 
     /**
-     * If a JDK toolchain is found, by default, it is used to get <code>java</code> executable with its <code>tools.jar</code>.
-     * But if set to <code>true</code>, it is used it to find <code>wsgen</code> and <code>wsimport</code>
-     * executables.
+     * If a JDK toolchain is found, by default, it is used to get <code>java</code> executable with its
+     * <code>tools.jar</code>. But if set to <code>true</code>, it is used it to find <code>wsgen</code>
+     * and <code>wsimport</code> executables.
      *
      * @since 2.4
      */
@@ -169,8 +167,6 @@ abstract class AbstractJaxwsMojo
      */
     @Parameter( defaultValue = "${session}", readonly = true, required = true )
     protected MavenSession session;
-
-    private static final Logger logger = Logger.getLogger( AbstractJaxwsMojo.class.getName() );
 
     // arguments supported by Metro 2.2/JAXWS RI 2.2.6
     private static final List<String> METRO_22 = new ArrayList<String>();
@@ -211,6 +207,7 @@ abstract class AbstractJaxwsMojo
 
     /**
      * Either <code>${build.outputDirectory}</code> or <code>${build.testOutputDirectory}</code>.
+     * @return the destination directory
      */
     protected abstract File getDestDir();
 
@@ -234,6 +231,7 @@ abstract class AbstractJaxwsMojo
     /**
      * Checks if compilation after code generation and let generated sources be
      * compiled by Maven during compilation phase.
+     * @return true if compilation should not be done by the JAX-WS tool
      */
     protected abstract boolean isXnocompile();
 
@@ -380,7 +378,7 @@ abstract class AbstractJaxwsMojo
     public final void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        if ( ( executable == null ) && ( getJdkToolchain() != null ) && useJdkToolchainExecutable )
+        if ( executable == null && getJdkToolchain() != null && useJdkToolchainExecutable )
         {
             // get executable from JDK toolchain
             executable = new File( getJdkToolchain().findTool( getToolName() ) );
@@ -392,7 +390,7 @@ abstract class AbstractJaxwsMojo
     public abstract void executeJaxws()
         throws MojoExecutionException, MojoFailureException;
 
-    protected void exec( List<String> args )
+    protected void exec( List<String> arguments )
         throws MojoExecutionException
     {
         String launched = "";
@@ -421,7 +419,7 @@ abstract class AbstractJaxwsMojo
             // use tool's class through Invoker as java execution
             launched = getMain();
 
-            if ( ( getJdkToolchain() == null ) )
+            if ( getJdkToolchain() == null )
             {
                 // use java executable from running Maven
                 cmd.setExecutable( new File( new File( System.getProperty( "java.home" ), "bin" ),
@@ -463,7 +461,7 @@ abstract class AbstractJaxwsMojo
         }
 
         cmd.setWorkingDirectory( project.getBasedir() );
-        for ( String arg : args )
+        for ( String arg : arguments )
         {
             cmd.createArg().setLine( arg );
         }
@@ -473,8 +471,8 @@ abstract class AbstractJaxwsMojo
             String fullCommand = cmd.toString();
             if ( isWindows() && 8191 <= fullCommand.length() )
             {
-                getLog().warn( "Length of Windows command line is limited to 8191 characters, but current command has " + fullCommand.length()
-                    + " characters:" );
+                getLog().warn( "Length of Windows command line is limited to 8191 characters, but current command has "
+                    + fullCommand.length() + " characters:" );
                 getLog().warn( fullCommand );
             }
             else
@@ -494,14 +492,14 @@ abstract class AbstractJaxwsMojo
         }
     }
 
-    protected void maybeUnsupportedOption( String option, String value, List<String> args )
+    protected void maybeUnsupportedOption( String option, String value, List<String> arguments )
     {
         if ( executable == null )
         {
-            args.add( option );
+            arguments.add( option );
             if ( value != null )
             {
-                args.add( value );
+                arguments.add( value );
             }
         }
         else
@@ -620,7 +618,7 @@ abstract class AbstractJaxwsMojo
         }
         catch ( IOException ex )
         {
-            logger.log( Level.SEVERE, null, ex );
+            getLog().error( ex );
         }
         finally
         {
@@ -632,12 +630,6 @@ abstract class AbstractJaxwsMojo
     private boolean isWindows()
     {
         return Os.isFamily( Os.FAMILY_WINDOWS );
-    }
-
-    private boolean containsTools( Set<String> cp )
-    {
-        return cp.contains( "com.sun.xml.ws:jaxws-tools" ) || cp.contains( "org.glassfish.metro:webservices-tools" )
-            || cp.contains( "com.oracle.weblogic:weblogic-server-pom" );
     }
 
     private StringBuilder getCPasString( Collection<Artifact> artifacts )
@@ -698,7 +690,7 @@ abstract class AbstractJaxwsMojo
 
     private boolean isEndorsedArtifact( Artifact a )
     {
-        return ( "jaxws-api".equals( a.getArtifactId() )
+        return "jaxws-api".equals( a.getArtifactId() )
                 || "jaxb-api".equals( a.getArtifactId() )
                 || "saaj-api".equals( a.getArtifactId() )
                 || "jsr181-api".equals( a.getArtifactId() )
@@ -706,7 +698,7 @@ abstract class AbstractJaxwsMojo
                 || "javax.annotation-api".equals( a.getArtifactId() )
                 || "webservices-api".equals( a.getArtifactId() )
                 || a.getArtifactId().startsWith( "javax.xml.ws" )
-                || a.getArtifactId().startsWith( "javax.xml.bind" ) );
+                || a.getArtifactId().startsWith( "javax.xml.bind" );
     }
 
     private Toolchain getJdkToolchain()
@@ -721,7 +713,7 @@ abstract class AbstractJaxwsMojo
 
     protected void closeQuietly( Object o )
     {
-        if ( ( o != null ) && ( o instanceof Closeable ) )
+        if ( o != null && o instanceof Closeable )
         {
             try
             {
