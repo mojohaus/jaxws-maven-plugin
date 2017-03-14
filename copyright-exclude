@@ -37,10 +37,3 @@ CDDL+GPLv2.html
 .svn
 www
 site
-src/main/java/org/jvnet/jax_ws_commons/jaxws/AbstractJaxwsMojo.java
-src/main/java/org/jvnet/jax_ws_commons/jaxws/AbstractWsGenMojo.java
-src/main/java/org/jvnet/jax_ws_commons/jaxws/MainWsGenMojo.java
-src/main/java/org/jvnet/jax_ws_commons/jaxws/MainWsImportMojo.java
-src/main/java/org/jvnet/jax_ws_commons/jaxws/TestWsGenMojo.java
-src/main/java/org/jvnet/jax_ws_commons/jaxws/TestWsImportMojo.java
-src/main/java/org/jvnet/jax_ws_commons/jaxws/WsImportMojo.java
