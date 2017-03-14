@@ -73,7 +73,6 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
 /**
  *
  * @author dantran (dantran@apache.org)
- * @version $Id: AbstractJaxwsMojo.java 3240 2007-02-04 07:13:21Z dantran $ *
  */
 abstract class AbstractJaxwsMojo
     extends AbstractMojo
