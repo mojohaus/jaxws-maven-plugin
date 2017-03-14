@@ -6,6 +6,10 @@ jdk:
   - openjdk7
   - oraclejdk7
   - oraclejdk8
+before_install:
+  - sudo apt-get -qq update
+  # This package is needed by the jaxwscommons-81 IT (see Github issue #18)
+  - sudo apt-get install -y gsettings-desktop-schemas
 install:
   - "mvn -N io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION}"
   - "./mvnw --show-version --errors --batch-mode validate dependency:go-offline"
