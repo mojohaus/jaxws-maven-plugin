@@ -66,8 +66,8 @@ import org.apache.maven.settings.Settings;
 
 /**
  * 
- * @author gnodet <gnodet@apache.org>
- * @author dantran <dantran@apache.org>
+ * @author gnodet (gnodet@apache.org)
+ * @author dantran (dantran@apache.org)
  * @version $Id: WsImportMojo.java 3169 2007-01-22 02:51:29Z dantran $
  */
 abstract class WsImportMojo

@@ -74,7 +74,7 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
 
 /**
  *
- * @author dantran <dantran@apache.org>
+ * @author dantran (dantran@apache.org)
  * @version $Id: AbstractJaxwsMojo.java 3240 2007-02-04 07:13:21Z dantran $ *
  */
 abstract class AbstractJaxwsMojo
@@ -211,6 +211,7 @@ abstract class AbstractJaxwsMojo
 
     /**
      * Either <code>${build.outputDirectory}</code> or <code>${build.testOutputDirectory}</code>.
+     * @return the destination directory
      */
     protected abstract File getDestDir();
 
@@ -234,6 +235,7 @@ abstract class AbstractJaxwsMojo
     /**
      * Checks if compilation after code generation and let generated sources be
      * compiled by Maven during compilation phase.
+     * @return true if compilation should not be done by the JAX-WS tool
      */
     protected abstract boolean isXnocompile();
 
