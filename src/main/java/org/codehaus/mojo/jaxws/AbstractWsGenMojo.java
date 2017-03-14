@@ -118,7 +118,8 @@ abstract class AbstractWsGenMojo
     private boolean xdonotoverwrite;
 
     /**
-     * Metadata file for wsgen. See <a href="https://jax-ws.java.net/2.2.8/docs/ch03.html#users-guide-external-metadata">the JAX-WS Guide</a>
+     * Metadata file for wsgen. See
+     * <a href="https://jax-ws.java.net/2.2.8/docs/ch03.html#users-guide-external-metadata">the JAX-WS Guide</a>
      * for the description of this feature.
      * Unmatched files will be ignored.
      *
@@ -156,11 +157,11 @@ abstract class AbstractWsGenMojo
         }
     }
 
-    protected void processSei( String sei )
+    protected void processSei( String aSei )
         throws MojoExecutionException
     {
-        getLog().info( "Processing: " + sei );
-        ArrayList<String> args = getWsGenArgs( sei );
+        getLog().info( "Processing: " + aSei );
+        ArrayList<String> args = getWsGenArgs( aSei );
         getLog().info( "jaxws:wsgen args: " + args );
         exec( args );
         if ( metadata != null )
