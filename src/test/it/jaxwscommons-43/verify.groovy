@@ -18,36 +18,17 @@
  */
 
 // Verify that wsdl files have been generated
-def wsdlA = new File( basedir, 'target/generated-sources/wsdl/WsImplAService.wsdl' )
+File wsdlA = new File( basedir, 'target/generated-sources/wsdl/WsImplAService.wsdl' )
 assert wsdlA.exists()
-def wsdlB = new File( basedir, 'target/generated-sources/wsdl/WsImplBService.wsdl' )
+File wsdlB = new File( basedir, 'target/generated-sources/wsdl/WsImplBService.wsdl' )
 assert wsdlB.exists()
-def wsdlC = new File( basedir, 'target/generated-sources/wsdl/WsImplCService.wsdl' )
+File wsdlC = new File( basedir, 'target/generated-sources/wsdl/WsImplCService.wsdl' )
 assert !wsdlC.exists() // shouldn't exist, no WebService annotation
 
 // Verify that portable artifacts have been generated
-def byeFile = new File( basedir, 'target/generated-sources/wsgen/tests/jaxwscommons43/jaxws/Bye.java' )
+File byeFile = new File( basedir, 'target/generated-sources/wsgen/tests/jaxwscommons43/jaxws/Bye.java' )
 assert byeFile.exists()
-def byeClass = new File( basedir, 'target/classes/tests/jaxwscommons43/jaxws/Bye.class' )
-assert byeClass.exists()
-def hiFile = new File( basedir, 'target/generated-sources/wsgen/tests/jaxwscommons43/jaxws/Hi.java' )
+File hiFile = new File( basedir, 'target/generated-sources/wsgen/tests/jaxwscommons43/jaxws/Hi.java' )
 assert hiFile.exists()
-def hiClass = new File( basedir, 'target/classes/tests/jaxwscommons43/jaxws/Hi.class' )
-assert hiClass.exists()
-def dummyFile = new File( basedir, 'target/generated-sources/wsgen/tests/jaxwscommons43/jaxws/Dummy.java' )
+File dummyFile = new File( basedir, 'target/generated-sources/wsgen/tests/jaxwscommons43/jaxws/Dummy.java' )
 assert !dummyFile.exists() // shouldn't exist, no WebService annotation
-
-// check log for "No @javax.jws.WebService found"
-def log = new File( basedir, 'build.log')
-log.withReader { reader ->
-    def found = false
-    while ( line = reader.readLine() ) {
-        if ( line.contains('No @javax.jws.WebService found') ) {
-            found = true
-            break
-        }
-    }
-    if ( !found ) {
-        throw new Exception( "Log doesn't contain expected string" )
-    }
-}

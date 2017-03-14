@@ -456,19 +456,11 @@
               <showErrors>true</showErrors>
               <suppressSummaries>false</suppressSummaries>
               <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
-              <!--                            <streamLogs>true</streamLogs>-->
+              <streamLogs>true</streamLogs>
               <addTestClassPath>true</addTestClassPath>
               <settingsFile>${project.build.directory}/it-settings.xml</settingsFile>
               <mavenOpts>${ittest-proxy}</mavenOpts>
               <postBuildHookScript>verify</postBuildHookScript>
-              <setupIncludes>
-                <setupInclude>parent/pom.xml</setupInclude>
-                <setupInclude>wsdl-lib/pom.xml</setupInclude>
-              </setupIncludes>
-              <pomExcludes>
-                <pomExclude>wsimport217/pom.xml</pomExclude>
-                <pomExclude>wsgen217/pom.xml</pomExclude>
-              </pomExcludes>
             </configuration>
             <executions>
               <execution>
@@ -486,43 +478,13 @@
                 <configuration>
                   <projectsDirectory>src/test/it</projectsDirectory>
                   <cloneProjectsTo>${project.build.directory}/it tests</cloneProjectsTo>
-                </configuration>
-              </execution>
-              <execution>
-                <id>integration-test-samples</id>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <cloneProjectsTo>${project.build.directory}/it-samples</cloneProjectsTo>
+                  <setupIncludes>
+                    <setupInclude>parent/pom.xml</setupInclude>
+                  </setupIncludes>
                   <pomIncludes>
-                    <pomInclude>*/pom.xml</pomInclude>
-                    <pomInclude>*/*/pom.xml</pomInclude>
+                    <pomInclude>help/pom.xml</pomInclude>
+                    <pomInclude>jaxwscommons-81/pom.xml</pomInclude>
                   </pomIncludes>
-                  <pomExcludes>
-                    <pomExclude>jaxws-ri-samples/*/pom.xml</pomExclude>
-                  </pomExcludes>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>integration-test-verify</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-                <configuration>
-                  <systemPropertyVariables>
-                    <it.projects.dir>${project.build.directory}/it tests</it.projects.dir>
-                    <jaxws-ri.version>${jaxws-tools.version}</jaxws-ri.version>
-                  </systemPropertyVariables>
-                  <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
               </execution>
             </executions>
