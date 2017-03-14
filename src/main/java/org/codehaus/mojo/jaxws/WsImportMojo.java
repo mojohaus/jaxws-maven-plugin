@@ -723,7 +723,7 @@ abstract class WsImportMojo
          * @return true if an xml file.
          */
         @Override
-        public boolean accept( final java.io.File file )
+        public boolean accept( final File file )
         {
             return file.getName().endsWith( ".xml" );
         }
@@ -743,7 +743,7 @@ abstract class WsImportMojo
          * @return true if an wsdl file.
          */
         @Override
-        public boolean accept( final java.io.File file )
+        public boolean accept( final File file )
         {
             return file.getName().endsWith( ".wsdl" );
         }
