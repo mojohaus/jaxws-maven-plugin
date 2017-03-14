@@ -516,7 +516,7 @@
                   </setupIncludes>
                   <pomIncludes>
                     <pomInclude>help/pom.xml</pomInclude>
-                    <pomInclude>jaxwscommons-43/pom.xml</pomInclude>
+                    <pomInclude>jaxwscommons-81/pom.xml</pomInclude>
                   </pomIncludes>
                 </configuration>
               </execution>
