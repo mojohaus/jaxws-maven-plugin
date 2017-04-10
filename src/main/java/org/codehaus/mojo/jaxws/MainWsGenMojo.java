@@ -36,8 +36,6 @@
 
 package org.codehaus.mojo.jaxws;
 
-import java.io.File;
-import java.io.IOException;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -49,12 +47,15 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * Reads a JAX-WS service endpoint implementation class
  * and generates all of the portable artifacts for a JAX-WS web service.
  */
 @Mojo( name = "wsgen", defaultPhase = LifecyclePhase.PROCESS_CLASSES,
-        requiresDependencyResolution = ResolutionScope.RUNTIME )
+        requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true)
 public class MainWsGenMojo
     extends AbstractWsGenMojo
 {

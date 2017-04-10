@@ -36,13 +36,13 @@
 
 package org.codehaus.mojo.jaxws;
 
-import java.io.File;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+
+import java.io.File;
 
 /**
  * Parses wsdl and binding files and generates Java code needed to access it
@@ -55,7 +55,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * @author Kohsuke Kawaguchi
  */
 @Mojo( name = "wsimport-test", defaultPhase = LifecyclePhase.GENERATE_TEST_SOURCES,
-        requiresDependencyResolution = ResolutionScope.TEST )
+        requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true)
 public class TestWsImportMojo
     extends WsImportMojo
 {

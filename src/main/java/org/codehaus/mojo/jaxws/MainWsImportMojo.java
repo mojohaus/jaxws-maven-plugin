@@ -36,12 +36,12 @@
 
 package org.codehaus.mojo.jaxws;
 
-import java.io.File;
-
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+
+import java.io.File;
 
 /**
  * Parses wsdl and binding files and generates Java code needed to access it.
@@ -49,7 +49,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * @author Kohsuke Kawaguchi
  */
 @Mojo( name = "wsimport", defaultPhase = LifecyclePhase.GENERATE_SOURCES,
-        requiresDependencyResolution = ResolutionScope.RUNTIME )
+        requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true)
 public class MainWsImportMojo
     extends WsImportMojo
 {
