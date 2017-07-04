@@ -123,9 +123,6 @@ public class WsImportMojoITCase
         // -XadditionalHeaders
         assertFileContains( project, "target/custom/sources/org/jvnet/jaxwsri/sample/GreetersPortT.java",
                             "Holder<String> additionalHeader2" );
-        // xjc plugins (-Xequals etc)
-        assertFileContains( project, "target/custom/sources/org/jvnet/jaxwsri/sample/EchoType.java",
-                            "import org.jvnet.jaxb2_commons.lang.Equals;" );
 
         // check AddService
         assertFilePresent( project, "target/test-classes/wsimport/test/AddService.class" );

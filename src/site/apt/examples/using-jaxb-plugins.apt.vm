@@ -14,25 +14,23 @@
 ~~ limitations under the License.
 ~~
 
-Using JAXB xjc plugins
+Using JAXB XJC plugins with wsimport
+
+  JAX-WS uses JAXB for data binding through the XJC binding compiler. A feature of XJC is its
+  extensibility, which can be used to enhance the generated code via XJC plugins.
+  Below is an example of this by using the {{{https://github.com/highsource/jaxb2-basics}JAXB2 Basics}} plugins.
 
 +------------------------------------------+
 <project>
   ...
   <dependencies>
-      ...
-    <dependency>
-      <groupId>com.sun.xml.ws</groupId>
-      <artifactId>jaxws-rt</artifactId>
-      <version>2.2.10</version>
-    </dependency>
+    ...
     <!-- to compile xjc-generated sources -->
     <dependency>
       <groupId>org.jvnet.jaxb2_commons</groupId>
       <artifactId>jaxb2-basics-runtime</artifactId>
       <version>0.6.4</version>
     </dependency>
-    ...
   </dependencies>
   ...
   <build>
@@ -44,7 +42,7 @@ Using JAXB xjc plugins
         <artifactId>jaxws-maven-plugin</artifactId>
         <version>${project.version}</version>
         <dependencies>
-          <!-- put xjc-plugins on the jaxws-maven-plugin's classpath -->
+          <!-- put the XJC plugins on the jaxws-maven-plugin's classpath -->
           <dependency>
             <groupId>org.jvnet.jaxb2_commons</groupId>
             <artifactId>jaxb2-basics</artifactId>
@@ -52,7 +50,7 @@ Using JAXB xjc plugins
           </dependency>
         </dependencies>
         <configuration>
-          <!-- tell JAXB to actually use xjc-plugins -->
+          <!-- tell JAXB to actually use the XJC plugins -->
           <xjcArgs>
             <xjcArg>-Xequals</xjcArg>
             <xjcArg>-XtoString</xjcArg>
@@ -60,6 +58,7 @@ Using JAXB xjc plugins
         </configuration>
         <executions>
           <execution>
+            <id>jaxws-wsimport</id>
             <goals>
               <goal>wsimport</goal>
             </goals>
@@ -71,7 +70,6 @@ Using JAXB xjc plugins
           </configuration>
         </executions>
       </plugin>
-      ...
     </plugins>
     ...
   <build>
