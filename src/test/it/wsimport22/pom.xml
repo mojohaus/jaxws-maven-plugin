@@ -33,30 +33,11 @@
 
     <name>Test project for wsimport (2.2.x)</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.jvnet.jaxb2_commons</groupId>
-            <artifactId>jaxb2-basics-runtime</artifactId>
-            <version>0.6.4</version>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
                 <groupId>@project.groupId@</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.jvnet.jaxb2_commons</groupId>
-                        <artifactId>jaxb2-basics</artifactId>
-                        <version>0.6.4</version>
-                    </dependency>
-                </dependencies>
                 <executions>
                     <execution>
                         <id>id1</id>
@@ -86,45 +67,8 @@
                                 <bindingFile>bindings-default.xjc</bindingFile>
                             </bindingFiles>
                             <wsdlDirectory>${project.build.directory}</wsdlDirectory>
-                            <xjcArgs>
-                                <xjcArg>-Xequals</xjcArg>
-                                <xjcArg>-XtoString</xjcArg>
-                            </xjcArgs>
                         </configuration>
                     </execution>
-<!--                    <execution>
-                        <id>id2</id>
-                        <goals>
-                            <goal>wsimport</goal>
-                        </goals>
-                        <configuration>
-                            <sei>org.jvnet.jax_ws_commons.jaxws.test.AddService</sei>
-
-                            <args>
-                                <arg></arg>
-                            </args>
-                            <bindingDirectory></bindingDirectory>
-                            <bindingFiles></bindingFiles>
-                            <catalog></catalog>
-                            <destDir>${project.build.directory}/custom/classes</destDir>
-                            <extension>true</extension>
-                            <httpproxy></httpproxy>
-                            <keep>true</keep>
-                            <packageName></packageName>
-                            <sourceDestDir>${project.build.directory}/custom/sources</sourceDestDir>
-                            <target></target>
-                            <verbose>true</verbose>
-                            <wsdlDirectory></wsdlDirectory>
-                            <wsdlFiles></wsdlFiles>
-                            <wsdlLocation></wsdlLocation>
-                            <wsdlUrls></wsdlUrls>
-                            <xadditionalHeaders></xadditionalHeaders>
-                            <xauthFile></xauthFile>
-                            <xdebug></xdebug>
-                            <xjcArgs></xjcArgs>
-                            <xnoAddressingDataBinding></xnoAddressingDataBinding>
-                        </configuration>
-                    </execution>-->
                     <execution>
                         <id>id3-test</id>
                         <goals>
