@@ -37,10 +37,6 @@
                         <enabled>true</enabled>
                     </snapshots>
                 </repository>
-                <repository>
-                    <id>releases.java.net</id>
-                    <url>https://maven.java.net/content/repositories/releases/</url>
-                </repository>
             </repositories>
             <pluginRepositories>
                 <pluginRepository>
@@ -52,10 +48,6 @@
                     <snapshots>
                         <enabled>true</enabled>
                     </snapshots>
-                </pluginRepository>
-                <pluginRepository>
-                    <id>releases.java.net</id>
-                    <url>https://maven.java.net/content/repositories/releases/</url>
                 </pluginRepository>
             </pluginRepositories>
         </profile>
