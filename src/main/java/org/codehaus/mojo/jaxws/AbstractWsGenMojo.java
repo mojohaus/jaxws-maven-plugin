@@ -201,9 +201,6 @@ abstract class AbstractWsGenMojo
         return buf.toString();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected boolean isXnocompile()
     {
@@ -211,10 +208,7 @@ abstract class AbstractWsGenMojo
     }
 
     /**
-     * Construct wsgen arguments
-     * 
-     * @return a list of arguments
-     * @throws MojoExecutionException
+     * Returns wsgen's command arguments as a list
      */
     private ArrayList<String> getWsGenArgs( String aSei )
         throws MojoExecutionException

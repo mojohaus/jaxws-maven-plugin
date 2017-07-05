@@ -668,12 +668,9 @@ abstract class AbstractJaxwsMojo
      * artifacts map.  It will only add those in "compile" and "runtime" scope
      * or those that are specifically endorsed.
      * 
-     * @param a
-     *            artifact to sort
-     * @param artifactsMap
-     *            normal artifacts map
-     * @param endorsedArtifacts
-     *            endorsed artifacts set
+     * @param a artifact to sort
+     * @param artifactsMap normal artifacts map
+     * @param endorsedArtifacts endorsed artifacts set
      */
     private void addArtifactToCp( Artifact a, Map<String, Artifact> artifactsMap, Set<Artifact> endorsedArtifacts )
     {

@@ -279,7 +279,7 @@ abstract class WsImportMojo
             URL[] wsdls = getWSDLFiles();
             if ( wsdls.length == 0 && ( wsdlUrls == null || wsdlUrls.isEmpty() ) )
             {
-                getLog().info( "No WSDLs are found to process, Specify atleast one of the following parameters: "
+                getLog().info( "No WSDLs are found to process, Specify at least one of the following parameters: "
                         + "wsdlFiles, wsdlDirectory or wsdlUrls." );
                 return;
             }
@@ -314,10 +314,6 @@ abstract class WsImportMojo
         return xnocompile;
     }
 
-    /**
-     * @throws MojoExecutionException
-     * @throws IOException
-     */
     private void processLocalWsdlFiles( URL[] wsdls )
         throws MojoExecutionException, IOException
     {
@@ -342,15 +338,12 @@ abstract class WsImportMojo
             {
                 getLog().info( "Ignoring: " + url );
             }
-            // http://java.net/jira/browse/JAX_WS_COMMONS-95
             addSourceRoot( getSourceDestDir().getAbsolutePath() );
         }
     }
 
     /**
-     * process external wsdl
-     * 
-     * @throws MojoExecutionException
+     * Process external wsdl
      */
     private void processWsdlViaUrls()
         throws MojoExecutionException, IOException
@@ -367,14 +360,12 @@ abstract class WsImportMojo
                 exec( args );
                 touchStaleFile( wsdlUrl );
             }
-            // http://java.net/jira/browse/JAX_WS_COMMONS-95
             addSourceRoot( getSourceDestDir().getAbsolutePath() );
         }
     }
 
     /**
-     * @return wsimport's command arguments
-     * @throws MojoExecutionException
+     * Returns wsimport's command arguments as a list
      */
     private ArrayList<String> getWsImportArgs( String relativePath )
         throws MojoExecutionException
@@ -463,9 +454,6 @@ abstract class WsImportMojo
             args.add( "-Xdebug" );
         }
 
-        /**
-         * -Xno-addressing-databinding enable binding of W3C EndpointReferenceType to Java
-         */
         if ( xnoAddressingDataBinding )
         {
             args.add( "-Xno-addressing-databinding" );
@@ -495,7 +483,6 @@ abstract class WsImportMojo
             args.add( "-XdisableAuthenticator" );
         }
 
-        // xjcOIptions
         if ( xjcArgs != null )
         {
             for ( String xjcArg : xjcArgs )
@@ -513,13 +500,11 @@ abstract class WsImportMojo
 
         // Bindings
         File[] bindings = getBindingFiles();
-
         if ( bindings.length > 0 && wsdlLocation != null && wsdlLocation.contains( "*" ) )
         {
             throw new MojoExecutionException( "External binding file(s) can not be bound to more WSDL files ("
                 + wsdlLocation + ")\n" + "Please use either inline binding(s) or multiple execution tags." );
         }
-
         for ( File binding : bindings )
         {
             args.add( "-b" );
@@ -565,7 +550,7 @@ abstract class WsImportMojo
     }
 
     /**
-     * Returns a file array of wsdl files to translate to object models.
+     * Returns an array of wsdl files to translate to object models.
      * 
      * @return An array of schema files to be parsed by the schema compiler.
      */
@@ -866,6 +851,7 @@ abstract class WsImportMojo
         {
             closeQuietly( formatter );
         }
+
         // fallback to some default
         getLog().warn( "Could not compute hash for " + s + ". Using fallback method." );
         return s.substring( s.lastIndexOf( '/' ) ).replaceAll( "\\.", "-" );
