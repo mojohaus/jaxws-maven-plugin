@@ -237,6 +237,7 @@ abstract class WsImportMojo
     private boolean xdisableSSLHostnameVerification;
 
     /**
+     * If set, the generated Service classes will load the WSDL file from a URL generated from the base resource.
      */
     @Parameter( defaultValue = "false" )
     private boolean xuseBaseResourceAndURLToLoadWSDL;
