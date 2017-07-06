@@ -752,7 +752,7 @@ abstract class WsImportMojo
             for ( File wsdl : wsdls )
             {
                 String path = f.getPath().replace( File.separatorChar, '/' );
-                if ( path.endsWith( wsdl.getName() ))
+                if ( path.endsWith( wsdl.getName() ) )
                 {
                     return wsdl.getName();
                 }
