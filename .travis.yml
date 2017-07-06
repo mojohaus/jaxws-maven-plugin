@@ -6,6 +6,12 @@ jdk:
   - openjdk7
   - oraclejdk7
   - oraclejdk8
+addons:
+  # Required to avoid openjdk7 buffer overflow:
+  # https://github.com/travis-ci/travis-ci/issues/5227
+  hosts:
+    - myshorthost
+  hostname: myshorthost
 before_install:
   - sudo apt-get -qq update
   # This package is needed by the jaxwscommons-81 IT (see Github issue #18)
