@@ -95,7 +95,7 @@
                             <xnocompile>false</xnocompile>
                             <xdebug>true</xdebug>
                             <bindingFiles>
-                                <bindingFile>${basedir}/src/remote-xjc/bindings.xjc</bindingFile>
+                                <bindingFile>${project.basedir}/src/remote-xjc/bindings.xjc</bindingFile>
                                 <bindingFile>bindings-default.xjc</bindingFile>
                             </bindingFiles>
                             <wsdlDirectory>${project.build.directory}</wsdlDirectory>
@@ -107,10 +107,10 @@
                             <goal>wsimport-test</goal>
                         </goals>
                         <configuration>
-                            <wsdlDirectory>${basedir}/src/test-wsdl</wsdlDirectory>
+                            <wsdlDirectory>${project.basedir}/src/test-wsdl</wsdlDirectory>
                             <extension>true</extension>
                             <verbose>true</verbose>
-                            <bindingDirectory>${basedir}/src/test-wsdl/xjc</bindingDirectory>
+                            <bindingDirectory>${project.basedir}/src/test-wsdl/xjc</bindingDirectory>
                         </configuration>
                     </execution>
                 </executions>

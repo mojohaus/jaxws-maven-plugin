@@ -95,7 +95,7 @@ abstract class WsImportMojo
     /**
      * Directory containing WSDL files.
      */
-    @Parameter( defaultValue = "${basedir}/src/wsdl" )
+    @Parameter( defaultValue = "${project.basedir}/src/wsdl" )
     private File wsdlDirectory;
 
     /**
@@ -114,7 +114,7 @@ abstract class WsImportMojo
     /**
      * Directory containing binding files.
      */
-    @Parameter( defaultValue = "${basedir}/src/jaxws" )
+    @Parameter( defaultValue = "${project.basedir}/src/jaxws" )
     protected File bindingDirectory;
 
     /**
@@ -140,7 +140,7 @@ abstract class WsImportMojo
      *      &lt;wsdlFiles>
      *          &lt;wsdlFile>a.wsdl&lt;/wsdlFile>
      *          &lt;wsdlFile>b/b.wsdl&lt;/wsdlFile>
-     *          &lt;wsdlFile>${basedir}/src/mywsdls/c.wsdl&lt;/wsdlFile>
+     *          &lt;wsdlFile>${project.basedir}/src/mywsdls/c.wsdl&lt;/wsdlFile>
      *      &lt;/wsdlFiles>
      *      &lt;wsdlLocation>http://example.com/mywebservices/*&lt;/wsdlLocation>
      *  &lt;/configuration>
@@ -148,7 +148,7 @@ abstract class WsImportMojo
      * </pre>
      * wsdlLocation for <code>a.wsdl</code> will be http://example.com/mywebservices/a.wsdl<br/>
      * wsdlLocation for <code>b/b.wsdl</code> will be http://example.com/mywebservices/b/b.wsdl<br/>
-     * wsdlLocation for <code>${basedir}/src/mywsdls/c.wsdl</code> will be file://absolute/path/to/c.wsdl
+     * wsdlLocation for <code>${project.basedir}/src/mywsdls/c.wsdl</code> will be file://absolute/path/to/c.wsdl
      * </p>
      *
      * <p>

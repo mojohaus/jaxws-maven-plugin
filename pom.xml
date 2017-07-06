@@ -356,7 +356,7 @@
                   <goal>emma4it-report</goal>
                 </goals>
                 <configuration>
-                  <searchPath>${basedir}</searchPath>
+                  <searchPath>${project.basedir}</searchPath>
                   <sourceFolders>
                     <sourceFolder>${project.build.sourceDirectory}</sourceFolder>
                     <sourceFolder>${project.build.directory}/generated-sources/plugin</sourceFolder>

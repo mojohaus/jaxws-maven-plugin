@@ -54,7 +54,7 @@
                         </goals>
                         <configuration>
                             <genWsdl>true</genWsdl>
-                            <metadata>${basedir}/src/main/wsgen/metadata-echo.xml</metadata>
+                            <metadata>${project.basedir}/src/main/wsgen/metadata-echo.xml</metadata>
                             <sei>mojo.it.jaxwscommons103.lib.EchoImpl</sei>
                         </configuration>
                     </execution>

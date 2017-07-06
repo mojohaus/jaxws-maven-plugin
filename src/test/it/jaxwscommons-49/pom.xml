@@ -62,7 +62,7 @@
                         </goals>
                         <configuration>
                             <wsdlFiles>
-                                <wsdlFile>${basedir}/foo/AddService.wsdl</wsdlFile>
+                                <wsdlFile>${project.basedir}/foo/AddService.wsdl</wsdlFile>
                             </wsdlFiles>
                         </configuration>
                     </execution>

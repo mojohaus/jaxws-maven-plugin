@@ -49,7 +49,7 @@ Use wsdlLocation as a path prefix for multiple WSDL URLs
               <wsdlFiles>
                 <wsdlFile>a.wsdl</wsdlFile>                         <!-- produces wsdlLocation = http://example.com/mywebservices/a.wsdl -->
                 <wsdlFile>b/b.wsdl</wsdlFile>                       <!-- produces wsdlLocation = http://example.com/mywebservices/b/b.wsdl -->
-                <wsdlFile>${d}{basedir}/src/mywsdls/c.wsdl</wsdlFile>  <!-- produces wsdlLocation = /path/to/basedir/src/mywsdls/c.wsdl -->
+                <wsdlFile>${d}{project.basedir}/src/mywsdls/c.wsdl</wsdlFile>  <!-- produces wsdlLocation = /path/to/basedir/src/mywsdls/c.wsdl -->
               </wsdlFiles>
             </configuration>
           </execution>
