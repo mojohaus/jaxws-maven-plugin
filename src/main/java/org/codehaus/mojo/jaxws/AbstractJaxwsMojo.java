@@ -449,7 +449,7 @@ abstract class AbstractJaxwsMojo
             try
             {
                 File pathFile = createPathFile( cp );
-                cmd.createArg().setLine( "-pathfile " + pathFile.getAbsolutePath() );
+                cmd.createArg().setLine( "-pathfile " + "'" + pathFile.getAbsolutePath() +  "'" );
             }
             catch ( IOException ioe )
             {
