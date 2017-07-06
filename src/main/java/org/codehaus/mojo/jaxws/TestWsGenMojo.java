@@ -55,7 +55,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  *
  */
 @Mojo( name = "wsgen-test", defaultPhase = LifecyclePhase.PROCESS_TEST_CLASSES,
-        requiresDependencyResolution = ResolutionScope.TEST )
+        requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true )
 public class TestWsGenMojo
     extends AbstractWsGenMojo
 {
