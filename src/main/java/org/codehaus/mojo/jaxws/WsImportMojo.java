@@ -513,7 +513,7 @@ abstract class WsImportMojo
         for ( File binding : bindings )
         {
             args.add( "-b" );
-            args.add( "'" + binding.getAbsolutePath() + "'" );
+            args.add( "'" + binding.toURI() + "'" );
         }
 
         return args;
