@@ -50,13 +50,11 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Formatter;
 import java.util.List;
-import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Proxy;
@@ -270,6 +268,12 @@ abstract class WsImportMojo
     private Settings settings;
 
     protected abstract File getImplDestDir();
+
+    /**
+     * Returns the dependencies that should be placed on the classpath for the classloader
+     * to lookup wsdl files.
+     */
+    protected abstract List<String> getWSDLFileLookupClasspathElements();
 
     @Override
     public void executeJaxws()
@@ -559,136 +563,132 @@ abstract class WsImportMojo
         throws MojoExecutionException
     {
         List<URL> files = new ArrayList<URL>();
-        Set<Artifact> dependencyArtifacts = project.getDependencyArtifacts();
-        List<URL> urlCpath = new ArrayList<URL>( dependencyArtifacts.size() );
-        for ( Artifact a : dependencyArtifacts )
+        ClassLoader loader = null;
+
+        try
         {
-            try
+            List<String> classpathElements = getWSDLFileLookupClasspathElements();
+            List<URL> urlCpath = new ArrayList<URL>( classpathElements.size() );
+            for ( String el : classpathElements )
             {
-                if ( a.getFile() != null )
-                {
-                    URL u = a.getFile().toURI().toURL();
-                    urlCpath.add( u );
-                }
-                else
-                {
-                    getLog().warn( "cannot find file for " + a.getGroupId() + ":" + a.getArtifactId() + ":"
-                        + a.getVersion() );
-                }
+                URL u = new File( el ).toURI().toURL();
+                urlCpath.add( u );
             }
-            catch ( MalformedURLException ex )
+        
+            loader = new URLClassLoader( urlCpath.toArray( new URL[0] ) );
+
+            if ( wsdlFiles != null )
             {
-                getLog().error( ex );
-            }
-        }
-        ClassLoader loader = urlCpath.isEmpty() ? Thread.currentThread().getContextClassLoader()
-                        : new URLClassLoader( urlCpath.toArray( new URL[0] ) );
-        if ( wsdlFiles != null )
-        {
-            for ( String wsdlFileName : wsdlFiles )
-            {
-                File wsdl = new File( wsdlFileName );
-                URL toAdd = null;
-                if ( !wsdl.isAbsolute() )
+                for ( String wsdlFileName : wsdlFiles )
                 {
-                    wsdl = new File( wsdlDirectory, wsdlFileName );
-                }
-                if ( !wsdl.exists() )
-                {
-                    toAdd = loader.getResource( wsdlFileName );
-                }
-                else
-                {
-                    try
+                    File wsdl = new File( wsdlFileName );
+                    URL toAdd = null;
+                    if ( !wsdl.isAbsolute() )
                     {
-                        toAdd = wsdl.toURI().toURL();
+                        wsdl = new File( wsdlDirectory, wsdlFileName );
                     }
-                    catch ( MalformedURLException ex )
+                    if ( !wsdl.exists() )
                     {
-                        getLog().error( ex );
+                        toAdd = loader.getResource( wsdlFileName );
                     }
-                }
-                getLog().debug( "The wsdl File is '" + wsdlFileName + "' from '" + toAdd + "'" );
-                if ( toAdd != null )
-                {
-                    files.add( toAdd );
-                }
-                else
-                {
-                    throw new MojoExecutionException( "'" + wsdlFileName + "' not found." );
-                }
-            }
-        }
-        else
-        {
-            getLog().debug( "The wsdl Directory is " + wsdlDirectory );
-            if ( wsdlDirectory.exists() )
-            {
-                File[] wsdls = wsdlDirectory.listFiles( new WSDLFile() );
-                for ( File wsdl : wsdls )
-                {
-                    try
+                    else
                     {
-                        files.add( wsdl.toURI().toURL() );
+                        try
+                        {
+                            toAdd = wsdl.toURI().toURL();
+                        }
+                        catch ( MalformedURLException ex )
+                        {
+                            getLog().error( ex );
+                        }
                     }
-                    catch ( MalformedURLException ex )
+                    getLog().debug( "The wsdl File is '" + wsdlFileName + "' from '" + toAdd + "'" );
+                    if ( toAdd != null )
                     {
-                        getLog().error( ex );
+                        files.add( toAdd );
+                    }
+                    else
+                    {
+                        throw new MojoExecutionException( "'" + wsdlFileName + "' not found." );
                     }
                 }
             }
             else
             {
-                URI rel = project.getBasedir().toURI().relativize( wsdlDirectory.toURI() );
-                String dir = rel.getPath();
-                URL u = loader.getResource( dir );
-                if ( u == null )
+                getLog().debug( "The wsdl Directory is " + wsdlDirectory );
+                if ( wsdlDirectory.exists() )
                 {
-                    dir = "WEB-INF/wsdl/";
-                    u = loader.getResource( dir );
-                }
-                if ( u == null )
-                {
-                    dir = "META-INF/wsdl/";
-                    u = loader.getResource( dir );
-                }
-                if ( !( u == null || !"jar".equalsIgnoreCase( u.getProtocol() ) ) )
-                {
-                    String path = u.getPath();
-                    JarFile jarFile = null;
-                    try
+                    File[] wsdls = wsdlDirectory.listFiles( new WSDLFile() );
+                    for ( File wsdl : wsdls )
                     {
-                        Pattern p = Pattern.compile( dir.replace( File.separatorChar, '/' ) + PATTERN,
-                                                     Pattern.CASE_INSENSITIVE );
-                        jarFile = new JarFile( path.substring( 5, path.indexOf( "!/" ) ) );
-                        Enumeration<JarEntry> jes = jarFile.entries();
-                        while ( jes.hasMoreElements() )
+                        files.add( wsdl.toURI().toURL() );
+                    }
+                }
+                else
+                {
+                    URI rel = project.getBasedir().toURI().relativize( wsdlDirectory.toURI() );
+                    String dir = rel.getPath();
+                    URL u = loader.getResource( dir );
+                    if ( u == null )
+                    {
+                        dir = "WEB-INF/wsdl/";
+                        u = loader.getResource( dir );
+                    }
+                    if ( u == null )
+                    {
+                        dir = "META-INF/wsdl/";
+                        u = loader.getResource( dir );
+                    }
+                    if ( !( u == null || !"jar".equalsIgnoreCase( u.getProtocol() ) ) )
+                    {
+                        String path = u.getPath();
+                        JarFile jarFile = null;
+                        try
                         {
-                            JarEntry je = jes.nextElement();
-                            Matcher m = p.matcher( je.getName() );
-                            if ( m.matches() )
+                            Pattern p = Pattern.compile( dir.replace( File.separatorChar, '/' ) + PATTERN,
+                                                         Pattern.CASE_INSENSITIVE );
+                            jarFile = new JarFile( path.substring( 5, path.indexOf( "!/" ) ) );
+                            Enumeration<JarEntry> jes = jarFile.entries();
+                            while ( jes.hasMoreElements() )
                             {
-                                String s = "jar:" + path.substring( 0, path.indexOf( "!/" ) + 2 ) + je.getName();
-                                files.add( new URL( s ) );
+                                JarEntry je = jes.nextElement();
+                                Matcher m = p.matcher( je.getName() );
+                                if ( m.matches() )
+                                {
+                                    String s = "jar:" + path.substring( 0, path.indexOf( "!/" ) + 2 ) + je.getName();
+                                    files.add( new URL( s ) );
+                                }
                             }
                         }
-                    }
-                    catch ( IOException ex )
-                    {
-                        getLog().error( ex );
-                    }
-                    finally
-                    {
-                        closeQuietly( jarFile );
+                        catch ( IOException ex )
+                        {
+                            getLog().error( ex );
+                        }
+                        finally
+                        {
+                            closeQuietly( jarFile );
+                        }
                     }
                 }
             }
         }
-        if ( !urlCpath.isEmpty() )
+        catch ( MojoExecutionException e )
         {
-            // if we created a classloader, cleanup
-            closeQuietly( loader );
+            throw e;
         }
+        catch ( Exception e )
+        {
+            throw new MojoExecutionException( "Error while retrieving list of WSDL files to process", e );
+        }
+        finally
+        {
+            if ( loader != null )
+            {
+                // if we created a classloader, cleanup
+                closeQuietly( loader );
+            }
+        }
+
         return files.toArray( new URL[0] );
     }
 

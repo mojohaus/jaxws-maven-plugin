@@ -24,12 +24,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.jvnet.jax-ws-commons.tests</groupId>
-    <artifactId>wsdl-lib</artifactId>
+    <artifactId>wsdl-lib2</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
 
-    <modules>
-        <module>wsdl-lib1</module>
-        <module>wsdl-lib2</module>
-    </modules>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
 </project>

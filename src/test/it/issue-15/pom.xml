@@ -29,16 +29,21 @@
         <version>@project.version@</version>
     </parent>
 
-    <artifactId>mojo.it.issue-12</artifactId>
+    <artifactId>mojo.it.issue-15</artifactId>
 
-    <name>Test project for Github issue #12</name>
+    <name>Test project for Github issue #15</name>
 
     <dependencies>
         <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <version>4.12</version>
-          <scope>test</scope>
+            <groupId>org.jvnet.jax-ws-commons.tests</groupId>
+            <artifactId>wsdl-lib1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jvnet.jax-ws-commons.tests</groupId>
+            <artifactId>wsdl-lib2</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -47,27 +52,40 @@
             <plugin>
                 <groupId>@project.groupId@</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
+                <configuration>
+                    <verbose>true</verbose>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>absolute-wsdllocation</id>
+                        <id>id1</id>
                         <goals>
                             <goal>wsimport</goal>
                         </goals>
                         <configuration>
-                            <wsdlLocation>http://example.com/hello?wsdl</wsdlLocation>
-                            <packageName>org.acme.bar</packageName>
-                            <staleFile>${project.build.directory}/jaxws/stale1</staleFile>
+                            <wsdlDirectory>${project.basedir}/src/main/wsdls</wsdlDirectory>
+                            <packageName>ws1</packageName>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>relative-wsdllocation</id>
+                        <id>id2</id>
                         <goals>
                             <goal>wsimport</goal>
                         </goals>
                         <configuration>
-                            <wsdlLocation>http://example.com/hello?wsdl=*</wsdlLocation>
-                            <packageName>org.acme.foo</packageName>
-                            <staleFile>${project.build.directory}/jaxws/stale2</staleFile>
+                            <packageName>ws2</packageName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>id3</id>
+                        <goals>
+                            <goal>wsimport-test</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlFiles>
+                                <wsdlFile>ProcessOrder.wsdl</wsdlFile>
+                                <wsdlFile>META-INF/wsdl/echo.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <packageName>ws3</packageName>
                         </configuration>
                     </execution>
                 </executions>

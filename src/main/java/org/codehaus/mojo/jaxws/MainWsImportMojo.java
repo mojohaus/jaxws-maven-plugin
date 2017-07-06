@@ -37,7 +37,10 @@
 package org.codehaus.mojo.jaxws;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -98,5 +101,27 @@ public class MainWsImportMojo
     protected File getImplDestDir()
     {
         return implDestDir;
+    }
+
+    @Override
+    protected List<String> getWSDLFileLookupClasspathElements()
+    {
+        List<String> list = new ArrayList<String>();
+
+        for ( Artifact a : project.getDependencyArtifacts() )
+        {
+            if ( Artifact.SCOPE_COMPILE.equals( a.getScope() )
+                    || Artifact.SCOPE_PROVIDED.equals( a.getScope() )
+                    || Artifact.SCOPE_SYSTEM.equals( a.getScope() ) )
+            {
+                File file = a.getFile();
+                if ( file != null )
+                {
+                    list.add( file.getPath() );
+                }
+            }
+        }
+
+        return list;
     }
 }

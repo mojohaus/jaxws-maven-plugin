@@ -37,10 +37,11 @@
     <dependencies>
         <dependency>
             <groupId>org.jvnet.jax-ws-commons.tests</groupId>
-            <artifactId>wsdl-lib</artifactId>
+            <artifactId>wsdl-lib1</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -59,7 +60,7 @@
                             <wsdlFiles>
                                 <wsdlFile>ProcessOrder.wsdl</wsdlFile>
                             </wsdlFiles>
-                            <packageName>sample</packageName>
+                            <packageName>ws1</packageName>
                         </configuration>
                     </execution>
                     <execution>
@@ -67,6 +68,9 @@
                         <goals>
                             <goal>wsimport</goal>
                         </goals>
+                        <configuration>
+                            <packageName>ws2</packageName>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>id3</id>
@@ -75,6 +79,7 @@
                         </goals>
                         <configuration>
                             <wsdlDirectory>custom</wsdlDirectory>
+                            <packageName>ws3</packageName>
                         </configuration>
                     </execution>
                 </executions>
