@@ -49,7 +49,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * @author Kohsuke Kawaguchi
  */
 @Mojo( name = "wsimport", defaultPhase = LifecyclePhase.GENERATE_SOURCES,
-        requiresDependencyResolution = ResolutionScope.RUNTIME )
+        requiresDependencyResolution = ResolutionScope.RUNTIME, threadSafe = true )
 public class MainWsImportMojo
     extends WsImportMojo
 {
