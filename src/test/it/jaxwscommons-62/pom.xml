@@ -59,7 +59,7 @@
                             <wsdlDirectory>src/mywsdls</wsdlDirectory>
                             <wsdlFiles>
                                 <wsdlFile>a.wsdl</wsdlFile>
-                                <wsdlFile>${basedir}/src/mywsdls/c.wsdl</wsdlFile>
+                                <wsdlFile>${project.basedir}/src/mywsdls/c.wsdl</wsdlFile>
                                 <wsdlFile>b/b.wsdl</wsdlFile>
                             </wsdlFiles>
                             <wsdlLocation>http://example.com/mywebservices/*</wsdlLocation>

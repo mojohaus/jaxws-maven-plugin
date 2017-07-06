@@ -46,7 +46,7 @@
                             <goal>wsimport</goal>
                         </goals>
                         <configuration>
-                            <wsdlDirectory>${basedir}/src/main/wsdls</wsdlDirectory>
+                            <wsdlDirectory>${project.basedir}/src/main/wsdls</wsdlDirectory>
                             <wsdlFiles>
                                 <wsdlFile>wstx-wscoor-1.1-wsdl-200702.wsdl</wsdlFile>
                             </wsdlFiles>

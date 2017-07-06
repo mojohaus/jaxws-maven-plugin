@@ -56,7 +56,7 @@
             <configuration>
               <tasks>
                 <mkdir dir="${webapp.dir}/WEB-INF" />
-                <copy file="${basedir}/../etc/sun-jaxws.xml" todir="${webapp.dir}/WEB-INF" />
+                <copy file="${project.basedir}/../etc/sun-jaxws.xml" todir="${webapp.dir}/WEB-INF" />
               </tasks>
             </configuration>
             

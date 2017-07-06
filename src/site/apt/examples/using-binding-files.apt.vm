@@ -46,10 +46,10 @@ Using binding files
             <goals>
               <goal>wsimport</goal>
             </goals>
-            <!-- Following configuration will pass ${d}{basedir}/src/remote-xjc/bindings.xjc and ${d}{basedir}/src/jaxws/bindings-default.xjc to wsimport. -->
+            <!-- Following configuration will pass ${d}{project.basedir}/src/remote-xjc/bindings.xjc and ${d}{project.basedir}/src/jaxws/bindings-default.xjc to wsimport. -->
             <configuration>
               <bindingFiles>
-                <bindingFile>${d}{basedir}/src/remote-xjc/bindings.xjc</bindingFile>
+                <bindingFile>${d}{project.basedir}/src/remote-xjc/bindings.xjc</bindingFile>
                 <bindingFile>bindings-default.xjc</bindingFile>
               </bindingFiles>
               <wsdlUrls>
@@ -94,9 +94,9 @@ Using binding files
             <goals>
               <goal>wsimport</goal>
             </goals>
-            <!-- Following configuration will pass all XML files from ${d}{basedir}/src/bindings to wsimport. -->
+            <!-- Following configuration will pass all XML files from ${d}{project.basedir}/src/bindings to wsimport. -->
             <configuration>
-              <bindingDirectory>${d}{basedir}/src/bindings</bindingDirectory>
+              <bindingDirectory>${d}{project.basedir}/src/bindings</bindingDirectory>
               <wsdlUrls>
                 <wsdlUrl>http://example.com/mywebservices/MyService?WSDL</wsdlUrl>
               </wsdlUrls>

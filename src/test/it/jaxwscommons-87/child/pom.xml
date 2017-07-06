@@ -45,8 +45,8 @@
                             <goal>wsimport</goal>
                         </goals>
                         <configuration>
-                            <wsdlDirectory>${basedir}/src/main/wsdl/</wsdlDirectory>
-                            <bindingDirectory>${basedir}/src/main/bindings</bindingDirectory>
+                            <wsdlDirectory>${project.basedir}/src/main/wsdl/</wsdlDirectory>
+                            <bindingDirectory>${project.basedir}/src/main/bindings</bindingDirectory>
                         </configuration>
                     </execution>
                 </executions>
