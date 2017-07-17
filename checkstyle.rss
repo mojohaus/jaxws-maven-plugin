@@ -23,11 +23,11 @@ under the License.
     <link>http://www.mojohaus.org/jaxws-maven-plugin/</link>
     <description>JAX-WS Maven Plugin - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2015 MojoHaus</copyright>
+    <copyright>&#169;2017 MojoHaus</copyright>
     <item>
-      <title>File: 8,
-             Errors: 23,
-             Warnings: 4,
+      <title>File: 9,
+             Errors: 13,
+             Warnings: 1,
              Infos: 0
       </title>
             <link>http://www.mojohaus.org/jaxws-maven-plugin//checkstyle.html</link>
@@ -46,6 +46,20 @@ under the License.
           <tbody>
                           <tr>
                 <td>
+                  <a href="http://www.mojohaus.org/jaxws-maven-plugin//checkstyle.html#org.codehaus.mojo.jaxws.MainWsGenMojo.java">org/codehaus/mojo/jaxws/MainWsGenMojo.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://www.mojohaus.org/jaxws-maven-plugin//checkstyle.html#org.codehaus.mojo.jaxws.Invoker.java">org/codehaus/mojo/jaxws/Invoker.java</a>
                 </td>
                 <td>
@@ -60,30 +74,16 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/jaxws-maven-plugin//checkstyle.html#org.codehaus.mojo.jaxws.MainWsGenMojo.java">org/codehaus/mojo/jaxws/MainWsGenMojo.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="http://www.mojohaus.org/jaxws-maven-plugin//checkstyle.html#org.codehaus.mojo.jaxws.AbstractJaxwsMojo.java">org/codehaus/mojo/jaxws/AbstractJaxwsMojo.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  2
+                  0
                 </td>
                 <td>
-                  8
+                  5
                 </td>
               </tr>
                           <tr>
@@ -94,10 +94,24 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
                 <td>
-                  2
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://www.mojohaus.org/jaxws-maven-plugin//checkstyle.html#org.codehaus.mojo.jaxws.HelpMojo.java">org/codehaus/mojo/jaxws/HelpMojo.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
               </tr>
                           <tr>
@@ -111,7 +125,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  4
+                  1
                 </td>
               </tr>
                           <tr>
@@ -125,7 +139,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  2
+                  1
                 </td>
               </tr>
                           <tr>
@@ -139,7 +153,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  2
+                  1
                 </td>
               </tr>
                           <tr>
@@ -153,7 +167,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  2
+                  1
                 </td>
               </tr>
                       </tbody>
