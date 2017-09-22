@@ -439,9 +439,16 @@ abstract class AbstractJaxwsMojo
                 }
             }
             InvokerCP classpath = getInvokerCP();
-            cmd.createArg().setValue( "-Xbootclasspath/p:" + classpath.ecp );
-            cmd.createArg().setValue( "-cp" );
-            cmd.createArg().setValue( classpath.invokerPath );
+            if (isPre9()) {
+                cmd.createArg().setValue( "-Xbootclasspath/p:" + classpath.ecp );
+                cmd.createArg().setValue( "-cp" );
+                cmd.createArg().setValue( classpath.invokerPath );
+            } else {
+                cmd.createArg().setValue( "-cp" );
+                cmd.createArg().setValue( classpath.ecp + File.pathSeparator + classpath.invokerPath );
+                cmd.createArg().setValue( "--add-modules");
+                cmd.createArg().setValue( "java.activation");
+            }
             cmd.createArg().setLine( Invoker.class.getCanonicalName() );
             cmd.createArg().setLine( getMain() );
             String extraCp = getExtraClasspath();
@@ -530,6 +537,8 @@ abstract class AbstractJaxwsMojo
         {
             invokerPath = Invoker.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm();
             invokerPath = new URI( invokerPath.substring( 5 ) ).getPath();
+            // Strip leading / on Windows
+            invokerPath = invokerPath.replaceAll("^/(.:)","$1");
         }
         catch ( URISyntaxException ex )
         {
@@ -629,6 +638,10 @@ abstract class AbstractJaxwsMojo
     private boolean isWindows()
     {
         return Os.isFamily( Os.FAMILY_WINDOWS );
+    }
+    
+    private boolean isPre9() {
+        return System.getProperty( "java.version").startsWith("1.");
     }
 
     private StringBuilder getCPasString( Collection<Artifact> artifacts )
