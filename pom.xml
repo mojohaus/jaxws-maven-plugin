@@ -417,7 +417,7 @@
             <plugin>
               <groupId>org.codehaus.gmaven</groupId>
               <artifactId>gmaven-plugin</artifactId>
-              <version>1.3</version>
+              <version>1.5</version>
             </plugin>
           </plugins>
         </pluginManagement>
@@ -441,6 +441,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
+            <version>3.0.1</version>
             <configuration>
               <debug>${ittest.debug}</debug>
               <showErrors>true</showErrors>
