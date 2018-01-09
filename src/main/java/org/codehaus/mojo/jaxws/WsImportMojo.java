@@ -386,13 +386,18 @@ abstract class WsImportMojo
         else if ( settings != null )
         {
             Proxy activeHttpProxy = getActiveHttpProxy( settings );
-            if ( activeHttpProxy != null && StringUtils.isNotBlank(wsdlURL) ) {
-            	String nonProxyHostRegex = activeHttpProxy.getNonProxyHosts().replace("*", ".*");
-            	if ( StringUtils.isNotBlank( nonProxyHostRegex ) ) {
-            		Matcher matcher = Pattern.compile(nonProxyHostRegex).matcher(wsdlURL);
-            		if ( matcher.matches() ) {
-            			activeHttpProxy = null;
-            		}
+            if ( activeHttpProxy != null && StringUtils.isNotBlank(wsdlURL) ) 
+            {
+            	String nonProxyHosts = activeHttpProxy.getNonProxyHosts();
+            	if ( StringUtils.isNotBlank( nonProxyHosts ) )
+            	{
+					String nonProxyHostRegex = nonProxyHosts.replace("*", ".*");
+	            	if ( StringUtils.isNotBlank( nonProxyHostRegex ) ) {
+	            		Matcher matcher = Pattern.compile(nonProxyHostRegex).matcher(wsdlURL);
+	            		if ( matcher.matches() ) {
+	            			activeHttpProxy = null;
+	            		}
+	            	}
             	}
             }
 			String proxyString = httpProxyString(activeHttpProxy);
