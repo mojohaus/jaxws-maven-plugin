@@ -18,10 +18,13 @@
 
 package org.codehaus.mojo.jaxws;
 
+import static org.codehaus.mojo.jaxws.WsImportMojo.getActiveHttpProxy;
+import static org.codehaus.mojo.jaxws.WsImportMojo.httpProxyString;
+
 import java.io.IOException;
+
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.io.xpp3.SettingsXpp3Reader;
-import org.codehaus.mojo.jaxws.WsImportMojo;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -39,19 +42,19 @@ public class WsImportMojoTest
     {
         SettingsXpp3Reader r = new SettingsXpp3Reader();
         Settings s = r.read( WsImportMojoTest.class.getResourceAsStream( "proxy1.xml" ) );
-        String proxyString = WsImportMojo.getActiveHttpProxy( s );
+        String proxyString = httpProxyString(getActiveHttpProxy( s ));
         Assert.assertEquals( proxyString, "proxyActive:8099" );
 
         s = r.read( WsImportMojoTest.class.getResourceAsStream( "proxy2.xml" ) );
-        proxyString = WsImportMojo.getActiveHttpProxy( s );
+        proxyString = httpProxyString(getActiveHttpProxy( s ));
         Assert.assertNull( proxyString, proxyString );
 
         s = r.read( WsImportMojoTest.class.getResourceAsStream( "proxy3.xml" ) );
-        proxyString = WsImportMojo.getActiveHttpProxy( s );
+        proxyString = httpProxyString(getActiveHttpProxy( s ));
         Assert.assertEquals( proxyString, "proxyuser:proxypwd@proxy1-auth:8080" );
 
         s = r.read( WsImportMojoTest.class.getResourceAsStream( "proxy4.xml" ) );
-        proxyString = WsImportMojo.getActiveHttpProxy( s );
+        proxyString = httpProxyString(getActiveHttpProxy( s ));
         Assert.assertEquals( proxyString, "proxyuser2@proxy1-auth2:7777" );
     }
 }

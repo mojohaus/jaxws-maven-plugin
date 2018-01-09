@@ -59,6 +59,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Settings;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  * 
@@ -333,7 +334,7 @@ abstract class WsImportMojo
                 {
                     relPath = getRelativePath( new File( u.getPath() ) );
                 }
-                ArrayList<String> args = getWsImportArgs( relPath );
+                ArrayList<String> args = getWsImportArgs( relPath, null );
                 args.add( "\"" + url + "\"" );
                 getLog().info( "jaxws:wsimport args: " + args );
                 exec( args );
@@ -359,7 +360,7 @@ abstract class WsImportMojo
             if ( isOutputStale( wsdlUrl ) )
             {
                 getLog().info( "Processing: " + wsdlUrl );
-                ArrayList<String> args = getWsImportArgs( null );
+                ArrayList<String> args = getWsImportArgs( null, wsdlUrl );
                 args.add( "\"" + wsdlUrl + "\"" );
                 getLog().info( "jaxws:wsimport args: " + args );
                 exec( args );
@@ -372,7 +373,7 @@ abstract class WsImportMojo
     /**
      * Returns wsimport's command arguments as a list
      */
-    private ArrayList<String> getWsImportArgs( String relativePath )
+    private ArrayList<String> getWsImportArgs( String relativePath, String wsdlURL )
         throws MojoExecutionException
     {
         ArrayList<String> args = new ArrayList<String>();
@@ -384,7 +385,17 @@ abstract class WsImportMojo
         }
         else if ( settings != null )
         {
-            String proxyString = getActiveHttpProxy( settings );
+            Proxy activeHttpProxy = getActiveHttpProxy( settings );
+            if ( activeHttpProxy != null && StringUtils.isNotBlank(wsdlURL) ) {
+            	String nonProxyHostRegex = activeHttpProxy.getNonProxyHosts().replace("*", ".*");
+            	if ( StringUtils.isNotBlank( nonProxyHostRegex ) ) {
+            		Matcher matcher = Pattern.compile(nonProxyHostRegex).matcher(wsdlURL);
+            		if ( matcher.matches() ) {
+            			activeHttpProxy = null;
+            		}
+            	}
+            }
+			String proxyString = httpProxyString(activeHttpProxy);
             if ( proxyString != null )
             {
                 args.add( "-httpproxy:" + proxyString );
@@ -873,33 +884,40 @@ abstract class WsImportMojo
     /**
      * @return proxy string as [user[:password]@]proxyHost[:proxyPort] or null
      */
-    static String getActiveHttpProxy( Settings s )
+    static Proxy getActiveHttpProxy( Settings s)
     {
-        String retVal = null;
+        Proxy retVal = null;
         for ( Proxy p : s.getProxies() )
         {
             if ( p.isActive() && "http".equals( p.getProtocol() ) )
             {
-                StringBuilder sb = new StringBuilder();
-                String user = p.getUsername();
-                String pwd = p.getPassword();
-                if ( user != null )
-                {
-                    sb.append( user );
-                    if ( pwd != null )
-                    {
-                        sb.append( ":" );
-                        sb.append( pwd );
-                    }
-                    sb.append( "@" );
-                }
-                sb.append( p.getHost() );
-                sb.append( ":" );
-                sb.append( p.getPort() );
-                retVal = sb.toString().trim();
-                break;
+                return p;
             }
         }
         return retVal;
+    }
+    
+    static String httpProxyString(Proxy p) 
+    {
+    	if(p == null) {
+    		return null;
+    	}
+		StringBuilder sb = new StringBuilder();
+		String user = p.getUsername();
+		String pwd = p.getPassword();
+		if ( user != null )
+		{
+		    sb.append( user );
+		    if ( pwd != null )
+		    {
+		        sb.append( ":" );
+		    sb.append( pwd );
+		}
+		sb.append( "@" );
+		}
+		sb.append( p.getHost() );
+		sb.append( ":" );
+		sb.append( p.getPort() );
+		return sb.toString().trim();
     }
 }
