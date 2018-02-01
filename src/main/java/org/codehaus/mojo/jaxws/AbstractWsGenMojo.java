@@ -62,6 +62,10 @@ abstract class AbstractWsGenMojo
     extends AbstractJaxwsMojo
 {
 
+    public enum SeiLookup {
+        classpath,
+        javassist
+    }
     /**
      * Specify that a WSDL file should be generated in <code>${resourceDestDir}</code>.
      */
@@ -73,6 +77,14 @@ abstract class AbstractWsGenMojo
      */
     @Parameter
     private String sei;
+
+    /**
+     * Service endpoint implementation lookup method. Valid values are: "<code>classpath</code>" which is default and
+     * searches plugin classpath, "<code>javassist</code>" reads class bytecode and determines if class is service
+     * endpoint implementation
+     */
+    @Parameter(defaultValue = "classpath")
+    private SeiLookup seiLookup;
 
     /**
      * Used in conjunction with <code>genWsdl<code> to specify the protocol to use in the
@@ -132,28 +144,65 @@ abstract class AbstractWsGenMojo
 
     protected abstract File getClassesDir();
 
+    private FileStateRegistry fileStateRegistry;
+
     @Override
     public void executeJaxws()
         throws MojoExecutionException, MojoFailureException
     {
-        Set<String> seis = new HashSet<String>();
+        fileStateRegistry = FileStateRegistry.load(new File(project.getBuild().getDirectory(), "maven-status/" + pluginDescriptor.getArtifactId() + "/file.status"));
+
+        Set<Sei> seis = new HashSet<Sei>();
         if ( sei != null )
         {
-            seis.add( sei );
+            seis.add( new Sei(sei) );
         }
         else
         {
             // find all SEIs within current classes
-            seis.addAll( getSEIs( getClassesDir() ) );
+            if(seiLookup == SeiLookup.classpath) {
+                seis.addAll(getSEIs(getClassesDir()));
+            } else if(seiLookup == SeiLookup.javassist) {
+                seis.addAll(getSEIsJavassist(getClassesDir()) );
+            } else {
+                throw new MojoFailureException( "Not supported service endpoint lookup method " + seiLookup );
+            }
         }
         if ( seis.isEmpty() )
         {
             throw new MojoFailureException( "No @javax.jws.WebService found." );
         }
-        for ( String aSei : seis )
+        for ( Sei aSei : seis )
         {
-            processSei( aSei );
+            if(aSei.isChanged || wsdlRebuild(aSei) || jaxwsRebuild(aSei)) {
+                processSei(aSei.name);
+                if(aSei.classFile != null) {
+                    fileStateRegistry.store(aSei.classFile);
+                }
+            } else {
+                getLog().info( "Wsgen not needed because service endpoint interface " + aSei.name + " did not change from last compilation.");
+            }
         }
+    }
+
+    /**
+     * Checks if jaxws folder is missing or empty
+     * @param sei
+     * @return <code>true</code> if jaxws folder is missing or empty otherwise <code>false</code>
+     */
+    private boolean jaxwsRebuild(Sei sei){
+        File jaxwsDir = sei.jaxwsDir(getDestDir());
+        return !jaxwsDir.exists() || jaxwsDir.list().length == 0;
+    }
+
+    /**
+     * Checks if wsdl folder is missing or empty in case of wsdl generation
+     * @param sei
+     * @return <code>true</code> if wsdl generation is turend on and wsdl folder is missing or empty otherwise
+     * <code>false</code>
+     */
+    private boolean wsdlRebuild(Sei sei){
+        return this.genWsdl && (!getResourceDestDir().exists() || getResourceDestDir().list().length == 0);
     }
 
     protected void processSei( String aSei )
@@ -279,10 +328,33 @@ abstract class AbstractWsGenMojo
         return root.toURI().relativize( f.toURI() ).getPath();
     }
 
-    private Set<String> getSEIs( File directory )
-        throws MojoExecutionException
-    {
-        Set<String> seis = new HashSet<String>();
+    private Set<Sei> getSEIsJavassist(File directory)
+            throws MojoExecutionException, MojoFailureException {
+        Set<Sei> seis = new HashSet<Sei>();
+        if (!directory.exists() || directory.isFile()) {
+            return seis;
+        }
+
+        try {
+            for (String s : FileUtils.getFileAndDirectoryNames(directory, "**/*.class", null, true, true, true,
+                    false)) {
+                File classFile = new File(s);
+                Sei.Type type = Sei.findWebserviceAnnotation(classFile);
+                if (!type.classFile.isInterface() && type.webservice != null) {
+                    // more sophisticated checks are done by wsgen itself
+                    boolean isChanged = fileStateRegistry.isChanged(classFile);
+                    seis.add(new Sei(isChanged, type.classFile.getName(), type.webservice, classFile));
+                }
+            }
+        } catch (IOException ex) {
+            throw new MojoExecutionException(ex.getMessage(), ex);
+        }
+        return seis;
+    }
+
+    private Set<Sei> getSEIs( File directory )
+            throws MojoExecutionException, MojoFailureException {
+        Set<Sei> seis = new HashSet<Sei>();
         if ( !directory.exists() || directory.isFile() )
         {
             return seis;
@@ -296,13 +368,15 @@ abstract class AbstractWsGenMojo
             {
                 try
                 {
+                    File classFile = new File(directory, s);
                     String clsName = s.replace( File.separator, "." );
                     Class<?> c = cl.loadClass( clsName.substring( 0, clsName.length() - 6 ) );
                     WebService ann = c.getAnnotation( WebService.class );
                     if ( !c.isInterface() && ann != null )
                     {
                         // more sophisticated checks are done by wsgen itself
-                        seis.add( c.getName() );
+                        boolean isChanged = fileStateRegistry.isChanged(classFile);
+                        seis.add( new Sei(isChanged, c.getName(), ann, classFile));
                     }
                 }
                 catch ( ClassNotFoundException ex )
