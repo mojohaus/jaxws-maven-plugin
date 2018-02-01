@@ -38,19 +38,26 @@ package org.codehaus.mojo.jaxws;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.jws.WebService;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
+
+import static org.apache.maven.artifact.Artifact.SCOPE_COMPILE_PLUS_RUNTIME;
 
 /**
  * 
@@ -352,6 +359,27 @@ abstract class AbstractWsGenMojo
         return seis;
     }
 
+    private List<URL> projectDependenciesClasspathElements() throws MojoFailureException {
+        try{
+            MavenProject projectCopy = project.clone();
+            projectCopy.setArtifactFilter(new ScopeArtifactFilter(SCOPE_COMPILE_PLUS_RUNTIME));
+            List<String> compileClasspathElements = projectCopy.getCompileClasspathElements();
+            List<URL> urlCpath = new ArrayList<URL>( compileClasspathElements.size() );
+            for(String e : compileClasspathElements){
+                File file = new File(e);
+                if ( file.exists() )
+                {
+                    urlCpath.add( file.toURI().toURL() );
+                }
+            }
+            return urlCpath;
+        } catch (DependencyResolutionRequiredException e) {
+            throw new MojoFailureException("Couldn't resolve compile dependencies", e);
+        } catch (MalformedURLException e) {
+            throw new MojoFailureException("Couldn't resolve compile classpath", e);
+        }
+    }
+
     private Set<Sei> getSEIs( File directory )
             throws MojoExecutionException, MojoFailureException {
         Set<Sei> seis = new HashSet<Sei>();
@@ -362,7 +390,8 @@ abstract class AbstractWsGenMojo
         ClassLoader cl = null;
         try
         {
-            cl = new URLClassLoader( new URL[] { directory.toURI().toURL() } );
+            List<URL> urls = projectDependenciesClasspathElements();
+            cl = new URLClassLoader( urls.toArray(new URL[0]) );
             for ( String s : FileUtils.getFileAndDirectoryNames( directory, "**/*.class", null, false, true, true,
                                                                  false ) )
             {
