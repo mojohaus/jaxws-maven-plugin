@@ -234,8 +234,7 @@ abstract class AbstractJaxwsMojo
      */
     protected abstract boolean isXnocompile();
 
-    protected String getExtraClasspath()
-    {
+    protected String getExtraClasspath() throws MojoExecutionException {
         return null;
     }
 
@@ -395,6 +394,7 @@ abstract class AbstractJaxwsMojo
         String launched = "";
         Commandline cmd = new Commandline();
 
+        String extraClasspath = getExtraClasspath();
         if ( executable != null )
         {
             // use JDK wsgen/wsimport or equivalent executable
@@ -402,10 +402,10 @@ abstract class AbstractJaxwsMojo
             if ( executable.isFile() && executable.canExecute() )
             {
                 cmd.setExecutable( executable.getAbsolutePath() );
-                if ( getExtraClasspath() != null )
+                if ( extraClasspath != null )
                 {
                     cmd.createArg().setLine( "-cp" );
-                    cmd.createArg().setValue( getExtraClasspath() );
+                    cmd.createArg().setValue(extraClasspath);
                 }
             }
             else
@@ -444,8 +444,7 @@ abstract class AbstractJaxwsMojo
             cmd.createArg().setValue( classpath.invokerPath );
             cmd.createArg().setLine( Invoker.class.getCanonicalName() );
             cmd.createArg().setLine( getMain() );
-            String extraCp = getExtraClasspath();
-            String cp = ( ( extraCp != null ) ? ( extraCp + File.pathSeparator ) : "" ) + classpath.cp;
+            String cp = ( ( extraClasspath != null ) ? ( extraClasspath + File.pathSeparator ) : "" ) + classpath.cp;
             try
             {
                 File pathFile = createPathFile( cp );
@@ -667,7 +666,7 @@ abstract class AbstractJaxwsMojo
      * Places the artifact in either the endorsed artifacts set or the normal
      * artifacts map.  It will only add those in "compile" and "runtime" scope
      * or those that are specifically endorsed.
-     * 
+     *
      * @param a artifact to sort
      * @param artifactsMap normal artifacts map
      * @param endorsedArtifacts endorsed artifacts set

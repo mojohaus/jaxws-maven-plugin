@@ -136,7 +136,7 @@ public class TestWsGenMojo
     }
 
     @Override
-    protected String getExtraClasspath()
+    protected String getExtraClasspath() throws MojoExecutionException
     {
         String cp = super.getExtraClasspath();
         StringBuilder buf = new StringBuilder();
