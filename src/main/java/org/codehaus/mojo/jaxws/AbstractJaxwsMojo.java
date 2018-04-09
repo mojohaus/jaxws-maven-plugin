@@ -35,10 +35,7 @@
  */
 package org.codehaus.mojo.jaxws;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -64,11 +61,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.toolchain.Toolchain;
 import org.apache.maven.toolchain.ToolchainManager;
 import org.codehaus.plexus.util.Os;
-import org.codehaus.plexus.util.cli.CommandLineException;
-import org.codehaus.plexus.util.cli.CommandLineUtils;
-import org.codehaus.plexus.util.cli.Commandline;
-import org.codehaus.plexus.util.cli.DefaultConsumer;
-import org.codehaus.plexus.util.cli.StreamConsumer;
+import org.codehaus.plexus.util.cli.*;
 
 /**
  *
@@ -478,9 +471,17 @@ abstract class AbstractJaxwsMojo
                 getLog().debug( fullCommand );
             }
 
-            StreamConsumer sc = new DefaultConsumer();
+            StreamConsumer sc;
+            if (verbose){
+                sc = new CommandLineUtils.StringStreamConsumer();
+            } else {
+                sc = new DefaultConsumer();
+            }
             if ( CommandLineUtils.executeCommandLine( cmd, sc, sc ) != 0 )
             {
+                if (verbose) {
+                    getLog().error(((CommandLineUtils.StringStreamConsumer) sc).getOutput());
+                }
                 throw new MojoExecutionException( "Invocation of " + launched + " failed - check output" );
             }
         }
