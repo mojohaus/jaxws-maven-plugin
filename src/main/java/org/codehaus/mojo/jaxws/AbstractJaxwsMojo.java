@@ -684,6 +684,15 @@ abstract class AbstractJaxwsMojo
         }
     }
 
+    protected void addVmArg( String vmArg )
+    {
+        if ( vmArgs == null )
+        {
+            vmArgs = new ArrayList<String>();
+        }
+        vmArgs.add( vmArg );
+    }
+
     private boolean isEndorsedArtifact( Artifact a )
     {
         return "jaxws-api".equals( a.getArtifactId() )

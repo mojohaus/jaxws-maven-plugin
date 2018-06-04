@@ -389,6 +389,12 @@ abstract class WsImportMojo
             {
                 args.add( "-httpproxy:" + proxyString );
             }
+
+            String nonProxyHostsString = getActiveNonProxyHosts( settings );
+            if ( nonProxyHostsString != null )
+            {
+                addVmArg( "-Dhttp.nonProxyHosts=" + nonProxyHostsString.replace( "|", "^|" ) );
+            }
         }
 
         if ( packageName != null )
@@ -897,6 +903,20 @@ abstract class WsImportMojo
                 sb.append( ":" );
                 sb.append( p.getPort() );
                 retVal = sb.toString().trim();
+                break;
+            }
+        }
+        return retVal;
+    }
+
+    static String getActiveNonProxyHosts( Settings s )
+    {
+        String retVal = null;
+        for ( Proxy p : s.getProxies() )
+        {
+            if ( p.isActive() && "http".equals( p.getProtocol() ) )
+            {
+                retVal = p.getNonProxyHosts();
                 break;
             }
         }
