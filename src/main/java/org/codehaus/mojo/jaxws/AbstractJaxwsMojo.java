@@ -35,10 +35,7 @@
  */
 package org.codehaus.mojo.jaxws;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -64,11 +61,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.toolchain.Toolchain;
 import org.apache.maven.toolchain.ToolchainManager;
 import org.codehaus.plexus.util.Os;
-import org.codehaus.plexus.util.cli.CommandLineException;
-import org.codehaus.plexus.util.cli.CommandLineUtils;
-import org.codehaus.plexus.util.cli.Commandline;
-import org.codehaus.plexus.util.cli.DefaultConsumer;
-import org.codehaus.plexus.util.cli.StreamConsumer;
+import org.codehaus.plexus.util.cli.*;
 
 /**
  *
@@ -234,8 +227,7 @@ abstract class AbstractJaxwsMojo
      */
     protected abstract boolean isXnocompile();
 
-    protected String getExtraClasspath()
-    {
+    protected String getExtraClasspath() throws MojoExecutionException {
         return null;
     }
 
@@ -395,6 +387,7 @@ abstract class AbstractJaxwsMojo
         String launched = "";
         Commandline cmd = new Commandline();
 
+        String extraClasspath = getExtraClasspath();
         if ( executable != null )
         {
             // use JDK wsgen/wsimport or equivalent executable
@@ -402,10 +395,10 @@ abstract class AbstractJaxwsMojo
             if ( executable.isFile() && executable.canExecute() )
             {
                 cmd.setExecutable( executable.getAbsolutePath() );
-                if ( getExtraClasspath() != null )
+                if ( extraClasspath != null )
                 {
                     cmd.createArg().setLine( "-cp" );
-                    cmd.createArg().setValue( getExtraClasspath() );
+                    cmd.createArg().setValue(extraClasspath);
                 }
             }
             else
@@ -444,8 +437,7 @@ abstract class AbstractJaxwsMojo
             cmd.createArg().setValue( classpath.invokerPath );
             cmd.createArg().setLine( Invoker.class.getCanonicalName() );
             cmd.createArg().setLine( getMain() );
-            String extraCp = getExtraClasspath();
-            String cp = ( ( extraCp != null ) ? ( extraCp + File.pathSeparator ) : "" ) + classpath.cp;
+            String cp = ( ( extraClasspath != null ) ? ( extraClasspath + File.pathSeparator ) : "" ) + classpath.cp;
             try
             {
                 File pathFile = createPathFile( cp );
@@ -479,9 +471,17 @@ abstract class AbstractJaxwsMojo
                 getLog().debug( fullCommand );
             }
 
-            StreamConsumer sc = new DefaultConsumer();
+            StreamConsumer sc;
+            if (verbose){
+                sc = new CommandLineUtils.StringStreamConsumer();
+            } else {
+                sc = new DefaultConsumer();
+            }
             if ( CommandLineUtils.executeCommandLine( cmd, sc, sc ) != 0 )
             {
+                if (verbose) {
+                    getLog().error(((CommandLineUtils.StringStreamConsumer) sc).getOutput());
+                }
                 throw new MojoExecutionException( "Invocation of " + launched + " failed - check output" );
             }
         }
@@ -667,7 +667,7 @@ abstract class AbstractJaxwsMojo
      * Places the artifact in either the endorsed artifacts set or the normal
      * artifacts map.  It will only add those in "compile" and "runtime" scope
      * or those that are specifically endorsed.
-     * 
+     *
      * @param a artifact to sort
      * @param artifactsMap normal artifacts map
      * @param endorsedArtifacts endorsed artifacts set
