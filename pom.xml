@@ -117,11 +117,10 @@
   </ciManagement>
 
   <properties>
-    <jaxws-tools.version>2.2.10</jaxws-tools.version>
-    <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
+    <netbeans.hint.jdkPlatform>JDK_1.8</netbeans.hint.jdkPlatform>
     <scmpublish.content>${project.build.directory}/staging/jaxws-maven-plugin</scmpublish.content>
-    <mavenVersion>3.0</mavenVersion>
-    <mojo.java.target>1.6</mojo.java.target>
+    <mavenVersion>3.5.4</mavenVersion>
+    <mojo.java.target>1.8</mojo.java.target>
   </properties>
 
   <dependencyManagement>
@@ -129,12 +128,12 @@
       <dependency>
         <groupId>com.sun.xml.ws</groupId>
         <artifactId>jaxws-tools</artifactId>
-        <version>${jaxws-tools.version}</version>
+        <version>2.3.0.2</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-utils</artifactId>
-        <version>3.0.22</version>
+        <groupId>com.sun.activation</groupId>
+        <artifactId>javax.activation</artifactId>
+        <version>1.2.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -143,8 +142,11 @@
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-tools</artifactId>
-      <scope>runtime</scope>
     </dependency>
+    <dependency>
+	  <groupId>com.sun.activation</groupId>
+	  <artifactId>javax.activation</artifactId>
+	</dependency>
 
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -172,12 +174,9 @@
       <version>${mavenVersion}</version>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
+      <version>3.5.2</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -194,6 +193,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-plugin-plugin</artifactId>
+          <version>3.5.2</version>
           <configuration>
             <extractors>
               <extractor>java-annotations</extractor>

@@ -160,6 +160,15 @@ abstract class AbstractJaxwsMojo
      */
     @Parameter( defaultValue = "false" )
     private boolean useJdkToolchainExecutable;
+    
+    /**
+     * Set the <code>javax.xml.accessExternalSchema=all</code> JAXP 1.5 argument 
+     *
+     * @since 2.6
+     */
+    @Parameter( defaultValue = "true" )
+    private boolean accessExternalSchema;
+    
 
     /**
      * The current build session instance. This is used for toolchain manager API calls.
@@ -439,7 +448,13 @@ abstract class AbstractJaxwsMojo
                 }
             }
             InvokerCP classpath = getInvokerCP();
-            cmd.createArg().setValue( "-Xbootclasspath/p:" + classpath.ecp );
+            if(endorsedSupported()) {
+            	cmd.createArg().setValue( "-Xbootclasspath/p:" + classpath.ecp );
+            }
+            if (accessExternalSchema)
+            {
+            	cmd.createArg().setValue( "-Djavax.xml.accessExternalSchema=all" );
+            }
             cmd.createArg().setValue( "-cp" );
             cmd.createArg().setValue( classpath.invokerPath );
             cmd.createArg().setLine( Invoker.class.getCanonicalName() );
@@ -674,7 +689,7 @@ abstract class AbstractJaxwsMojo
      */
     private void addArtifactToCp( Artifact a, Map<String, Artifact> artifactsMap, Set<Artifact> endorsedArtifacts )
     {
-        if ( isEndorsedArtifact( a ) )
+        if ( endorsedSupported() && isEndorsedArtifact( a ) )
         {
             endorsedArtifacts.add( a );
         }
@@ -691,6 +706,11 @@ abstract class AbstractJaxwsMojo
             vmArgs = new ArrayList<String>();
         }
         vmArgs.add( vmArg );
+    }
+    
+    private boolean endorsedSupported()
+    {
+    	return Double.parseDouble(System.getProperty("java.specification.version")) <= 1.8;
     }
 
     private boolean isEndorsedArtifact( Artifact a )
