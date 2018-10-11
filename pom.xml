@@ -117,7 +117,7 @@
   </ciManagement>
 
   <properties>
-    <jaxws-tools.version>2.2.10</jaxws-tools.version>
+    <jaxws-tools.version>2.3.1</jaxws-tools.version>
     <netbeans.hint.jdkPlatform>JDK_1.8</netbeans.hint.jdkPlatform>
     <scmpublish.content>${project.build.directory}/staging/jaxws-maven-plugin</scmpublish.content>
     <mavenVersion>3.0</mavenVersion>
@@ -144,6 +144,11 @@
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-tools</artifactId>
       <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.jws</groupId>
+      <artifactId>javax.jws-api</artifactId>
+      <version>1.1</version>
     </dependency>
 
     <dependency>

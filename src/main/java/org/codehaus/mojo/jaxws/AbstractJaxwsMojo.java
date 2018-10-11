@@ -439,7 +439,9 @@ abstract class AbstractJaxwsMojo
                 }
             }
             InvokerCP classpath = getInvokerCP();
-            cmd.createArg().setValue( "-Xbootclasspath/p:" + classpath.ecp );
+            if ( !isModular() ) {
+                cmd.createArg().setValue( "-Xbootclasspath/p:" + classpath.ecp );
+            }
             cmd.createArg().setValue( "-cp" );
             cmd.createArg().setValue( classpath.invokerPath );
             cmd.createArg().setLine( Invoker.class.getCanonicalName() );
@@ -488,6 +490,18 @@ abstract class AbstractJaxwsMojo
         catch ( CommandLineException t )
         {
             throw new MojoExecutionException( t.getMessage(), t );
+        }
+    }
+
+    private boolean isModular() {
+        try
+        {
+            Class<?> moduleClass = Class.forName( "java.lang.Module" );
+            return moduleClass != null;
+        }
+        catch ( ClassNotFoundException e )
+        {
+            return false;
         }
     }
 
@@ -653,7 +667,7 @@ abstract class AbstractJaxwsMojo
      */
     private void addArtifactToCp( Artifact a, Map<String, Artifact> artifactsMap, Set<Artifact> endorsedArtifacts )
     {
-        if ( isEndorsedArtifact( a ) )
+        if ( !isModular() && isEndorsedArtifact( a ) )
         {
             endorsedArtifacts.add( a );
         }
