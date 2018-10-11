@@ -181,7 +181,6 @@ public class WsGenMojoITCase
 
     @Test
     public void jaxwscommons91()
-        throws IOException
     {
         project = new File( PROJECTS_DIR, "jaxwscommons-91" );
 
