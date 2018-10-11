@@ -35,7 +35,6 @@
  */
 package org.codehaus.mojo.jaxws;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -49,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
@@ -168,13 +168,13 @@ abstract class AbstractJaxwsMojo
     protected MavenSession session;
 
     // arguments supported by Metro 2.2/JAXWS RI 2.2.6
-    private static final List<String> METRO_22 = new ArrayList<String>();
+    private static final List<String> METRO_22 = new ArrayList<>();
 
     // arguments supported by Metro 2.2.1/JAXWS RI 2.2.7
-    private static final List<String> METRO_221 = new ArrayList<String>();
+    private static final List<String> METRO_221 = new ArrayList<>();
 
     // arguments supported by Metro 2.3/JAXWS RI 2.2.8
-    private static final List<String> METRO_23 = new ArrayList<String>();
+    private static final List<String> METRO_23 = new ArrayList<>();
 
     static
     {
@@ -247,7 +247,7 @@ abstract class AbstractJaxwsMojo
     protected List<String> getCommonArgs()
         throws MojoExecutionException
     {
-        List<String> commonArgs = new ArrayList<String>();
+        List<String> commonArgs = new ArrayList<>();
 
         if ( !isDefaultSrc( getSourceDestDir() ) || keep )
         {
@@ -515,15 +515,15 @@ abstract class AbstractJaxwsMojo
      */
     private InvokerCP getInvokerCP()
     {
-        Set<Artifact> endorsedArtifacts = new HashSet<Artifact>();
-        Map<String, Artifact> artifactsMap = new HashMap<String, Artifact>();
+        Set<Artifact> endorsedArtifacts = new HashSet<>();
+        Map<String, Artifact> artifactsMap = new HashMap<>();
         for ( Artifact a : pluginDescriptor.getArtifacts() )
         {
             addArtifactToCp( a, artifactsMap, endorsedArtifacts );
         }
 
-        StringBuilder cp = getCPasString( artifactsMap.values() );
-        StringBuilder ecp = getCPasString( endorsedArtifacts );
+        StringBuilder cp = new StringBuilder( getCPasString( artifactsMap.values() ) );
+        StringBuilder ecp = new StringBuilder( getCPasString( endorsedArtifacts ) );
 
         String invokerPath = null;
         try
@@ -537,7 +537,9 @@ abstract class AbstractJaxwsMojo
         }
 
         // add custom invoker path to normal classpath
-        cp.append( File.pathSeparator );
+        if ( cp.length() > 0 ) {
+            cp.append( File.pathSeparator );
+        }
         cp.append( invokerPath );
 
         // don't forget tools.jar
@@ -547,8 +549,13 @@ abstract class AbstractJaxwsMojo
         {
             toolsJar = new File( javaHome, "lib/tools.jar" );
         }
-        cp.append( File.pathSeparator );
-        cp.append( toolsJar.getAbsolutePath() );
+        // Java >= 9 doesn't have a tools.jar anymore
+        if ( toolsJar.exists() ) {
+            if ( cp.length() > 0 ) {
+                cp.append( File.pathSeparator );
+            }
+            cp.append( toolsJar.getAbsolutePath() );
+        }
 
         if ( getLog().isDebugEnabled() )
         {
@@ -609,19 +616,12 @@ abstract class AbstractJaxwsMojo
         Properties p = new Properties();
         p.put( "cp", cp.replace( File.separatorChar, '/' ) );
         getLog().debug( "stored classpath: " + cp.replace( File.separatorChar, '/' ) );
-        FileOutputStream fos = null;
-        try
-        {
-            fos = new FileOutputStream( f );
+        try (FileOutputStream fos = new FileOutputStream( f )) {
             p.store( fos, null );
         }
         catch ( IOException ex )
         {
             getLog().error( ex );
-        }
-        finally
-        {
-            closeQuietly( fos  );
         }
         return f;
     }
@@ -631,36 +631,15 @@ abstract class AbstractJaxwsMojo
         return Os.isFamily( Os.FAMILY_WINDOWS );
     }
 
-    private StringBuilder getCPasString( Collection<Artifact> artifacts )
+    protected String getCPasString( Collection<Artifact> artifacts )
     {
-        StringBuilder sb = new StringBuilder();
-        for ( Artifact a : artifacts )
-        {
-            if ( sb.length() > 0 )
-            {
-                sb.append( File.pathSeparator );
-            }
-            sb.append( a.getFile().getAbsolutePath() );
-        }
-        return sb;
+        return artifacts.stream().map( a -> a.getFile().getAbsolutePath() ).collect( Collectors.joining( File.pathSeparator ) );
     }
 
-    private String toString( Collection<Artifact> artifacts )
-    {
-        StringBuilder sb = new StringBuilder();
-        for ( Artifact a : artifacts )
-        {
-            if ( sb.length() > 0 )
-            {
-                sb.append( ' ' );
-            }
-            sb.append( a.getGroupId() );
-            sb.append( ':' );
-            sb.append( a.getArtifactId() );
-            sb.append( ':' );
-            sb.append( a.getVersion() );
-        }
-        return sb.toString();
+    private String toString(Collection<Artifact> artifacts) {
+        return artifacts
+                .stream().map( a -> String.join( ":", a.getGroupId(), a.getArtifactId(), a.getVersion() ) )
+                .collect( Collectors.joining( " " ) );
     }
 
     /**
@@ -688,7 +667,7 @@ abstract class AbstractJaxwsMojo
     {
         if ( vmArgs == null )
         {
-            vmArgs = new ArrayList<String>();
+            vmArgs = new ArrayList<>();
         }
         vmArgs.add( vmArg );
     }
@@ -714,20 +693,5 @@ abstract class AbstractJaxwsMojo
             tc = toolchainManager.getToolchainFromBuildContext( "jdk", session );
         }
         return tc;
-    }
-
-    protected void closeQuietly( Object o )
-    {
-        if ( o != null && o instanceof Closeable )
-        {
-            try
-            {
-                ( (Closeable) o ).close();
-            }
-            catch ( IOException ex )
-            {
-                // ignore
-            }
-        }
     }
 }

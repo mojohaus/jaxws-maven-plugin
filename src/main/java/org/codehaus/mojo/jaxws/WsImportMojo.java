@@ -375,7 +375,7 @@ abstract class WsImportMojo
     private ArrayList<String> getWsImportArgs( String relativePath )
         throws MojoExecutionException
     {
-        ArrayList<String> args = new ArrayList<String>();
+        ArrayList<String> args = new ArrayList<>();
         args.addAll( getCommonArgs() );
 
         if ( httpproxy != null )
@@ -551,7 +551,7 @@ abstract class WsImportMojo
         else
         {
             getLog().debug( "The binding Directory is " + bindingDirectory );
-            bindings = bindingDirectory.listFiles( new XMLFile() );
+            bindings = bindingDirectory.listFiles( XML_FILE_FILTER );
             if ( bindings == null )
             {
                 bindings = new File[0];
@@ -568,21 +568,25 @@ abstract class WsImportMojo
     private URL[] getWSDLFiles()
         throws MojoExecutionException
     {
-        List<URL> files = new ArrayList<URL>();
-        ClassLoader loader = null;
+        List<URL> files = new ArrayList<>();
 
-        try
+        List<String> classpathElements = getWSDLFileLookupClasspathElements();
+        List<URL> urlCpath = new ArrayList<>( classpathElements.size() );
+        for ( String el : classpathElements )
         {
-            List<String> classpathElements = getWSDLFileLookupClasspathElements();
-            List<URL> urlCpath = new ArrayList<URL>( classpathElements.size() );
-            for ( String el : classpathElements )
+            try
             {
                 URL u = new File( el ).toURI().toURL();
                 urlCpath.add( u );
             }
+            catch ( MalformedURLException e )
+            {
+                throw new MojoExecutionException( "Error while retrieving list of WSDL files to process", e );
+            }
+        }
         
-            loader = new URLClassLoader( urlCpath.toArray( new URL[0] ) );
-
+        try ( URLClassLoader loader = new URLClassLoader( urlCpath.toArray( new URL[0] ) ) )
+        {
             if ( wsdlFiles != null )
             {
                 for ( String wsdlFileName : wsdlFiles )
@@ -624,7 +628,7 @@ abstract class WsImportMojo
                 getLog().debug( "The wsdl Directory is " + wsdlDirectory );
                 if ( wsdlDirectory.exists() )
                 {
-                    File[] wsdls = wsdlDirectory.listFiles( new WSDLFile() );
+                    File[] wsdls = wsdlDirectory.listFiles( WSDL_FILE_FILTER );
                     for ( File wsdl : wsdls )
                     {
                         files.add( wsdl.toURI().toURL() );
@@ -648,12 +652,10 @@ abstract class WsImportMojo
                     if ( !( u == null || !"jar".equalsIgnoreCase( u.getProtocol() ) ) )
                     {
                         String path = u.getPath();
-                        JarFile jarFile = null;
-                        try
+                        Pattern p = Pattern.compile( dir.replace( File.separatorChar, '/' ) + PATTERN,
+                                                     Pattern.CASE_INSENSITIVE );
+                        try ( JarFile jarFile = new JarFile( path.substring( 5, path.indexOf( "!/" ) ) ) )
                         {
-                            Pattern p = Pattern.compile( dir.replace( File.separatorChar, '/' ) + PATTERN,
-                                                         Pattern.CASE_INSENSITIVE );
-                            jarFile = new JarFile( path.substring( 5, path.indexOf( "!/" ) ) );
                             Enumeration<JarEntry> jes = jarFile.entries();
                             while ( jes.hasMoreElements() )
                             {
@@ -670,10 +672,6 @@ abstract class WsImportMojo
                         {
                             getLog().error( ex );
                         }
-                        finally
-                        {
-                            closeQuietly( jarFile );
-                        }
                     }
                 }
             }
@@ -686,14 +684,6 @@ abstract class WsImportMojo
         {
             throw new MojoExecutionException( "Error while retrieving list of WSDL files to process", e );
         }
-        finally
-        {
-            if ( loader != null )
-            {
-                // if we created a classloader, cleanup
-                closeQuietly( loader );
-            }
-        }
 
         return files.toArray( new URL[0] );
     }
@@ -701,43 +691,12 @@ abstract class WsImportMojo
     /**
      * A class used to look up .xml documents from a given directory.
      */
-    private static final class XMLFile
-        implements FileFilter
-    {
-
-        /**
-         * Returns true if the file ends with an xml extension.
-         *
-         * @param file The filed being reviewed by the filter.
-         * @return true if an xml file.
-         */
-        @Override
-        public boolean accept( final File file )
-        {
-            return file.getName().endsWith( ".xml" );
-        }
-    }
+    private static final FileFilter XML_FILE_FILTER = f -> f.getName().endsWith( ".xml" );
 
     /**
      * A class used to look up .wsdl documents from a given directory.
      */
-    private static final class WSDLFile
-        implements FileFilter
-    {
-
-        /**
-         * Returns true if the file ends with a wsdl extension.
-         *
-         * @param file The filed being reviewed by the filter.
-         * @return true if an wsdl file.
-         */
-        @Override
-        public boolean accept( final File file )
-        {
-            return file.getName().endsWith( ".wsdl" );
-        }
-
-    }
+    private static final FileFilter WSDL_FILE_FILTER = f -> f.getName().endsWith( ".wsdl" );
 
     private String getRelativePath( File f )
     {
@@ -754,7 +713,7 @@ abstract class WsImportMojo
         }
         else if ( wsdlDirectory != null && wsdlDirectory.exists() )
         {
-            File[] wsdls = wsdlDirectory.listFiles( new WSDLFile() );
+            File[] wsdls = wsdlDirectory.listFiles( WSDL_FILE_FILTER );
             for ( File wsdl : wsdls )
             {
                 String path = f.getPath().replace( File.separatorChar, '/' );
@@ -848,8 +807,7 @@ abstract class WsImportMojo
 
     private String getHash( String s )
     {
-        Formatter formatter = new Formatter();
-        try
+        try ( Formatter formatter = new Formatter() )
         {
             MessageDigest md = MessageDigest.getInstance( "SHA" );
             for ( byte b : md.digest( s.getBytes( "UTF-8" ) ) )
@@ -865,10 +823,6 @@ abstract class WsImportMojo
         catch ( NoSuchAlgorithmException ex )
         {
             getLog().debug( ex.getMessage(), ex );
-        }
-        finally
-        {
-            closeQuietly( formatter );
         }
 
         // fallback to some default

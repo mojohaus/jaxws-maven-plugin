@@ -37,8 +37,8 @@
 package org.codehaus.mojo.jaxws;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -106,22 +106,11 @@ public class MainWsImportMojo
     @Override
     protected List<String> getWSDLFileLookupClasspathElements()
     {
-        List<String> list = new ArrayList<String>();
-
-        for ( Artifact a : project.getDependencyArtifacts() )
-        {
-            if ( Artifact.SCOPE_COMPILE.equals( a.getScope() )
-                    || Artifact.SCOPE_PROVIDED.equals( a.getScope() )
-                    || Artifact.SCOPE_SYSTEM.equals( a.getScope() ) )
-            {
-                File file = a.getFile();
-                if ( file != null )
-                {
-                    list.add( file.getPath() );
-                }
-            }
-        }
-
-        return list;
+        return project.getDependencyArtifacts().stream()
+                .filter( a -> (Artifact.SCOPE_COMPILE.equals( a.getScope() )
+                        || Artifact.SCOPE_PROVIDED.equals( a.getScope() )
+                        || Artifact.SCOPE_SYSTEM.equals( a.getScope()) )
+                        && null != a.getFile() )
+                .map( a -> a.getFile().getPath() ).collect( Collectors.toList() );
     }
 }

@@ -43,9 +43,9 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.jws.WebService;
 
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -136,7 +136,7 @@ abstract class AbstractWsGenMojo
     public void executeJaxws()
         throws MojoExecutionException, MojoFailureException
     {
-        Set<String> seis = new HashSet<String>();
+        Set<String> seis = new HashSet<>();
         if ( sei != null )
         {
             seis.add( sei );
@@ -191,14 +191,9 @@ abstract class AbstractWsGenMojo
     @Override
     protected String getExtraClasspath()
     {
-        StringBuilder buf = new StringBuilder();
-        buf.append( getClassesDir().getAbsolutePath() );
-        for ( Artifact a : project.getArtifacts() )
-        {
-            buf.append( File.pathSeparatorChar );
-            buf.append( a.getFile().getAbsolutePath() );
-        }
-        return buf.toString();
+        return String.join( File.pathSeparator,
+                getClassesDir().getAbsolutePath(),
+                getCPasString( project.getArtifacts() ) );
     }
 
     @Override
@@ -213,7 +208,7 @@ abstract class AbstractWsGenMojo
     private ArrayList<String> getWsGenArgs( String aSei )
         throws MojoExecutionException
     {
-        ArrayList<String> args = new ArrayList<String>();
+        ArrayList<String> args = new ArrayList<>();
         args.addAll( getCommonArgs() );
 
         if ( this.genWsdl )
@@ -282,15 +277,13 @@ abstract class AbstractWsGenMojo
     private Set<String> getSEIs( File directory )
         throws MojoExecutionException
     {
-        Set<String> seis = new HashSet<String>();
+        Set<String> seis = new HashSet<>();
         if ( !directory.exists() || directory.isFile() )
         {
             return seis;
         }
-        ClassLoader cl = null;
-        try
+        try ( URLClassLoader cl = new URLClassLoader( new URL[] { directory.toURI().toURL() } ) )
         {
-            cl = new URLClassLoader( new URL[] { directory.toURI().toURL() } );
             for ( String s : FileUtils.getFileAndDirectoryNames( directory, "**/*.class", null, false, true, true,
                                                                  false ) )
             {
@@ -314,10 +307,6 @@ abstract class AbstractWsGenMojo
         catch ( IOException ex )
         {
             throw new MojoExecutionException( ex.getMessage(), ex );
-        }
-        finally
-        {
-            closeQuietly( cl );
         }
         return seis;
     }

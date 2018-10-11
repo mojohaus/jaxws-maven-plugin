@@ -19,6 +19,7 @@ package org.codehaus.mojo.jaxws;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -51,7 +52,9 @@ public final class Invoker
             File pathFile = new File( args[2] );
             pathFile.deleteOnExit();
             Properties p = new Properties();
-            p.load( new FileInputStream( pathFile ) );
+            try ( InputStream is = new FileInputStream( pathFile ) ) {
+                p.load( is );
+            }
             cp = p.getProperty( "cp" );
             idx = 3;
         }
@@ -121,7 +124,7 @@ public final class Invoker
 
     private static URL[] toUrls( String c )
     {
-        List<URL> urls = new ArrayList<URL>();
+        List<URL> urls = new ArrayList<>();
         for ( String s : c.split( File.pathSeparator ) )
         {
             try

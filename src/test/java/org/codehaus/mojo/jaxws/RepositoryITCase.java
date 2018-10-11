@@ -41,14 +41,7 @@ public class RepositoryITCase
     {
         File projects = new File( System.getProperty( "it.projects.dir" ) );
         File wsDir = new File( new File( projects.getParentFile(), "it-repo" ), "com/sun/xml/ws" );
-        FilenameFilter ff = new FilenameFilter()
-        {
-            @Override
-            public boolean accept( File dir, String name )
-            {
-                return new File( dir, name ).isDirectory();
-            }
-        };
+        FilenameFilter ff = ( dir, name ) -> new File( dir, name ).isDirectory();
 
         File versions = new File( wsDir, "jaxws-rt" );
         List<String> list = Arrays.asList( versions.list( ff ) );

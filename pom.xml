@@ -118,10 +118,10 @@
 
   <properties>
     <jaxws-tools.version>2.2.10</jaxws-tools.version>
-    <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
+    <netbeans.hint.jdkPlatform>JDK_1.8</netbeans.hint.jdkPlatform>
     <scmpublish.content>${project.build.directory}/staging/jaxws-maven-plugin</scmpublish.content>
     <mavenVersion>3.0</mavenVersion>
-    <mojo.java.target>1.6</mojo.java.target>
+    <mojo.java.target>1.8</mojo.java.target>
   </properties>
 
   <dependencyManagement>
@@ -269,24 +269,6 @@
   </reporting>
 
   <profiles>
-    <profile>
-      <!-- This is only for non MAC OS X builds, hence the property below -->
-      <id>default-tools.jar</id>
-      <activation>
-        <file>
-          <exists>${java.home}/../lib/tools.jar</exists>
-        </file>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>com.sun</groupId>
-          <artifactId>tools</artifactId>
-          <version>1.6.0</version>
-          <scope>system</scope>
-          <systemPath>${java.home}/../lib/tools.jar</systemPath>
-        </dependency>
-      </dependencies>
-    </profile>
     <profile>
       <id>coverage</id>
       <activation>

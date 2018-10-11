@@ -50,21 +50,12 @@ public class Assertions
         File f = new File( project, path );
         Assert.assertTrue( f.exists(), f.getAbsolutePath() + " does not exist" );
         Assert.assertTrue( f.isFile(), f.getAbsolutePath() + " is not a file" );
-        BufferedReader r = new BufferedReader( new FileReader( f ) );
-        try
+        try ( BufferedReader r = new BufferedReader( new FileReader( f ) ) )
         {
-            String line;
-            while ( ( line = r.readLine() ) != null )
+            if ( r.lines().filter( l -> l.contains(s) ).findFirst().isPresent() )
             {
-                if ( line.contains( s ) )
-                {
-                    return;
-                }
+                return;
             }
-        }
-        finally
-        {
-            r.close();
         }
         Assert.fail( "'" + s + "' is missing in:" + f.getAbsolutePath() );
     }
@@ -75,9 +66,10 @@ public class Assertions
         File f = new File( project, "target/" + jarName );
         Assert.assertTrue( f.exists(), f.getAbsolutePath() + " does not exist" );
         Assert.assertTrue( f.isFile(), f.getAbsolutePath() + " is not a file" );
-        ZipFile zf = new ZipFile( f );
-        Assert.assertNotNull( zf.getEntry( path ), "'" + path + "' is missing in: " + jarName );
-        zf.close();
+        try ( ZipFile zf = new ZipFile( f ) )
+        {
+            Assert.assertNotNull( zf.getEntry( path ), "'" + path + "' is missing in: " + jarName );
+        }
     }
 
     public static void assertJarNotContains( File project, String jarName, String path )
@@ -86,8 +78,9 @@ public class Assertions
         File f = new File( project, "target/" + jarName );
         Assert.assertTrue( f.exists(), f.getAbsolutePath() + " does not exist" );
         Assert.assertTrue( f.isFile(), f.getAbsolutePath() + " is not a file" );
-        ZipFile zf = new ZipFile( f );
-        Assert.assertNull( zf.getEntry( path ), "'" + path + "' is in: " + jarName );
-        zf.close();
+        try ( ZipFile zf = new ZipFile( f ) )
+        {
+            Assert.assertNull( zf.getEntry( path ), "'" + path + "' is in: " + jarName );
+        }
     }
 }
