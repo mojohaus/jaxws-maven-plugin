@@ -33,6 +33,17 @@
     <name>JAX_WS_COMMONS-91</name>
     <description>wsgen - failure when wsdl generation is set to true</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>javax.jws</groupId>
+            <artifactId>javax.jws-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.ws</groupId>
+            <artifactId>jaxws-api</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
