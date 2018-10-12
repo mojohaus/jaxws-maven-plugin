@@ -28,6 +28,8 @@ import static org.codehaus.mojo.jaxws.Assertions.assertJarNotContains;
 import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
 
+import com.sun.tools.ws.ToolVersion;
+
 /**
  *
  * @author lukas
@@ -151,6 +153,7 @@ public class MixedITCase
 
     private String getExpectedToolsVersion()
     {
+        /*
         String v = System.getProperty( "java.version" );
         if ( v == null )
         {
@@ -164,7 +167,7 @@ public class MixedITCase
         {
             return "2.1";
         }
-        fail( "Cannot detect JAX-WS RI version in JDK: " + v );
-        return null;
+        */
+        return ToolVersion.VERSION.BUILD_ID;
     }
 }
