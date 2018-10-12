@@ -4,6 +4,9 @@ env:
   - MAVEN_VERSION=3.3.9
 jdk:
   - oraclejdk8
+  - oraclejdk9
+  - openjdk10
+  - openjdk11
 addons:
   # Required to avoid openjdk7 buffer overflow:
   # https://github.com/travis-ci/travis-ci/issues/5227
