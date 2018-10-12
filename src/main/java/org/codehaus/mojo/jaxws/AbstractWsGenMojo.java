@@ -282,7 +282,7 @@ abstract class AbstractWsGenMojo
         {
             return seis;
         }
-        try ( URLClassLoader cl = new URLClassLoader( new URL[] { directory.toURI().toURL() } ) )
+        try ( URLClassLoader cl = new URLClassLoader( new URL[] { directory.toURI().toURL() }, getClass().getClassLoader() ) )
         {
             for ( String s : FileUtils.getFileAndDirectoryNames( directory, "**/*.class", null, false, true, true,
                                                                  false ) )

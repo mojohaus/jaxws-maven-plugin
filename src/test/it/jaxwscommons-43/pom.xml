@@ -34,6 +34,14 @@
     <name>JAX_WS_COMMONS-43</name>
     <description>wsgen - autodiscovery of SEI classes</description>
 
+    <dependencies>
+      <dependency>
+        <groupId>javax.jws</groupId>
+        <artifactId>javax.jws-api</artifactId>
+        <version>1.1</version>
+      </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
