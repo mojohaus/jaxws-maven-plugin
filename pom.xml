@@ -117,7 +117,7 @@
   </ciManagement>
 
   <properties>
-    <jaxws-tools.version>2.2.10</jaxws-tools.version>
+    <jaxws-tools.version>2.3.1</jaxws-tools.version>
     <netbeans.hint.jdkPlatform>JDK_1.6</netbeans.hint.jdkPlatform>
     <scmpublish.content>${project.build.directory}/staging/jaxws-maven-plugin</scmpublish.content>
     <mavenVersion>3.0</mavenVersion>
@@ -144,6 +144,12 @@
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-tools</artifactId>
       <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>rt</artifactId>
+      <version>2.3.1</version>
     </dependency>
 
     <dependency>
@@ -210,6 +216,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.0</version>
           <configuration>
             <forkMode>once</forkMode>
           </configuration>
@@ -225,6 +232,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.0</version>
           <configuration>
             <debug>true</debug>
             <proc>none</proc>
@@ -240,6 +248,15 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
+        <version>3.5.2</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>8</source>
+          <target>8</target>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -249,6 +266,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
+        <version>3.5.2</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

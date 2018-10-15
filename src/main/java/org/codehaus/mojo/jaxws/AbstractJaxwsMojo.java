@@ -439,7 +439,8 @@ abstract class AbstractJaxwsMojo
                 }
             }
             InvokerCP classpath = getInvokerCP();
-            cmd.createArg().setValue( "-Xbootclasspath/p:" + classpath.ecp );
+            // Commented out since this arg is not supported anymore
+            // cmd.createArg().setValue( "-Xbootclasspath/p:" + classpath.ecp );
             cmd.createArg().setValue( "-cp" );
             cmd.createArg().setValue( classpath.invokerPath );
             cmd.createArg().setLine( Invoker.class.getCanonicalName() );
