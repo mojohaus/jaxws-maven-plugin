@@ -481,7 +481,20 @@ abstract class AbstractJaxwsMojo
                 getLog().debug( fullCommand );
             }
 
-            StreamConsumer sc = new DefaultConsumer();
+            // The DefaultConsumer class in plexus-utils-3.1.0 first calls
+            // System.out.println() to print the message and then throws an
+            // IOException when System.out.checkError() returns true. This
+            // results in a MojoExecutionException when the plugin is being used
+            // in Eclipse.
+            // In contrary to this the implementation in plexus-utils-3.0.2x
+            // simply calls System.out.println() without further checks...
+            StreamConsumer sc = new StreamConsumer() {
+                public void consumeLine( String line )
+                {
+                    System.out.println( line );
+                }
+            };
+            // StreamConsumer sc = new DefaultConsumer();
             if ( CommandLineUtils.executeCommandLine( cmd, sc, sc ) != 0 )
             {
                 throw new MojoExecutionException( "Invocation of " + launched + " failed - check output" );
