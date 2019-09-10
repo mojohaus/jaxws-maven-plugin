@@ -138,7 +138,6 @@ public class WsImportMojoITCase
 
     @Test
     public void jaxwscommons49()
-        throws IOException
     {
         project = new File( PROJECTS_DIR, "jaxwscommons-49" );
 
@@ -163,7 +162,6 @@ public class WsImportMojoITCase
 
     @Test
     public void jaxwscommons87()
-        throws IOException
     {
         project = new File( PROJECTS_DIR, "jaxwscommons-87" );
 
@@ -174,7 +172,6 @@ public class WsImportMojoITCase
 
     @Test
     public void metro_wsimport()
-        throws IOException
     {
         project = new File( PROJECTS_DIR, "metro" );
 
