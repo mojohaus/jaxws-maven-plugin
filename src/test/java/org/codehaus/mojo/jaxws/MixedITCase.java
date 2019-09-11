@@ -153,21 +153,6 @@ public class MixedITCase
 
     private String getExpectedToolsVersion()
     {
-        /*
-        String v = System.getProperty( "java.version" );
-        if ( v == null )
-        {
-            fail( "Cannot detect JAX-WS RI version in JDK: " + v );
-        }
-        if ( v.startsWith( "1.7" ) || v.startsWith( "1.8" ) )
-        {
-            return "2.2";
-        }
-        else if ( v.startsWith( "1.6" ) )
-        {
-            return "2.1";
-        }
-        */
         return ToolVersion.VERSION.BUILD_ID;
     }
 }
