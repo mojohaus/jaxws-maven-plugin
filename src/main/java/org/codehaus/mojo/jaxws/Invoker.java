@@ -59,17 +59,16 @@ public final class Invoker
             idx = 3;
         }
 
-        URLClassLoader cl = new URLClassLoader( toUrls( cp ) );
-
         // save original classloader and java.class.path property
         ClassLoader orig = Thread.currentThread().getContextClassLoader();
         String origJcp = System.getProperty( "java.class.path" );
 
-        // set to values for tool invocation
-        Thread.currentThread().setContextClassLoader( cl );
-        System.setProperty( "java.class.path", cp );
-        try
+        try ( URLClassLoader cl = new URLClassLoader( toUrls( cp ) ) )
         {
+            // set to values for tool invocation
+            Thread.currentThread().setContextClassLoader( cl );
+            System.setProperty( "java.class.path", cp );
+
             Class<?> toolClass = cl.loadClass( toolClassname );
 
             Object tool = toolClass.getConstructor( OutputStream.class ).newInstance( System.out );

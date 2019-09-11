@@ -3,7 +3,7 @@ env:
   - MAVEN_VERSION=3.0.5
   - MAVEN_VERSION=3.3.9
 jdk:
-  - oraclejdk8
+  - openjdk8
   - oraclejdk9
   - openjdk10
   - openjdk11
