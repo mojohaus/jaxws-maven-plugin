@@ -134,13 +134,13 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
-        <version>3.1.0</version>
+        <version>3.2.1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-annotations</artifactId>
         <!--must be same version of m-plugin-p -->
-        <version>3.5.2</version>
+        <version>3.6.0</version>
       </dependency>      
     </dependencies>
   </dependencyManagement>
@@ -205,7 +205,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-plugin-plugin</artifactId>
-          <version>3.5.2</version>
+          <version>3.6.0</version>
           <configuration>
             <extractors>
               <extractor>java-annotations</extractor>
