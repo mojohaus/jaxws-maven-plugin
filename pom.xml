@@ -117,7 +117,7 @@
   </ciManagement>
 
   <properties>
-    <jaxws-tools.version>2.3.1</jaxws-tools.version>
+    <jaxws-tools.version>2.3.2</jaxws-tools.version>
     <netbeans.hint.jdkPlatform>JDK_1.8</netbeans.hint.jdkPlatform>
     <scmpublish.content>${project.build.directory}/staging/jaxws-maven-plugin</scmpublish.content>
     <mavenVersion>3.0</mavenVersion>

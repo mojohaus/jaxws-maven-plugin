@@ -30,10 +30,10 @@
     </parent>
     
     <artifactId>jaxwscommons81</artifactId>
-    <version>2.2.6</version>
+    <version>1.0-SNAPSHOT</version>
 
     <name>JAX_WS_COMMONS-81</name>
-    <description>wsgen, wsimport - support tools from JDK</description>
+    <description>wsgen, wsimport - support tools from JAX-WS RI</description>
 
     <dependencies>
         <dependency>
@@ -49,6 +49,31 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>unpack-jaxws-ri-tools</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.sun.xml.ws</groupId>
+                                    <artifactId>jaxws-ri</artifactId>
+                                    <version>${jaxws-ri.version}</version>
+                                    <type>zip</type>
+                                    <outputDirectory>${project.build.directory}/unpack</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>@project.groupId@</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
                 <executions>
@@ -58,6 +83,7 @@
                             <goal>wsgen</goal>
                         </goals>
                         <configuration>
+                            <executable>${tool.wsgen}</executable>
                             <sei>org.jvnet.jax_ws_commons.jaxws.test.EchoService</sei>
                             <destDir>${project.build.directory}/custom/classes</destDir>
                             <extension>true</extension>
@@ -79,6 +105,7 @@
                             <goal>wsgen</goal>
                         </goals>
                         <configuration>
+                            <executable>${tool.wsgen}</executable>
                             <sei>org.jvnet.jax_ws_commons.jaxws.test.AddService</sei>
                         </configuration>
                     </execution>
@@ -88,6 +115,7 @@
                             <goal>wsgen-test</goal>
                         </goals>
                         <configuration>
+                            <executable>${tool.wsgen}</executable>
                             <sei>org.jvnet.jax_ws_commons.jaxws.test.TService</sei>
                             <genWsdl>true</genWsdl>
                             <portname>{http://example.org/TestService}ExPort</portname>
@@ -99,6 +127,9 @@
                         <goals>
                             <goal>wsimport</goal>
                         </goals>
+                        <configuration>
+                            <executable>${tool.wsimport}</executable>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>id5</id>
@@ -106,6 +137,7 @@
                             <goal>wsimport</goal>
                         </goals>
                         <configuration>
+                            <executable>${tool.wsimport}</executable>
                             <wsdlUrls>
                                 <wsdlUrl>https://raw.githubusercontent.com/javaee/metro-jax-ws/a661c053aa1a948893b745936a387bf5190c254c/jaxws-ri/tests/unit/testcases/fromwsdl/additional_header/doclit/server/sample.wsdl</wsdlUrl>
                             </wsdlUrls>
@@ -130,6 +162,7 @@
                             <goal>wsimport-test</goal>
                         </goals>
                         <configuration>
+                            <executable>${tool.wsimport}</executable>
                             <wsdlDirectory>${project.basedir}/src/test-wsdl</wsdlDirectory>
                             <extension>true</extension>
                             <verbose>true</verbose>
@@ -140,4 +173,30 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>win</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <tool.wsgen>${project.build.directory}/unpack/jaxws-ri/bin/wsgen.bat</tool.wsgen>
+                <tool.wsimport>${project.build.directory}/unpack/jaxws-ri/bin/wsimport.bat</tool.wsimport>
+            </properties>
+        </profile>
+        <profile>
+            <id>nix</id>
+            <activation>
+                <os>
+                    <family>!windows</family>
+                </os>
+            </activation>
+            <properties>
+                <tool.wsgen>${project.build.directory}/unpack/jaxws-ri/bin/wsgen.sh</tool.wsgen>
+                <tool.wsimport>${project.build.directory}/unpack/jaxws-ri/bin/wsimport.sh</tool.wsimport>
+            </properties>
+        </profile>
+    </profiles>
 </project>
