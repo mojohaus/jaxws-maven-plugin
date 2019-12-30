@@ -202,38 +202,7 @@
   <build>
     <pluginManagement>
       <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-plugin-plugin</artifactId>
-          <version>3.6.0</version>
-          <configuration>
-            <extractors>
-              <extractor>java-annotations</extractor>
-            </extractors>
-          </configuration>
-          <executions>
-            <execution>
-              <id>default-descriptor</id>
-              <phase>process-classes</phase>
-            </execution>
-          </executions>
-        </plugin>
         <!-- inherited plugins -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <forkMode>once</forkMode>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.glassfish.copyright</groupId>
-          <artifactId>glassfish-copyright-maven-plugin</artifactId>
-          <configuration>
-            <templateFile>${project.basedir}/copyright.txt</templateFile>
-            <excludeFile>${project.basedir}/copyright-exclude</excludeFile>
-          </configuration>
-        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
@@ -250,15 +219,40 @@
           <artifactId>maven-invoker-plugin</artifactId>
           <version>3.2.1</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-plugin-plugin</artifactId>
+          <version>3.6.0</version>
+          <configuration>
+            <extractors>
+              <extractor>java-annotations</extractor>
+            </extractors>
+          </configuration>
+          <executions>
+            <execution>
+              <id>default-descriptor</id>
+              <phase>process-classes</phase>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <forkMode>once</forkMode>
+          </configuration>
+        </plugin>
+        <!-- additional plugins -->
+        <plugin>
+          <groupId>org.glassfish.copyright</groupId>
+          <artifactId>glassfish-copyright-maven-plugin</artifactId>
+          <configuration>
+            <templateFile>${project.basedir}/copyright.txt</templateFile>
+            <excludeFile>${project.basedir}/copyright-exclude</excludeFile>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
-
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-plugin-plugin</artifactId>
-      </plugin>
-    </plugins>
   </build>
 
   <reporting>
