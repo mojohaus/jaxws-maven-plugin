@@ -25,7 +25,6 @@ import static org.codehaus.mojo.jaxws.Assertions.assertFileNotPresent;
 import static org.codehaus.mojo.jaxws.Assertions.assertFilePresent;
 import static org.codehaus.mojo.jaxws.Assertions.assertJarContains;
 import static org.codehaus.mojo.jaxws.Assertions.assertJarNotContains;
-import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
 
 import com.sun.tools.ws.ToolVersion;
@@ -143,12 +142,12 @@ public class MixedITCase
                             "service name=\"ExService\"" );
 
         // package wsdl
-        assertJarContains( project, "jaxwscommons81-2.2.6.jar", "META-INF/wsdl/EchoService.wsdl" );
+        assertJarContains( project, "jaxwscommons81-1.0-SNAPSHOT.jar", "META-INF/wsdl/EchoService.wsdl" );
         // assertJarNotContains(project, "jaxwscommons81-2.2.6.jar", "META-INF/wsdl/EchoService_schema1.xsd");
-        assertJarNotContains( project, "jaxwscommons81-2.2.6.jar", "META-INF/EchoService_schema.xsd" );
-        assertJarNotContains( project, "jaxwscommons81-2.2.6.jar", "EchoService_schema.xsd" );
-        assertJarNotContains( project, "jaxwscommons81-2.2.6.jar", "META-INF/wsdl/ExService.wsdl" );
-        assertJarNotContains( project, "jaxwscommons81-2.2.6.jar", "ExService.wsdl" );
+        assertJarNotContains( project, "jaxwscommons81-1.0-SNAPSHOT.jar", "META-INF/EchoService_schema.xsd" );
+        assertJarNotContains( project, "jaxwscommons81-1.0-SNAPSHOT.jar", "EchoService_schema.xsd" );
+        assertJarNotContains( project, "jaxwscommons81-1.0-SNAPSHOT.jar", "META-INF/wsdl/ExService.wsdl" );
+        assertJarNotContains( project, "jaxwscommons81-1.0-SNAPSHOT.jar", "ExService.wsdl" );
     }
 
     private String getExpectedToolsVersion()

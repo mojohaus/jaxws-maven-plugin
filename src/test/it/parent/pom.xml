@@ -31,7 +31,7 @@
 
     <properties>
         <jaxws-ri.version>@jaxws-tools.version@</jaxws-ri.version>
-        <jaxws-api.version>@jaxws-tools.version@</jaxws-api.version>
+        <jaxws-api.version>2.3.1</jaxws-api.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <metro.version>2.3.1</metro.version>
         <jaxws.plugin.version>@project.version@</jaxws.plugin.version>
