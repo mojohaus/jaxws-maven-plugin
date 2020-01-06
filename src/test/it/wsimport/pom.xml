@@ -29,47 +29,30 @@
         <version>@project.version@</version>
     </parent>
 
-    <artifactId>mojo.it.wsimporttest217</artifactId>
+    <artifactId>mojo.it.wsimporttest</artifactId>
 
     <name>Test project for wsimport</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.xml.ws</groupId>
+            <artifactId>jaxws-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.jws</groupId>
+            <artifactId>javax.jws-api</artifactId>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>@project.groupId@</groupId>
                 <artifactId>jaxws-maven-plugin</artifactId>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.sun.xml.ws</groupId>
-                        <artifactId>jaxws-tools</artifactId>
-                        <version>2.1.7</version>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>org.jvnet.staxex</groupId>
-                                <artifactId>stax-ex</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.jvnet.staxex</groupId>
-                        <artifactId>stax-ex</artifactId>
-                        <version>1.2</version>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>javax.xml.stream</groupId>
-                                <artifactId>stax-api</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
-                </dependencies>
                 <executions>
                     <execution>
                         <id>id1</id>

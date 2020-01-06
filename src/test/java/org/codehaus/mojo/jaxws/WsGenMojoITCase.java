@@ -44,76 +44,12 @@ public class WsGenMojoITCase
     {
     }
 
-    @Test( enabled = false )
-    public void wsgen217()
-        throws IOException
-    {
-        project = new File( PROJECTS_DIR, "wsgen217" );
-
-        // check EchoService
-        assertFilePresent( project,
-                           "target/custom/sources/org/jvnet/jax_ws_commons/jaxws/test/jaxws/EchoResponse.java" );
-        assertFilePresent( project, "target/custom/classes/org/jvnet/jax_ws_commons/jaxws/test/jaxws/Echo.class" );
-        assertFilePresent( project, "target/classes/org/jvnet/jax_ws_commons/jaxws/test/EchoService.class" );
-        // -wsdl[...]
-        assertFilePresent( project, "target/wsdl/EchoService.wsdl" );
-        assertFilePresent( project, "target/wsdl/EchoService_schema1.xsd" );
-        assertFileNotPresent( project, "target/jaxws/wsgen/wsdl/EchoService.wsdl" );
-        assertFileNotPresent( project, "target/generated-sources/wsdl/EchoService.wsdl" );
-        assertFileNotPresent( project, "target/generated-sources/test-wsdl/EchoService.wsdl" );
-        // -wsdl:Xsoap12 + -extension
-        assertFileContains( project, "target/wsdl/EchoService.wsdl", "http://schemas.xmlsoap.org/wsdl/soap12/" );
-        // dependency on 2.1.7
-        assertFileContains( project, "target/wsdl/EchoService.wsdl", "JAX-WS RI 2.1.7" );
-
-        // check AddService
-        assertFilePresent( project, "target/classes/org/jvnet/jax_ws_commons/jaxws/test/jaxws/Add.class" );
-        assertFilePresent( project, "target/classes/org/jvnet/jax_ws_commons/jaxws/test/AddService.class" );
-        assertFileNotPresent( project, "target/classes/org/jvnet/jax_ws_commons/jaxws/test/jaxws/Add.java" );
-        assertFileNotPresent( project, "target/classes/org/jvnet/jax_ws_commons/jaxws/test/AddService.java" );
-        assertFileNotPresent( project, "target/wsdl/AddService.wsdl" );
-        assertFileNotPresent( project, "target/jaxws/wsgen/wsdl/AddService.wsdl" );
-
-        // check TService
-        assertFilePresent( project, "target/generated-sources/test-wsdl/TService.wsdl" );
-        assertFilePresent( project, "target/generated-sources/test-wsdl/ExService.wsdl" );
-        assertFilePresent( project, "target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/TService.class" );
-        assertFilePresent( project,
-                           "target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/jaxws/HelloResponse.class" );
-        assertFilePresent( project,
-                           "target/generated-sources/test-wsgen/org/jvnet/jax_ws_commons/jaxws/test/jaxws/HelloResponse.java" );
-        assertFileNotPresent( project,
-                              "target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/jaxws/HelloResponse.java" );
-        // dependency on 2.1.7
-        assertFileContains( project, "target/generated-sources/test-wsdl/ExService.wsdl", "JAX-WS RI 2.1.7" );
-        // -portname
-        assertFileContains( project, "target/generated-sources/test-wsdl/ExService.wsdl", "port name=\"ExPort\"" );
-        // -servicename
-        assertFileContains( project, "target/generated-sources/test-wsdl/ExService.wsdl",
-                            "service name=\"ExService\"" );
-
-        // -encoding is not supported, warning should be present
-        assertFileContains( project, "build.log", "'-encoding' is not supported by jaxws-tools:2.1.7" );
-
-        // package wsdl
-        assertJarContains( project, "mojo.it.wsgentest217-2.2.6.jar", "META-INF/wsdl/EchoService.wsdl" );
-        assertJarContains( project, "mojo.it.wsgentest217-2.2.6.jar", "META-INF/wsdl/EchoService_schema1.xsd" );
-        assertJarNotContains( project, "mojo.it.wsgentest217-2.2.6.jar", "META-INF/EchoService_schema.xsd" );
-        assertJarNotContains( project, "mojo.it.wsgentest217-2.2.6.jar", "EchoService_schema.xsd" );
-        assertJarNotContains( project, "mojo.it.wsgentest217-2.2.6.jar", "META-INF/wsdl/ExService.wsdl" );
-        assertJarNotContains( project, "mojo.it.wsgentest217-2.2.6.jar", "ExService.wsdl" );
-    }
-
     @Test
-    public void wsgen22()
+    public void wsgen()
         throws IOException
     {
-        project = new File( PROJECTS_DIR, "wsgen22" );
-        String v = System.getProperty( "jaxws-ri.version" );
-        // remove 'promoted-' from the version string if needed
-        int i = v.indexOf( '-' );
-        int j = v.lastIndexOf( '-' );
-        String version = i != j ? v.substring( 0, i ) + v.substring( j ) : v;
+        project = new File( PROJECTS_DIR, "wsgen" );
+        String version = System.getProperty( "jaxws-ri.version" );
 
         // check EchoService
         assertFilePresent( project,
@@ -130,7 +66,7 @@ public class WsGenMojoITCase
         assertFileNotPresent( project, "target/generated-sources/test-wsdl/EchoService.wsdl" );
         // -wsdl:Xsoap12 + -extension
         assertFileContains( project, "target/wsdl/EchoService.wsdl", "http://schemas.xmlsoap.org/wsdl/soap12/" );
-        // default dependency on 2.2.x
+        // generated by...
         assertFileContains( project, "target/wsdl/EchoService.wsdl", "JAX-WS RI " + version );
 
         // check AddService
@@ -152,7 +88,7 @@ public class WsGenMojoITCase
         assertFileNotPresent( project, "target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/TService.java" );
         assertFileNotPresent( project,
                               "target/test-classes/org/jvnet/jax_ws_commons/jaxws/test/jaxws/HelloResponse.java" );
-        // default dependency on 2.2.x
+        // generated by...
         assertFileContains( project, "target/generated-sources/test-wsdl/ExService.wsdl", "JAX-WS RI " + version );
         // -portname
         assertFileContains( project, "target/generated-sources/test-wsdl/ExService.wsdl", "port name=\"ExPort\"" );
@@ -161,12 +97,12 @@ public class WsGenMojoITCase
                             "service name=\"ExService\"" );
 
         // package wsdl
-        assertJarContains( project, "mojo.it.wsgentest22-2.2.6.jar", "META-INF/wsdl/EchoService.wsdl" );
-        assertJarNotContains( project, "mojo.it.wsgentest22-2.2.6.jar", "META-INF/wsdl/EchoService_schema1.xsd" );
-        assertJarNotContains( project, "mojo.it.wsgentest22-2.2.6.jar", "META-INF/EchoService_schema.xsd" );
-        assertJarNotContains( project, "mojo.it.wsgentest22-2.2.6.jar", "EchoService_schema.xsd" );
-        assertJarNotContains( project, "mojo.it.wsgentest22-2.2.6.jar", "META-INF/wsdl/ExService.wsdl" );
-        assertJarNotContains( project, "mojo.it.wsgentest22-2.2.6.jar", "ExService.wsdl" );
+        assertJarContains( project, "mojo.it.wsgentest-1.0-SNAPSHOT.jar", "META-INF/wsdl/EchoService.wsdl" );
+        assertJarNotContains( project, "mojo.it.wsgentest-1.0-SNAPSHOT.jar", "META-INF/wsdl/EchoService_schema1.xsd" );
+        assertJarNotContains( project, "mojo.it.wsgentest-1.0-SNAPSHOT.jar", "META-INF/EchoService_schema.xsd" );
+        assertJarNotContains( project, "mojo.it.wsgentest-1.0-SNAPSHOT.jar", "EchoService_schema.xsd" );
+        assertJarNotContains( project, "mojo.it.wsgentest-1.0-SNAPSHOT.jar", "META-INF/wsdl/ExService.wsdl" );
+        assertJarNotContains( project, "mojo.it.wsgentest-1.0-SNAPSHOT.jar", "ExService.wsdl" );
     }
 
     @Test
