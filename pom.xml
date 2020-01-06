@@ -439,7 +439,7 @@
               <showErrors>true</showErrors>
               <suppressSummaries>false</suppressSummaries>
               <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
-              <!--                            <streamLogs>true</streamLogs>-->
+              <!-- <streamLogs>true</streamLogs> -->
               <addTestClassPath>true</addTestClassPath>
               <settingsFile>${project.build.directory}/it-settings.xml</settingsFile>
               <mavenOpts>${ittest-proxy}</mavenOpts>
@@ -448,10 +448,6 @@
                 <setupInclude>parent/pom.xml</setupInclude>
                 <setupInclude>wsdl-lib/pom.xml</setupInclude>
               </setupIncludes>
-              <pomExcludes>
-                <pomExclude>wsimport217/pom.xml</pomExclude>
-                <pomExclude>wsgen217/pom.xml</pomExclude>
-              </pomExcludes>
             </configuration>
             <executions>
               <execution>

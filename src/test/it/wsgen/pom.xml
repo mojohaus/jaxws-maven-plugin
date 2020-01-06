@@ -29,10 +29,10 @@
         <version>@project.version@</version>
     </parent>
     
-    <artifactId>mojo.it.wsgentest22</artifactId>
-    <version>2.2.6</version>
+    <artifactId>mojo.it.wsgentest</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
-    <name>Test project for wsgen (2.2.x)</name>
+    <name>Test project for wsgen</name>
 
     <dependencies>
         <dependency>
