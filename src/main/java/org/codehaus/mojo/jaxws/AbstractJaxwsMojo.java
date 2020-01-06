@@ -67,7 +67,6 @@ import org.codehaus.plexus.util.Os;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.codehaus.plexus.util.cli.Commandline;
-import org.codehaus.plexus.util.cli.DefaultConsumer;
 import org.codehaus.plexus.util.cli.StreamConsumer;
 
 /**
@@ -278,7 +277,8 @@ abstract class AbstractJaxwsMojo
         {
             if ( encoding != null )
             {
-                maybeUnsupportedOption( "-encoding", encoding, commonArgs );
+                commonArgs.add( "-encoding" );
+                commonArgs.add( encoding );
             }
             else
             {
