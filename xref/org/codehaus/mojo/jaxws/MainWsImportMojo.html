@@ -45,8 +45,8 @@
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  <strong class="jxr_keyword">package</strong> org.codehaus.mojo.jaxws;
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  <strong class="jxr_keyword">import</strong> java.io.File;
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <strong class="jxr_keyword">import</strong> java.util.stream.Collectors;
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.Artifact;
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -114,27 +114,16 @@
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>     @Override
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>     <strong class="jxr_keyword">protected</strong> List&lt;String&gt; getWSDLFileLookupClasspathElements()
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>     {
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>         List&lt;String&gt; list = <strong class="jxr_keyword">new</strong> ArrayList&lt;String&gt;();
-<a class="jxr_linenumber" name="L110" href="#L110">110</a> 
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>         <strong class="jxr_keyword">for</strong> ( Artifact a : project.getDependencyArtifacts() )
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>         {
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>             <strong class="jxr_keyword">if</strong> ( Artifact.SCOPE_COMPILE.equals( a.getScope() )
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>                     || Artifact.SCOPE_PROVIDED.equals( a.getScope() )
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>                     || Artifact.SCOPE_SYSTEM.equals( a.getScope() ) )
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>             {
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>                 File file = a.getFile();
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>                 <strong class="jxr_keyword">if</strong> ( file != <strong class="jxr_keyword">null</strong> )
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>                 {
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>                     list.add( file.getPath() );
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>                 }
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>             }
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>         }
-<a class="jxr_linenumber" name="L124" href="#L124">124</a> 
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>         <strong class="jxr_keyword">return</strong> list;
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>     }
-<a class="jxr_linenumber" name="L127" href="#L127">127</a> }
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>         <strong class="jxr_keyword">return</strong> project.getDependencyArtifacts().stream()
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>                 .filter( a -&gt; (Artifact.SCOPE_COMPILE.equals( a.getScope() )
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>                         || Artifact.SCOPE_PROVIDED.equals( a.getScope() )
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>                         || Artifact.SCOPE_SYSTEM.equals( a.getScope()) )
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>                         &amp;&amp; <strong class="jxr_keyword">null</strong> != a.getFile() )
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>                 .map( a -&gt; a.getFile().getPath() ).collect( Collectors.toList() );
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>     }
+<a class="jxr_linenumber" name="L116" href="#L116">116</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2017 <a href="http://www.mojohaus.org">MojoHaus</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2020 <a href="http://www.mojohaus.org">MojoHaus</a>. All rights reserved.</div>
 </body>
 </html>
