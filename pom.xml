@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>mojo-parent</artifactId>
-    <version>50</version>
+    <version>65</version>
   </parent>
 
   <artifactId>jaxws-maven-plugin</artifactId>
@@ -122,6 +122,7 @@
     <scmpublish.content>${project.build.directory}/staging/jaxws-maven-plugin</scmpublish.content>
     <mavenVersion>3.0</mavenVersion>
     <mojo.java.target>1.8</mojo.java.target>
+    <project.build.outputTimestamp>2022-01-18T09:14:02Z</project.build.outputTimestamp>
   </properties>
 
   <dependencyManagement>
