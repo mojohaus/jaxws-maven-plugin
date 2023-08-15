@@ -120,7 +120,7 @@
     <jaxws-tools.version>2.3.2</jaxws-tools.version>
     <netbeans.hint.jdkPlatform>JDK_1.8</netbeans.hint.jdkPlatform>
     <scmpublish.content>${project.build.directory}/staging/jaxws-maven-plugin</scmpublish.content>
-    <mavenVersion>3.0</mavenVersion>
+    <mavenVersion>3.8.1</mavenVersion>
     <mojo.java.target>1.8</mojo.java.target>
     <project.build.outputTimestamp>2022-01-18T09:14:02Z</project.build.outputTimestamp>
   </properties>
