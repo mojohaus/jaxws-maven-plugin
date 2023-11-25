@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>mojo-parent</artifactId>
-    <version>65</version>
+    <version>77</version>
   </parent>
 
   <artifactId>jaxws-maven-plugin</artifactId>
@@ -117,11 +117,11 @@
   </ciManagement>
 
   <properties>
-    <jaxws-tools.version>2.3.2</jaxws-tools.version>
+    <jaxws-tools.version>2.3.7</jaxws-tools.version>
     <netbeans.hint.jdkPlatform>JDK_1.8</netbeans.hint.jdkPlatform>
     <scmpublish.content>${project.build.directory}/staging/jaxws-maven-plugin</scmpublish.content>
-    <mavenVersion>3.0</mavenVersion>
-    <mojo.java.target>1.8</mojo.java.target>
+    <mavenVersion>3.6.3</mavenVersion>
+    <mojo.java.target>8</mojo.java.target>
     <project.build.outputTimestamp>2022-01-18T09:14:02Z</project.build.outputTimestamp>
   </properties>
 
@@ -135,13 +135,13 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
-        <version>3.2.1</version>
+        <version>3.5.1</version>
       </dependency>
       <dependency>
         <groupId>org.apache.maven.plugin-tools</groupId>
         <artifactId>maven-plugin-annotations</artifactId>
         <!--must be same version of m-plugin-p -->
-        <version>3.6.0</version>
+        <version>3.10.2</version>
       </dependency>      
     </dependencies>
   </dependencyManagement>
@@ -162,26 +162,31 @@
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
       <version>${mavenVersion}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
       <version>${mavenVersion}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-model</artifactId>
       <version>${mavenVersion}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-settings</artifactId>
       <version>${mavenVersion}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact</artifactId>
       <version>${mavenVersion}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
@@ -195,7 +200,7 @@
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>6.8.5</version>
+      <version>7.8.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -218,12 +223,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-invoker-plugin</artifactId>
-          <version>3.2.1</version>
+          <version>3.6.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-plugin-plugin</artifactId>
-          <version>3.6.0</version>
+          <version>3.10.2</version>
           <configuration>
             <extractors>
               <extractor>java-annotations</extractor>
@@ -239,9 +244,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <forkMode>once</forkMode>
-          </configuration>
         </plugin>
         <!-- additional plugins -->
         <plugin>
@@ -322,7 +324,6 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <classesDirectory>${project.build.directory}/generated-classes/emma/classes</classesDirectory>
-              <forkMode>once</forkMode>
               <systemPropertyVariables>
                 <emma.coverage.out.file>${project.build.directory}/coverage.ec</emma.coverage.out.file>
               </systemPropertyVariables>
