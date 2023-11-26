@@ -5,7 +5,9 @@
       <pluginExecutionFilter>
         <goals>
           <goal>wsimport</goal>
+          <goal>wsimport-test</goal>
           <goal>wsgen</goal>
+          <goal>wsgen-test</goal>
         </goals>
       </pluginExecutionFilter>
       <action>
